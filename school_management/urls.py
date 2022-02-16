@@ -97,8 +97,8 @@ urlpatterns = [
     path('result_save',staffviews.result_save,name="result_save"),
     path('edit_student_result',EditResultViewClass.as_view(),name="edit_student_result"),
     path('fetch_student_result',staffviews.fetch_student_result,name="fetch_student_result"),
-    path('start_live_classroom',staffviews.start_live_classroom, name="start_live_classroom"),
-    path('start_live_classroom_process',staffviews.start_live_classroom_process, name="start_live_classroom_process"),
+    # path('start_live_classroom',staffviews.start_live_classroom, name="start_live_classroom"),
+    # path('start_live_classroom_process',staffviews.start_live_classroom_process, name="start_live_classroom_process"),
 
     # student url
     path('student_home', student_views.student_home, name="student_home"),
@@ -115,6 +115,6 @@ urlpatterns = [
     path('student_all_notification',student_views.student_all_notification,name="student_all_notification"),
     path('student_view_result',student_views.student_view_result,name="student_view_result"),
     # path('join_class_room/<int:subject_id>/<int:session_year_id>',student_views.join_class_room,name="join_class_room"),
-    path('node_modules/canvas-designer/widget.html',staffviews.returnHtmlWidget,name="returnHtmlWidget"),
+    # path('node_modules/canvas-designer/widget.html',staffviews.returnHtmlWidget,name="returnHtmlWidget"),
 
     ]+static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

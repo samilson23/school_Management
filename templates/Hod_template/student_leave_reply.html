@@ -1,0 +1,94 @@
+{% extends 'Hod_template/base_template.html' %}
+{% block page_title %} Student Leave {% endblock page_title %}
+{% load static %}
+{% block main_content %}
+<section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Student Leave</h3>
+              </div>
+              <div class="table">
+               <table class="table">
+                <tr>
+                  <th>ID</th>
+                  <th> Student Id</th>
+                  <th>Student Name</td>
+                  <th>Message</th>
+                  <th> Leave Date</th>
+                  <th>Applied On</th>
+                  <th>Action</th>
+                </tr>
+                {% for leave in leaves %}
+                 <tr>
+                   <td> {{ leave.id }} </td>
+                   <td> {{ leave.student_id.admin.id }} </td>
+                   <td> {{ leave.student_id.admin.first_name }}  {{ leave.student_id.admin.last_name }} </td>
+                   <td> {{ leave.leave_message }}
+                   <td> {{ leave.leave_date }} </td>
+                   <td> {{ leave.created_at }} </td>
+                   <td>
+                      {% if leave.leave_status == 0 %}
+                        <a href="{%url 'student_approved_leave' leave_id=leave.id %}" class="btn btn-success">Approved</a>
+                        <a href="{%url 'student_disapproved_leave' leave_id=leave.id %}" class="btn btn-danger">Disapproved</a>
+                      {% elif leave.leave_status == 1 %}
+                        <button class="btn btn-success" data-toggle="modal" disabled="disabled" data-target="#reply_modal">Approved</button> 
+                      {% else %}  
+                        <button class="btn btn-danger" data-toggle="modal" disabled="disabled" data-target="#reply_modal">Disapproved</button>
+                      {% endif %}
+                   </td>
+                   {% comment %} <td> <a href="{% url 'replystudent' %} {{ student.admin.id }}" class="btn btn-success">Edit</a></td> {% endcomment %}
+                 </tr>
+
+                {% endfor%}
+               </table>
+            </div>
+            <!-- /.card -->
+    </div>
+    
+  </div>
+  </div><!-- /.container-fluid -->
+</section>
+    <!-- /.content -->
+{% endblock main_content %}
+{% comment %} {% block custom_js %}
+<script>
+  $(document).ready(function(){
+    $(".reply_open_modal").click(function(){
+      var id=$(this).parents("tr").children("td:eq(0)").text();
+      var name=$(this).parents("tr").children("td:eq(2)").text();
+      $("#reply_id").val(id);
+      $("#reply_name").text(name);
+    });
+    $(document).on("click","#reply_btn",function(){
+
+      $(this).attr("disabled","disabled")
+      $(this).text("Sending reply...")
+
+      var id=$("#reply_id").val();
+      var message=$("#reply_message").val();
+      $.ajax({
+        url:'{% url 'student_feedback_msg_replied' %}',
+        type:'POST',
+        data:{id:id,message:message},
+       })
+      .done(function(response){
+      if(response=="True"){
+        alert("Reply sent")
+      }
+      else{
+        alert("Reply not sent")
+      }
+      location.reload()
+     })
+    .fail(function(){
+      alert("error in sending Reply")
+    })
+   });
+  });
+</script>
+
+{% endblock custom_js %} {% endcomment %}

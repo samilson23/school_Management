@@ -1,0 +1,62 @@
+{% extends 'student_template/base_template.html' %}
+{% block page_title %} RESULTS {% endblock page_title %}
+{% load static %}
+{% block main_content %}
+<section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title"> Results </h3>
+              </div>
+            <div class="table">
+              <table class="table">
+                  <tr align="center">
+                      <th>ID</th>
+                      <th>Subject</th>
+                      <th>Assignment Marks</th>
+                      <th>Exam Marks</th>
+                      <th>Status</th>
+                  </tr>
+                  {% for row in studentresult %}
+                  <tr align="center">
+                      <td>{{ row.id }}</td>
+                      <td>{{ row.subject_id.subject_name }}</td>
+                      <td>{{ row.subject_assignment_marks }}</td>
+                      <td align="center">
+                        {% if row.subject_exam_marks >= 40 %}
+                         {{ row.subject_exam_marks }}
+                         <div class="progress progress-xs progress-striped active">
+                          <div class="progress-bar bg-success" style="width: {{ row.subject_exam_marks }}%"></div>
+                        </div>
+                        {% elif row.subject_exam_marks >= 35 %} 
+                         {{ row.subject_exam_marks }}
+                         <div class="progress progress-xs progress-striped active">
+                          <div class="progress-bar bg-warning" style="width: {{ row.subject_exam_marks }}%"></div>
+                        </div>
+                        {% else %}
+                        {{ row.subject_exam_marks }}
+                        <div class="progress progress-xs progress-striped active">
+                          <div class="progress-bar bg-danger" style="width: {{ row.subject_exam_marks }}%"></div>
+                        </div>
+                        {% endif %}
+                      </td>
+                      <td align="center">
+                          {% if row.subject_exam_marks >= 40 %}
+                            <span class="badge badge-success">PASS</span>
+                          {% else %}
+                            <span class="badge badge-danger">FAIL</span>
+                          {% endif %}
+                      </td>
+                  </tr>
+                  {% endfor %}
+              </table>
+            </div>
+           </div>
+        </div>
+        </div>
+ </section>
+    <!-- /.content -->
+{% endblock main_content %}

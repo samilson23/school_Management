@@ -31,42 +31,48 @@ def admin_home(request):
         student_count_in_course_list.append(Students)
 
 
-        subject_all=subject.objects.all()
-        subject_list=[]
-        student_count_in_subject_list=[]
-        for Subject in subject_all:
-           course=courses.objects.get(id=Subject.course_id.id) 
-           students_count=subject.objects.filter(course_id=course.id).count()
-           subject_list.append(Subject.subject_name)
-           student_count_in_subject_list.append(students_count)
 
-        staffs=staff.objects.all()
-        attendance_absent_list_staff=[]
-        attendance_present_list_staff=[]
-        staff_name_list=[]
-        for Staff in staffs:
-            subject_ids=subject.objects.filter(staff_id=Staff.admin.id)  
-            Attendance=attendance.objects.filter(subject_id__in=subject_ids).count()
-            leaves=leavereportstaff.objects.filter(staff_id=Staff.id,leave_status=1).count()
-            attendance_present_list_staff.append(Attendance)
-            attendance_absent_list_staff.append(leaves)
-            staff_name_list.append(Staff.admin.username)
+    subject_list=[]
+    student_count_in_subject_list=[]
+    subjects_all = subject.objects.all()
+    for Subject in subjects_all:
+       course=courses.objects.get(id=Subject.course_id.id)
+       students_count=subject.objects.filter(course_id=course.id).count()
+       subject_list.append(Subject.subject_name)
+       student_count_in_subject_list.append(students_count)
 
-        Student_all=students.objects.all()
-        attendance_absent_list_student=[]
-        attendance_present_list_student=[]
-        attendance_leave_list_student=[]
-        student_name_list=[]
-        for student in Student_all:  
-            present=attendancereport.objects.filter(student_id=student.id,status=True).count()
-            Absent=attendancereport.objects.filter(student_id=student.id,status=False).count()
-            leaves=leavereportstudent.objects.filter(student_id=student.id,leave_status=1).count()
-            attendance_present_list_student.append(present)
-            attendance_absent_list_student.append(Absent)
-            attendance_leave_list_student.append(leaves)
-            student_name_list.append(student.admin.username)    
-    return render(request, "Hod_template/home_content.html",{"student_count":student_count,"staff_count":staff_count,"course_count":course_count,"subject_count":subject_count,
-    "subject_count_list":subject_count_list,"course_name_list":course_name_list,"student_count_in_course_list":student_count_in_course_list})
+
+    attendance_absent_list_staff=[]
+    attendance_present_list_staff=[]
+    staff_name_list=[]
+    staffs = staff.objects.all()
+    for Staff in staffs:
+        subject_ids=subject.objects.filter(staff_id=Staff.admin.id)
+        Attendance=attendance.objects.filter(subject_id__in=subject_ids).count()
+        leaves=leavereportstaff.objects.filter(staff_id=Staff.id,leave_status=1).count()
+        attendance_present_list_staff.append(Attendance)
+        attendance_absent_list_staff.append(leaves)
+        staff_name_list.append(Staff.admin.username)
+
+
+    attendance_absent_list_student=[]
+    attendance_present_list_student=[]
+    attendance_leave_list_student=[]
+    student_name_list=[]
+    Student_all = students.objects.all()
+    for student in Student_all:
+        present=attendancereport.objects.filter(student_id=student.id,status=True).count()
+        Absent=attendancereport.objects.filter(student_id=student.id,status=False).count()
+        leaves=leavereportstudent.objects.filter(student_id=student.id,leave_status=1).count()
+        attendance_present_list_student.append(present)
+        attendance_absent_list_student.append(Absent)
+        attendance_leave_list_student.append(leaves)
+        student_name_list.append(student.admin.username)
+    return render(request, "Hod_template/home_content.html",{"student_count":student_count,"staff_count":staff_count,"course_count":course_count,"subject_count":subject_count,"course_name_list":course_name_list,"subject_count_list":subject_count_list,"student_count_in_course_list":student_count_in_course_list
+                                                             ,"subject_list":subject_list,"student_count_in_subject_list":student_count_in_subject_list,"attendance_present_list_staff":attendance_present_list_staff,"staff_name_list":staff_name_list,"attendance_absent_list_student":attendance_absent_list_student
+                                                             ,"attendance_present_list_student":attendance_present_list_student,"student_name_list":student_name_list,"attendance_leave_list_student":attendance_leave_list_student})
+
+
 
 def add_staff(request):
     return render(request,"Hod_template/add_staff_template.html")

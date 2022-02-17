@@ -66,11 +66,7 @@ def admin_home(request):
             attendance_leave_list_student.append(leaves)
             student_name_list.append(student.admin.username)    
     return render(request, "Hod_template/home_content.html",{"student_count":student_count,"staff_count":staff_count,"course_count":course_count,"subject_count":subject_count,
-    "subject_count_list":subject_count_list,"course_name_list":course_name_list,"student_count_in_course_list":student_count_in_course_list,"student_count_in_subject_list":student_count_in_subject_list,
-    "subject_list":subject_list,"staff_name_list":staff_name_list,"attendance_absent_list_staff":attendance_absent_list_staff,
-    "attendance_present_list_staff":attendance_present_list_staff,"attendance_absent_list_student":attendance_absent_list_student,
-    "attendance_present_list_student":attendance_present_list_student,"attendance_leave_list_student":attendance_leave_list_student,
-    "student_name_list":student_name_list})
+    "subject_count_list":subject_count_list,"course_name_list":course_name_list,"student_count_in_course_list":student_count_in_course_list})
 
 def add_staff(request):
     return render(request,"Hod_template/add_staff_template.html")

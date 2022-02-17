@@ -18,15 +18,15 @@ def doLogin(request):
     if request.method!="POST":
         return HttpResponse("<h1>METHOD NOT ALLOWED</h1>")   
     else:
-        user =EmailBackend.authenticate(request, username=request.POST.get("email"),password=request.POST.get("password"))
+        user = authenticate.EmailBackend(request, username=request.POST.get("email"),password=request.POST.get("password"))
         if user!= None:
             login(request,user)
             if user.user_type=="1":
                 return HttpResponseRedirect('/admin_home')
             elif user.user_type == "2":
                 return HttpResponseRedirect(reverse("staff_home"))
-            # elif user.user_type=="3":
-            #     return HttpResponseRedirect(reverse("student_home"))
+            else:
+                return HttpResponseRedirect(reverse("student_home"))
         else:
             messages.error(request,"Invalid Login Credentials")
             return HttpResponseRedirect("/")

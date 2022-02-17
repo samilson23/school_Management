@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c7799b95-03bd-4513-8c8c-f8cc93ad9a76" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Student/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Student/migrations/0002_alter_leavereportstudent_leave_status.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Student/migrations/0003_staff_fcm_token_students_fcm_token.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Student/migrations/0004_studentresult_onlineclassroom.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Student/migrations/0005_rename_subject_onlineclassroom_subjects.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Student/migrations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-    </list>
+    <list default="true" id="c7799b95-03bd-4513-8c8c-f8cc93ad9a76" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

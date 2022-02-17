@@ -25,8 +25,8 @@ def doLogin(request):
                 return HttpResponseRedirect('/admin_home')
             elif user.user_type == "2":
                 return HttpResponseRedirect(reverse("staff_home"))
-            else:
-                return HttpResponseRedirect(reverse("student_home"))
+            # else:
+            #     return HttpResponseRedirect(reverse("student_home"))
         else:
             messages.error(request,"Invalid Login Credentials")
             return HttpResponseRedirect("/")

@@ -130,14 +130,12 @@
             <div class="card card-warning">
               <div class="card-header">
                 <h3 class="card-title">Total students in each Subject</h3>
-
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
                   </button>
                   <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
                 </div>
               </div>
-              <div class="card-body">
                 <canvas id="pieChart3" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
               </div>
               <!-- /.card-body -->
@@ -197,206 +195,211 @@
 {% block custom_js %}
 <script>
  $(document).ready(function(){
-    var donutData        = {
-        labels: [
-            'Students',
-            'Staff'
-        ],
-        datasets: [
-          {
-            data: [{{ student_count }},{{ staff_count }}],
-            backgroundColor : ['#f56954', '#00a65a'],
-          }
-        ]
-      };
-      var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
-      var pieData        = donutData;
-      var pieOptions     = {
-        maintainAspectRatio : false,
-        responsive : true,
+  var donutData        = {
+    labels: [
+        'Staff',
+        'Students',
+    ],
+    datasets: [
+      {
+        data: [{{staff_count}},{{student_count}}],
+        backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
       }
-      var pieChart = new Chart(pieChartCanvas, {
-        type: 'pie',
-        data: pieData,
-        options: pieOptions
-      });
-
-
-
-      //Donut Chart
-      var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
-      var donutData      = {
-      labels: [
-          {{ course_name_list | safe}},
-      ],
-      datasets: [
-        {
-          data: [{{subject_count_list}}],
-          backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
-        }
-      ]
-    }
-    var donutOptions     = {
-      maintainAspectRatio : false,
-      responsive : true,
-    }
-    //Create pie or douhnut chart
-    // You can switch between pie and douhnut using the method below.
-    var donutChart = new Chart(donutChartCanvas, {
-      type: 'doughnut',
-      data: donutData,
-      options: donutOptions
-    });
-
-    var donutData2        = {
-        labels: [
-            {{ course_name_list | safe}}
-        ],
-        datasets: [
-          {
-            data: [{{ student_count_in_course_list }}],
-            backgroundColor : ['#f56954', '#00a65a'],
-          }
-        ]
-      };
-      var pieChartCanvas2 = $('#pieChart2').get(0).getContext('2d')
-      var pieData2        = donutData2;
-      var pieOptions2     = {
-        maintainAspectRatio : false,
-        responsive : true,
+    ]
+  };
+  var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
+  var pieData        = donutData;
+  var pieOptions     = {
+    maintainAspectRatio : false,
+    responsive : true,
+  }
+  //Create pie or douhnut chart
+  // You can switch between pie and douhnut using the method below.
+  var pieChart = new Chart(pieChartCanvas, {
+    type: 'pie',
+    data: pieData,
+    options: pieOptions      
+  });
+  //Second Chart for Total Subject in Each Course
+  var subject_count_list={{ subject_count_list }};
+  var course_name_list={{ course_name_list|safe }};
+  var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
+  var donutData        = {
+    labels:course_name_list,
+    datasets: [
+      {
+        data: subject_count_list,
+        backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
       }
-      var pieChart2 = new Chart(pieChartCanvas2, {
-        type: 'pie',
-        data: pieData2,
-        options: pieOptions2
-      });
-
-      var donutData3        = {
-        labels: [
-            {{ subject_list | safe}}
-        ],
-        datasets: [
-          {
-            data: [{{ student_count_in_subject_list }}],
-            backgroundColor : ['#f56954', '#00a65a'],
-          }
-        ]
-      };
-      var pieChartCanvas3 = $('#pieChart3').get(0).getContext('2d')
-      var pieData3        = donutData3;
-      var pieOptions3     = {
-        maintainAspectRatio : false,
-        responsive : true,
+    ]
+  };
+  var donutOptions     = {
+    maintainAspectRatio : false,
+    responsive : true,
+  }
+  //Create pie or douhnut chart
+  // You can switch between pie and douhnut using the method below.
+  var donutChart = new Chart(donutChartCanvas, {
+    type: 'doughnut',
+    data: donutData,
+    options: donutOptions
+  });
+  var course_name_list={{course_name_list | safe}};
+  var student_count_in_course_list={{student_count_in_course_list}};
+  var donutData2        = {
+    labels:course_name_list,
+    datasets: [
+      {
+        data: student_count_in_course_list,
+        backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#FFFF00'],
       }
-      var pieChart3 = new Chart(pieChartCanvas3, {
-        type: 'pie',
-        data: pieData3,
-        options: pieOptions3
-      });
-
-
-      var areaChartData = {
-      labels  : [{{staff_name_list | safe}}],
-      datasets: [
-        {
-          label               : 'Attendance',
-          backgroundColor     : 'rgba(60,141,188,0.9)',
-          borderColor         : 'rgba(60,141,188,0.8)',
-          pointRadius          : false,
-          pointColor          : '#3b8bba',
-          pointStrokeColor    : 'rgba(60,141,188,1)',
-          pointHighlightFill  : '#fff',
-          pointHighlightStroke: 'rgba(60,141,188,1)',
-          data                : [{{attendance_present_list_staff}}]
-        },
-        {
-          label               : 'Leaves',
-          backgroundColor     : 'rgba(210, 214, 222, 1)',
-          borderColor         : 'rgba(210, 214, 222, 1)',
-          pointRadius         : false,
-          pointColor          : 'rgba(210, 214, 222, 1)',
-          pointStrokeColor    : '#c1c7d1',
-          pointHighlightFill  : '#fff',
-          pointHighlightStroke: 'rgba(220,220,220,1)',
-          data                : [{{attendance_absent_list_staff}}]
-        },
-      ]
-    }
-      var barChartCanvas = $('#barChart').get(0).getContext('2d')
-      var barChartData = jQuery.extend(true, {}, areaChartData)
-      var temp0 = areaChartData.datasets[0]
-      var temp1 = areaChartData.datasets[1]
-      barChartData.datasets[0] = temp1
-      barChartData.datasets[1] = temp0
-
-      var barChartOptions = {
-        responsive              : true,
-        maintainAspectRatio     : false,
-        datasetFill             : false
+    ]
+  };
+  var pieChartCanvas2 = $('#pieChart2').get(0).getContext('2d')
+  var pieData2        = donutData2;
+  var pieOptions2     = {
+    maintainAspectRatio : false,
+    responsive : true,
+  }
+  //Create pie or douhnut chart
+  // You can switch between pie and douhnut using the method below.
+  var pieChart2 = new Chart(pieChartCanvas2, {
+    type: 'pie',
+    data: pieData2,
+    options: pieOptions2      
+  });
+  var subject_list={{subject_list | safe}};
+  var student_count_in_subject_list={{student_count_in_subject_list}};
+  var donutData3        = {
+    labels:subject_list,
+    datasets: [
+      {
+        data: student_count_in_subject_list,
+        backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc','#FFFF00','#FF6F00','#1B5E20','#006064'],
       }
+    ]
+  };
+  var pieChartCanvas3 = $('#pieChart3').get(0).getContext('2d')
+  var pieData3        = donutData3;
+  var pieOptions3     = {
+    maintainAspectRatio : false,
+    responsive : true,
+  }
+  //Create pie or douhnut chart
+  // You can switch between pie and douhnut using the method below.
+  var pieChart3 = new Chart(pieChartCanvas3, {
+    type: 'pie',
+    data: pieData3,
+    options: pieOptions3      
+  });
+  var staff_name_list={{staff_name_list | safe}};
+  var attendance_present_list_staff={{attendance_present_list_staff}};
+  var attendance_absent_list_staff={{attendance_absent_list_staff}};
+  var areaChartData = {
+    labels  : staff_name_list,
+    datasets: [
+      {
+        label               : 'Attendances',
+        backgroundColor     : 'rgba(60,141,188,0.9)',
+        borderColor         : 'rgba(60,141,188,0.8)',
+        pointRadius          : false,
+        pointColor          : '#3b8bba',
+        pointStrokeColor    : 'rgba(60,141,188,1)',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(60,141,188,1)',
+        data                : attendance_present_list_staff,
+      },
+      {
+        label               : 'Leaves',
+        backgroundColor     : 'rgba(210, 214, 222, 1)',
+        borderColor         : 'rgba(210, 214, 222, 1)',
+        pointRadius         : false,
+        pointColor          : 'rgba(210, 214, 222, 1)',
+        pointStrokeColor    : '#c1c7d1',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(220,220,220,1)',
+        data                :  attendance_absent_list_staff,
+      },
+    ]
+  }
+  var barChartCanvas = $('#barChart').get(0).getContext('2d')
+  var barChartData = jQuery.extend(true, {}, areaChartData)
+  var temp0 = areaChartData.datasets[0]
+  var temp1 = areaChartData.datasets[1]
+  barChartData.datasets[0] = temp1
+  barChartData.datasets[1] = temp0
 
-      var barChart = new Chart(barChartCanvas, {
-        type: 'bar',
-        data: barChartData,
-        options: barChartOptions
-      });
+  var barChartOptions = {
+    responsive              : true,
+    maintainAspectRatio     : false,
+    datasetFill             : false
+  }
 
+  var barChart = new Chart(barChartCanvas, {
+    type: 'bar', 
+    data: barChartData,
+    options: barChartOptions
+  });
+  var student_name_list={{student_name_list | safe}};
+  var attendance_present_list_student={{attendance_present_list_student}};
+  var attendance_absent_list_student={{attendance_absent_list_student}};
+  var attendance_leave_list_student={{attendance_leave_list_student}};
+  var areaChartData2 = {
+    labels  : student_name_list,
+    datasets: [
+      {
+        label               : 'Attendances',
+        backgroundColor     : 'rgba(21, 214, 22, 1)',
+        borderColor         : 'rgba(21, 214, 22, 1)',
+        pointRadius          : false,
+        pointColor          : '#3b8bba',
+        pointStrokeColor    : 'rgba(21, 214, 22, 1)',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(21, 214, 22, 1)',
+        data                : attendance_present_list_student,
+      },
+      {
+        label               : 'Leaves',
+        backgroundColor     : 'rgba(210, 214, 222, 1)',
+        borderColor         : 'rgba(210, 214, 222, 1)',
+        pointRadius         : false,
+        pointColor          : 'rgba(210, 214, 222, 1)',
+        pointStrokeColor    : '#c1c7d1',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(220,220,220,1)',
+        data                :  attendance_leave_list_student,
+      },
+      {
+        label               : 'Absent',
+        backgroundColor     : 'rgba(210, 21, 22, 1)',
+        borderColor         : 'rgba(210, 21, 22, 1)',
+        pointRadius         : false,
+        pointColor          : 'rgba(210, 21, 22, 1)',
+        pointStrokeColor    : '#c1c7d1',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(220,22,22,1)',
+        data                :  attendance_absent_list_student,
+      },
+    ]
+  }
+  var barChartCanvas2 = $('#barChart2').get(0).getContext('2d')
+  var barChartData2 = jQuery.extend(true, {}, areaChartData2)
+  var temp02 = areaChartData.datasets[0]
+  var temp12 = areaChartData.datasets[1]
+  barChartData.datasets[0] = temp12
+  barChartData.datasets[1] = temp02
 
-      var barChartData = {
-      labels  : [{{student_name_list | safe}}],
-      datasets: [
-        {
-          label               : 'Attendance',
-          backgroundColor     : 'rgba(60,141,188,0.9)',
-          borderColor         : 'rgba(60,141,188,0.8)',
-          pointRadius          : false,
-          pointColor          : '#3b8bba',
-          pointStrokeColor    : 'rgba(60,141,188,1)',
-          pointHighlightFill  : '#fff',
-          pointHighlightStroke: 'rgba(60,141,188,1)',
-          data                : [{{attendance_present_list_student}}]
-        },
-        {
-          label               : 'Leaves',
-          backgroundColor     : 'rgba(210, 214, 222, 1)',
-          borderColor         : 'rgba(210, 214, 222, 1)',
-          pointRadius         : false,
-          pointColor          : 'rgba(210, 214, 222, 1)',
-          pointStrokeColor    : '#c1c7d1',
-          pointHighlightFill  : '#fff',
-          pointHighlightStroke: 'rgba(220,220,220,1)',
-          data                : [{{attendance_leave_list_student}}]
-        },
-        {
-          label               : 'Absent',
-          backgroundColor     : 'rgba(210, 214, 22, 1)',
-          borderColor         : 'rgba(210, 214, 22, 1)',
-          pointRadius         : false,
-          pointColor          : 'rgba(210, 214, 22, 1)',
-          pointStrokeColor    : '#c1c7d1',
-          pointHighlightFill  : '#fff',
-          pointHighlightStroke: 'rgba(220,220,22,1)',
-          data                : [{{attendance_absent_list_student}}]
-        },
-      ]
-    }
-    var barChartCanvas2 = $('#barChart2').get(0).getContext('2d')
-    var temp02 = areaChartData.datasets[0]
-    var temp12 = areaChartData.datasets[1]
-    barChartData.datasets[0] = temp12
-    barChartData.datasets[1] = temp02
+  var barChartOptions2 = {
+    responsive              : true,
+    maintainAspectRatio     : false,
+    datasetFill             : false
+  }
 
-    var barChartOptions2 = {
-      responsive              : true,
-      maintainAspectRatio     : false,
-      datasetFill             : false
-    }
-
-    var barChart2 = new Chart(barChartCanvas2, {
-      type: 'bar',
-      data: barChartData,
-      options: barChartOptions2
-    });
+  var barChart2 = new Chart(barChartCanvas2, {
+    type: 'bar', 
+    data: barChartData2,
+    options: barChartOptions2
+  });
  })
 </script>
 {% endblock custom_js %}

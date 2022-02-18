@@ -68,9 +68,11 @@ def admin_home(request):
         attendance_absent_list_student.append(Absent)
         attendance_leave_list_student.append(leaves)
         student_name_list.append(student.admin.username)
+
+    subjects=subject.objects.all()    
     return render(request, "Hod_template/home_content.html",{"student_count":student_count,"staff_count":staff_count,"course_count":course_count,"subject_count":subject_count,"course_name_list":course_name_list,"subject_count_list":subject_count_list,"student_count_in_course_list":student_count_in_course_list
                                                              ,"subject_list":subject_list,"student_count_in_subject_list":student_count_in_subject_list,"attendance_present_list_staff":attendance_present_list_staff,"staff_name_list":staff_name_list,"attendance_absent_list_student":attendance_absent_list_student
-                                                             ,"attendance_present_list_student":attendance_present_list_student,"student_name_list":student_name_list,"attendance_leave_list_student":attendance_leave_list_student})
+                                                             ,"attendance_present_list_student":attendance_present_list_student,"student_name_list":student_name_list,"attendance_leave_list_student":attendance_leave_list_student,"attendance_absent_list_staff":attendance_absent_list_staff,"subjects":subjects})
 
 
 
@@ -113,51 +115,45 @@ def add_course_save(request):
             messages.error(request, "Failed To Add Course")
             return HttpResponseRedirect(reverse("add_course"))
 def add_student(request):
-    form = AddstudentForm()
-    return render(request, "Hod_template/add_student_template.html",{"form":form})
+    course=courses.objects.all()
+    sessions=sessionmodel.objects.all()
+    return render(request, "Hod_template/add_student_template.html",{"course":course,"sessions":sessions})
 
 def add_student_save(request):
     if request.method!="POST":
         return HttpResponseRedirect("Method Not Allowed")
     else:
-        form = AddstudentForm(request.POST, request.FILES)
-        if form.is_valid():
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        address = request.POST.get("address")
+        session_year_id = request.POST.get("session")
+        course_id = request.POST.get("course")
+        sex = request.POST.get("sex")
+        # profile_pic = request.FILES['profile_pic']
+        # fs = FileSystemStorage()
+        # filename = fs.save(profile_pic.name,profile_pic)
+        # profile_pic_url = fs.url(filename)
 
-            first_name = form.cleaned_data["first_name"]
-            last_name = form.cleaned_data["last_name"]
-            username = form.cleaned_data["username"]
-            email = form.cleaned_data["email"]
-            password = form.cleaned_data["password"]
-            address = form.cleaned_data["address"]
-            session_year_id = form.cleaned_data["session_year_id"]
-            course_id = form.cleaned_data["course"]
-            sex = form.cleaned_data["sex"]
-            profile_pic = request.FILES["profile_pic"]
-            fs = FileSystemStorage()
-            filename = fs.save(profile_pic.name,profile_pic)
-            profile_pic_url = fs.url(filename)
+        try:
+            user = CustomUser.objects.create_user(username=username, email=email, password=password,
+                                                  first_name=first_name, last_name=last_name, user_type=3)
+            user.students.address = address
+            course_obj = courses.objects.get(id=course_id)
+            user.students.course_id = course_obj
+            session = sessionmodel.objects.get(id=session_year_id)
+            user.students.session_year_id = session
+            user.students.gender = sex
+            user.students.profile_pic = ""
+            user.save()
+            messages.success(request, "Successfully Added Student")
+            return HttpResponseRedirect(reverse("add_student"))
 
-            try:
-                user = CustomUser.objects.create_user(username=username, email=email, password=password,
-                                                      first_name=first_name, last_name=last_name, user_type=3)
-                user.students.address = address
-                course_obj = courses.objects.get(id=course_id)
-                user.students.course_id = course_obj
-                session = sessionmodel.objects.get(id=session_year_id)
-                user.students.session_year_id = session
-                user.students.gender = sex
-                user.students.profile_pic = profile_pic_url
-                user.save()
-                messages.success(request, "Successfully Added Student")
-                return HttpResponseRedirect(reverse("add_student"))
-
-            except:
-                messages.error(request, "Failed to add Student")
-                return HttpResponseRedirect(reverse("add_student"))
-
-        else:
-             form = AddstudentForm(request.POST)
-             return render("Hod_template/add_student_template.html",{"form":form})
+        except:
+            messages.error(request, "Failed to add Student")
+            return HttpResponseRedirect(reverse("add_student"))
 
 def add_subject(request):
     course = courses.objects.all()

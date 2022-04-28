@@ -75,6 +75,7 @@ urlpatterns = [
     path('admin_send_notification_staff',hod_views.admin_send_notification_staff,name="admin_send_notification_staff"),
     path('send_student_notification',hod_views.send_student_notification,name="send_student_notification"),
     path('send_staff_notification',hod_views.send_staff_notification,name="send_staff_notification"),
+    path('datatable',hod_views.datatable,name='datatable'),
 
     # staff url
     path('staff_home', staffviews.staff_home, name="staff_home"),
@@ -114,6 +115,7 @@ urlpatterns = [
     path('firebase-messaging-sw.js',student_views.showFirebaseJS,name="showFirebase_JS"),
     path('student_all_notification',student_views.student_all_notification,name="student_all_notification"),
     path('student_view_result',student_views.student_view_result,name="student_view_result"),
+    path('unit_registration',student_views.unit_registration,name="unit_registration"),
     # path('join_class_room/<int:subject_id>/<int:session_year_id>',student_views.join_class_room,name="join_class_room"),
     # path('node_modules/canvas-designer/widget.html',staffviews.returnHtmlWidget,name="returnHtmlWidget"),
 

@@ -12,7 +12,7 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src="{% static "dist/img/user2-160x160.jpg" %}" class="img-circle elevation-2" alt="User Image">
+          <img src="{% static "dist/img/sam.jpg" %}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
           <a href="{% url 'student_profile'%}" class="d-block">{{ user.username }}</a>
@@ -43,6 +43,15 @@
               <i class="nav-icon fas fa-th"></i>
               <p>
                 My Attendance
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            {% url 'unit_registration' as unit_registration %}
+            <a href="{{ unit_registration }}" class="nav-link {% if request.path == unit_registration %} active {% endif %} ">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Register Units
               </p>
             </a>
           </li>

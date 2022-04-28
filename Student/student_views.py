@@ -179,3 +179,6 @@ def student_view_result(request):
     student=students.objects.get(admin=request.user.id)
     studentresult=StudentResult.objects.filter(student_id=student.id)
     return render(request,"student_template/results.html",{"studentresult":studentresult})
+
+def unit_registration(request):
+    return render(request,"student_template/register_units.html")

@@ -8,7 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.core.files.storage import FileSystemStorage
 from Student import admin
-from Student.forms import AddstudentForm, EditStudentForm
+from Student.forms import EditStudentForm
 from Student.models import CustomUser, attendance, attendancereport, courses, feedbackstaff, feedbackstudent, leavereportstaff, leavereportstudent, notificationstaff, notificationstudent, staff, subject, students,sessionmodel
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -70,9 +70,24 @@ def admin_home(request):
         student_name_list.append(student.admin.username)
 
     subjects=subject.objects.all()    
-    return render(request, "Hod_template/home_content.html",{"student_count":student_count,"staff_count":staff_count,"course_count":course_count,"subject_count":subject_count,"course_name_list":course_name_list,"subject_count_list":subject_count_list,"student_count_in_course_list":student_count_in_course_list
-                                                             ,"subject_list":subject_list,"student_count_in_subject_list":student_count_in_subject_list,"attendance_present_list_staff":attendance_present_list_staff,"staff_name_list":staff_name_list,"attendance_absent_list_student":attendance_absent_list_student
-                                                             ,"attendance_present_list_student":attendance_present_list_student,"student_name_list":student_name_list,"attendance_leave_list_student":attendance_leave_list_student,"attendance_absent_list_staff":attendance_absent_list_staff,"subjects":subjects})
+    return render(request,
+                  "Hod_template/home_content.html",{"student_count":student_count,
+                                                             "staff_count":staff_count,
+                                                             "course_count":course_count,
+                                                             "subject_count":subject_count,
+                                                             "course_name_list":course_name_list,
+                                                             "subject_count_list":subject_count_list,
+                                                             "student_count_in_course_list":student_count_in_course_list,
+                                                             "subject_list":subject_list,
+                                                             "student_count_in_subject_list":student_count_in_subject_list,
+                                                             "attendance_present_list_staff":attendance_present_list_staff,
+                                                             "staff_name_list":staff_name_list,
+                                                             "attendance_absent_list_student":attendance_absent_list_student,
+                                                             "attendance_present_list_student":attendance_present_list_student,
+                                                             "student_name_list":student_name_list,
+                                                             "attendance_leave_list_student":attendance_leave_list_student,
+                                                             "attendance_absent_list_staff":attendance_absent_list_staff,
+                                                             "subjects":subjects})
 
 
 
@@ -132,10 +147,10 @@ def add_student_save(request):
         session_year_id = request.POST.get("session")
         course_id = request.POST.get("course")
         sex = request.POST.get("sex")
-        # profile_pic = request.FILES['profile_pic']
-        # fs = FileSystemStorage()
-        # filename = fs.save(profile_pic.name,profile_pic)
-        # profile_pic_url = fs.url(filename)
+        profile_pic = request.FILES['profile_pic']
+        fs = FileSystemStorage()
+        filename = fs.save(profile_pic.name,profile_pic)
+        profile_pic_url = fs.url(filename)
 
         try:
             user = CustomUser.objects.create_user(username=username, email=email, password=password,
@@ -146,7 +161,7 @@ def add_student_save(request):
             session = sessionmodel.objects.get(id=session_year_id)
             user.students.session_year_id = session
             user.students.gender = sex
-            user.students.profile_pic = ""
+            user.students.profile_pic = profile_pic_url
             user.save()
             messages.success(request, "Successfully Added Student")
             return HttpResponseRedirect(reverse("add_student"))
@@ -168,10 +183,11 @@ def add_subject_save(request):
         course_id = request.POST.get("course")
         course = courses.objects.get(id=course_id)
         staff_id = request.POST.get("staff")
+        stage=request.POST.get("stage")
         staff = CustomUser.objects.get(id=staff_id)
 
         try:
-            subjects = subject(subject_name=subject_name,course_id=course,staff_id=staff)
+            subjects = subject(subject_name=subject_name,course_id=course,staff_id=staff,stage=stage)
             subjects.save()
             messages.success(request, "Successfully Added Subject")
             return HttpResponseRedirect(reverse("add_subject"))
@@ -227,70 +243,74 @@ def edit_staff_save(request):
 
 def edit_student(request,student_id):
     request.session['student_id']=student_id
-    student = students.objects.get(admin=student_id)
-    form = EditStudentForm()
-    form.fields['email'].initial = student.admin.email
-    form.fields['first_name'].initial = student.admin.first_name
-    form.fields['last_name'].initial = student.admin.last_name
-    form.fields['username'].initial = student.admin.username
-    form.fields['address'].initial = student.address
-    form.fields['course'].initial = student.course_id.id
-    form.fields['session_year_id'].initial = student.session_year_id
-    form.fields['profile_pic'].initial = student.profile_pic
-    return render(request,"Hod_template/edit_student_template.html",{"form": form,"id":student_id,'username':student.admin.username})
+    student=students.objects.get(admin=student_id)
+    form=EditStudentForm()
+    form.fields['email'].initial=student.admin.email
+    form.fields['first_name'].initial=student.admin.first_name
+    form.fields['last_name'].initial=student.admin.last_name
+    form.fields['username'].initial=student.admin.username
+    form.fields['address'].initial=student.address
+    form.fields['course'].initial=student.course_id.id
+    # form.fields['sex'].initial=student.gender
+    form.fields['session_year_id'].initial=student.session_year_id.id
+    return render(request,"hod_template/edit_student_template.html",{"form":form,"id":student_id,"username":student.admin.username})
 
 def edit_student_save(request):
-    if request.method!='POST':
+    if request.method!="POST":
         return HttpResponse("<h2>Method Not Allowed</h2>")
     else:
-        student_id = request.session.get("student_id")
-        if student_id == None:
-            return HttpResponse("/manage_student")
-        form = EditStudentForm(request.POST,request.FILES)
+        student_id=request.session.get("student_id")
+        if student_id==None:
+            return HttpResponseRedirect(reverse("manage_student"))
+
+        form=EditStudentForm(request.POST,request.FILES)
         if form.is_valid():
             first_name = form.cleaned_data["first_name"]
             last_name = form.cleaned_data["last_name"]
+            username = form.cleaned_data["username"]
             email = form.cleaned_data["email"]
             address = form.cleaned_data["address"]
-            username = form.cleaned_data["username"]
-            session_year_id = form.cleaned_data["session_year_id"]
+            session_year_id=form.cleaned_data["session_year_id"]
             course_id = form.cleaned_data["course"]
+            # sex = form.cleaned_data["sex"]
 
-            if request.FILES.get("profile_pic", False):
-                profile_pic = request.FILES["profile_pic"]
-                fs = FileSystemStorage()
-                filename = fs.save(profile_pic.name, profile_pic)
-                profile_pic_url = fs.url(filename)
+            if request.FILES.get('profile_pic',False):
+                profile_pic=request.FILES['profile_pic']
+                fs=FileSystemStorage()
+                filename=fs.save(profile_pic.name,profile_pic)
+                profile_pic_url=fs.url(filename)
             else:
-                profile_pic_url = None
+                profile_pic_url=None
+
 
             try:
-                user = CustomUser.objects.get(id=student_id)
-                user.first_name = first_name
-                user.last_name = last_name
-                user.email = email
-                user.username = username
+                user=CustomUser.objects.get(id=student_id)
+                user.first_name=first_name
+                user.last_name=last_name
+                user.username=username
+                user.email=email
                 user.save()
 
-                student = students.objects.get(admin=student_id)
-                student.address = address
-                session = sessionmodel.objects.get(id=session_year_id)
-                student.session_year_id = session
-                course = courses.objects.get(id=course_id)
-                student.course_id = course
-                if profile_pic_url != None:
-                    student.profile_pic = profile_pic_url
+                student=students.objects.get(admin=student_id)
+                student.address=address
+                session_year = sessionmodel.objects.get(id=session_year_id)
+                student.session_year_id = session_year
+                # student.gender=sex
+                course=courses.objects.get(id=course_id)
+                student.course_id=course
+                if profile_pic_url!=None:
+                    student.profile_pic=profile_pic_url
                 student.save()
                 del request.session['student_id']
-                messages.success(request, "Successfully Saved Student")
+                messages.success(request,"Successfully Edited Student")
                 return HttpResponseRedirect(reverse("edit_student",kwargs={"student_id":student_id}))
             except:
-                messages.error(request, "Student Not Saved")
+                messages.error(request,"Failed to Edit Student")
                 return HttpResponseRedirect(reverse("edit_student",kwargs={"student_id":student_id}))
         else:
-            form = EditStudentForm(request.POST)
-            student = students.objects.get(admin=student_id)
-            return render(request,"Hod_template/edit_student_template.html",{"form":form,"id":student_id,"username":student.admin.username})
+            form=EditStudentForm(request.POST)
+            student=students.objects.get(admin=student_id)
+            return render(request,"hod_template/edit_student_template.html",{"form":form,"id":student_id,"username":student.admin.username})
 
 def edit_subject(request,subject_id):
     subjects = subject.objects.get(id=subject_id)
@@ -558,5 +578,9 @@ def send_staff_notification(request):
     notification=notificationstaff(staff_id=staffs,message=message)
     notification.save()
     print(data.text)
-    return HttpResponse("True")    
+    return HttpResponse("True")
+
+
+def datatable(request):
+    return render(request,"Hod_template/datatable.html")
 

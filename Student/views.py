@@ -41,5 +41,3 @@ def logout_user(request):
     return HttpResponseRedirect("/")
 
 
-
-        # Create your views here.

@@ -12,6 +12,7 @@ from Student.forms import EditStudentForm
 from Student.models import CustomUser, attendance, attendancereport, courses, feedbackstaff, feedbackstudent, leavereportstaff, leavereportstudent, notificationstaff, notificationstudent, staff, subject, students,sessionmodel
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from .filters import UserFilter,CourseFilter,SubjectFilter
 
 def admin_home(request):
     student_count=students.objects.all().count()
@@ -201,15 +202,24 @@ def manage_staff(request):
 
 def manage_student(request):
     std = students.objects.all()
+    # customuser = CustomUser.objects.all()
+    # Myfilter=UserFilter(request.GET, queryset=customuser)
+    #
+    # customuser = Myfilter.qs
     return render(request, "Hod_template/manage_student_template.html", {"std": std})
 
 def manage_course(request):
     course = courses.objects.all()
-    return render(request, "Hod_template/manage_course_template.html", {"course": course})
+    Myfilter = CourseFilter(request.GET, queryset=course)
+    course=Myfilter.qs
+    return render(request, "Hod_template/manage_course_template.html", {"course": course,"Myfilter":Myfilter})
 
 def manage_subjects(request):
     subjects = subject.objects.all()
-    return render(request, "hod_template/manage_subjects_template.html", {"subjects": subjects})
+    Myfilter = SubjectFilter(request.GET, queryset=subjects)
+    subjects = Myfilter.qs
+
+    return render(request, "hod_template/manage_subjects_template.html", {"subjects": subjects,"Myfilter":Myfilter})
 
 def edit_staff(request,staff_id):
     staffss = staff.objects.get(admin=staff_id)

@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 
+
 from Student.models import OnlineClassRoom, StudentResult, feedbackstudent, leavereportstudent, notificationstudent, sessionmodel, students, courses, subject, CustomUser, attendance, attendancereport
 
 
@@ -15,6 +16,7 @@ def student_home(request):
     Attendance_absent=attendancereport.objects.filter(student_id=student_obj,status=False).count()
     course=courses.objects.get(id=student_obj.course_id.id)
     subjects=subject.objects.filter(course_id=course).count()
+    # pic=students.objects.get("profile_pic")
     # subjects_data=subject.objects.filter(course_id=course)
     # session_obj=sessionmodel.objects.get(id=student_obj.session_year_id.id)
     # class_room=OnlineClassRoom.objects.filter(subjects__in=subjects_data,is_active=True,session_years=session_obj)

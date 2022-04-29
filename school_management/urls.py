@@ -75,7 +75,7 @@ urlpatterns = [
     path('admin_send_notification_staff',hod_views.admin_send_notification_staff,name="admin_send_notification_staff"),
     path('send_student_notification',hod_views.send_student_notification,name="send_student_notification"),
     path('send_staff_notification',hod_views.send_staff_notification,name="send_staff_notification"),
-    path('datatable',hod_views.datatable,name='datatable'),
+    # path('datatable',hod_views.datatable,name='datatable'),
 
     # staff url
     path('staff_home', staffviews.staff_home, name="staff_home"),

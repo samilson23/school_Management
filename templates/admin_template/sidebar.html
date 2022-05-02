@@ -1,0 +1,78 @@
+{% load static %}
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="#" class="brand-link">
+      <img src="{% static "dist/img/AdminLTELogo.png" %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+           style="opacity: .8">
+      <span class="brand-text font-weight-light">HOD Admin</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img src="{% static "dist/img/user2-160x160.jpg" %}" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+          {% url 'admin_profile' as admin_profile %}
+          <a href="{% url 'admin_profile' %}" class="d-block">{{ user.username }}</a>
+        </div>
+      </div>
+
+       <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <li class="nav-item">
+            {% url 'home' as home %}
+            <a href="{{ home }}" class="nav-link {% if request.path == home %} active {% endif %} ">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Home
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            {% url 'add_hod' as add_hod %}
+            <a href="{{ add_hod }}" class="nav-link {% if request.path == add_hod %} active {% endif %} ">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Add HOD
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            {% url 'manage_hod' as manage_hod %}
+            <a href="{{ manage_hod }}" class="nav-link {% if request.path == manage_hod %} active {% endif %} ">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Manage HOD
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            {% url 'Staff' as Staff %}
+            <a href="{{ Staff }}" class="nav-link {% if request.path == Staff %} active {% endif %} ">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Manage Staff
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            {% url 'Student' as Student %}
+            <a href="{{ Student }}" class="nav-link {% if request.path == Student %} active {% endif %} ">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Manage Student
+              </p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>

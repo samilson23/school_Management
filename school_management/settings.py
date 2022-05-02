@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-jtxsxi5s+em7vhi&cuv=+yayp^&gz4p5##zf=9cac-u8hi6#zm
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -52,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'Student.LoginCheckMiddleWare.LoginCheckMiddleWare'
 ]
 
 ROOT_URLCONF = 'school_management.urls'
@@ -81,7 +82,7 @@ WSGI_APPLICATION = 'school_management.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR ,'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR,'db.sqlite3'),
         # 'ENGINE':'django.db.backends.postgresql',
         # 'NAME':'student_management',
         # 'USER':'student_management',

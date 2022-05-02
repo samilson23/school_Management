@@ -1,0 +1,90 @@
+{% extends 'admin_template/base.html' %}
+{% block page_title %} Manage HOD {% endblock page_title %}
+{% load static %}
+{% load i18n %}
+{% block main_content %}
+<section class="content" xmlns="http://www.w3.org/1999/html">
+    <div class="container-fluid">
+       <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <div class="row">
+                  <div class="col-lg-7">
+                    <h3 class="card-title">HOD Details</h3>
+                  </div>
+                  <div class="col-lg-5">
+                    <form method="get" class="form-inline">
+                      <div class="form-group">
+                        <label>{% trans 'Search' %}:&nbsp;&nbsp;&nbsp;</label>
+                        {{Myfilter.admin__username }}&nbsp;&nbsp;&nbsp;
+                        <button class="btn-primary">Search</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>First Name</th>
+                      <th>Last Name</th>
+                      <th>User Name</th>
+                      <th>Email</th>
+                      <th>Address</th>
+                      <th>Last Login</th>
+                      <th>Date Joined</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for Hod in HOD %}
+                    <tr>
+                      <td>{{ Hod.admin.id }}</td>
+                      <td>{{ Hod.admin.first_name }}</td>
+                      <td>{{ Hod.admin.last_name }}</td>
+                      <td>{{ Hod.admin.username }}</td>
+                      <td>{{ Hod.admin.email }}</td>
+                      <td>{{ Hod.address }}</td>
+                      <td>{{ Hod.admin.last_login }}</td>
+<!--                      <td>{{ Hod.admin.password }}</td>-->
+                      <td>{{ Hod.admin.date_joined }}</td>
+                      <td><a href="#" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</a></td>
+                      <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="deleteModalLabel">Confirm to delete</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              Are you sure you want to delete {{ Hod.admin.username }}
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-sm btn-info" data-dismiss="modal">Close</button>
+                              <a class="btn btn-sm btn-danger" href="{% url 'delete_hod' Hod.admin.id %}">Delete</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+   <div><!-- /.container-fluid -->
+</section>
+    <!-- /.content -->
+{% endblock main_content %}

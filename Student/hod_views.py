@@ -2,7 +2,7 @@ import datetime
 from email import message
 import json
 
-#import requests
+import requests
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
@@ -12,7 +12,8 @@ from Student.forms import EditStudentForm
 from Student.models import CustomUser, attendance, attendancereport, courses, feedbackstaff, feedbackstudent, leavereportstaff, leavereportstudent, notificationstaff, notificationstudent, staff, subject, students,sessionmodel
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from .filters import UserFilter,CourseFilter,SubjectFilter
+from .filters import CourseFilter,SubjectFilter,StudentFilter,StaffFilter
+from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 
 def admin_home(request):
     student_count=students.objects.all().count()
@@ -105,7 +106,7 @@ def add_staff_save(request):
         password = request.POST.get("password")
         address = request.POST.get("address")
         try:
-            user = CustomUser.objects.create_user(username=user_name,email=email,password=password,first_name=first_name, last_name=last_name,user_type=2)
+            user = CustomUser.objects.create_user(username=user_name,email=email,password=password,first_name=first_name, last_name=last_name,user_type=3)
             user.staff.address = address
             user.save()
             messages.success(request,"Successfully Added Staff")
@@ -155,7 +156,7 @@ def add_student_save(request):
 
         try:
             user = CustomUser.objects.create_user(username=username, email=email, password=password,
-                                                  first_name=first_name, last_name=last_name, user_type=3)
+                                                  first_name=first_name, last_name=last_name, user_type=4)
             user.students.address = address
             course_obj = courses.objects.get(id=course_id)
             user.students.course_id = course_obj
@@ -173,7 +174,7 @@ def add_student_save(request):
 
 def add_subject(request):
     course = courses.objects.all()
-    staff = CustomUser.objects.filter(user_type=2)
+    staff = CustomUser.objects.filter(user_type=3)
     return render(request, "Hod_template/add_subject_template.html", {"staff": staff,"course": course})
 
 def add_subject_save(request):
@@ -198,28 +199,78 @@ def add_subject_save(request):
 
 def manage_staff(request):
     staf = staff.objects.all()
-    return render(request, "Hod_template/manage_staff_template.html",{"staf":staf})
+    filterstaf = StaffFilter(request.GET, queryset=staf)
+    staf = filterstaf.qs
+    paginator = Paginator(staf,10)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
+    try:
+        staf = paginator.page(page)
+    except PageNotAnInteger:
+        staf = paginator.page(1)
+    except EmptyPage:
+        staf = paginator.page(paginator.num_pages)
+    context={
+        'staf':staf,
+        'page_obj':page_obj,
+        'page_range':page_range,
+        "filterstaf":filterstaf.form
+    }
+    return render(request, "Hod_template/manage_staff_template.html",context)
 
 def manage_student(request):
-    std = students.objects.all()
-    # customuser = CustomUser.objects.all()
-    # Myfilter=UserFilter(request.GET, queryset=customuser)
-    #
-    # customuser = Myfilter.qs
-    return render(request, "Hod_template/manage_student_template.html", {"std": std})
+    student = students.objects.all()
+    filters = StudentFilter(request.GET, queryset=student)
+    student = filters.qs
+    paginator = Paginator(student,10)
+    page = request.GET.get('page',1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page,on_each_side=3,on_ends=2)
+    try:
+        student = paginator.page(page)
+    except PageNotAnInteger:
+        student = paginator.page(1)
+    except EmptyPage:
+        student = paginator.page(paginator.num_pages)
+
+    context = {
+        "student": student,
+        "page_obj": page_obj,
+        "page_range": page_range,
+        "filters":filters.form
+    }
+    return render(request, "Hod_template/manage_student_template.html",context)
 
 def manage_course(request):
     course = courses.objects.all()
     Myfilter = CourseFilter(request.GET, queryset=course)
     course=Myfilter.qs
-    return render(request, "Hod_template/manage_course_template.html", {"course": course,"Myfilter":Myfilter})
+    paginator = Paginator(course,10)
+    page = request.GET.get('page',1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page,on_each_side=3,on_ends=2)
+    try:
+        course=paginator.page(page)
+    except PageNotAnInteger:
+        course = paginator.page(1)
+    except EmptyPage:
+        course = paginator.page(paginator.num_pages)
+    context = {
+                "course": course,
+                "Myfilter":Myfilter.form,
+                'page_obj':page_obj,
+                'page_range':page_range
+    }
+
+    return render(request, "Hod_template/manage_course_template.html",context)
 
 def manage_subjects(request):
     subjects = subject.objects.all()
     Myfilter = SubjectFilter(request.GET, queryset=subjects)
     subjects = Myfilter.qs
 
-    return render(request, "hod_template/manage_subjects_template.html", {"subjects": subjects,"Myfilter":Myfilter})
+    return render(request, "hod_template/manage_subjects_template.html", {"subjects": subjects,"Myfilter":Myfilter.form})
 
 def edit_staff(request,staff_id):
     staffss = staff.objects.get(admin=staff_id)
@@ -325,7 +376,7 @@ def edit_student_save(request):
 def edit_subject(request,subject_id):
     subjects = subject.objects.get(id=subject_id)
     course = courses.objects.all()
-    staff = CustomUser.objects.filter(user_type=2)
+    staff = CustomUser.objects.filter(user_type=3)
     return render(request,"Hod_template/edit_subject_template.html",{"subjects":subjects,"course":course,"staff":staff,"id":subject_id})
 
 def edit_subject_save(request):
@@ -555,8 +606,8 @@ def send_student_notification(request):
         "notification":{
             "title":"Student Management System",
             "body":message,
-            "click_action": "https://studentmanagementsystem22.herokuapp.com/student_all_notification",
-            "icon": "http://studentmanagementsystem22.herokuapp.com/static/dist/img/user2-160x160.jpg"
+            "click_action": "https://samilson.herokuapp.com/student_all_notification",
+            "icon": "http://samilson.herokuapp.com/static/dist/img/user2-160x160.jpg"
         },
         "to":token
     }
@@ -578,12 +629,12 @@ def send_staff_notification(request):
         "notification":{
             "title":"School Management System",
             "body":message,
-            "click_action": "https://schoolmanagementsystem.herokuapp.com/student_all_notification",
-            "icon": "http://schoolmanagementsystem.herokuapp.com/static/dist/img/user2-160x160.jpg"
+            "click_action": "https://samilson.herokuapp.com/staff_all_notification",
+            "icon": "http://samilson.herokuapp.com/static/dist/img/user2-160x160.jpg"
         },
         "to":token
     }
-    headers={"Content-Type":"application/json","Authorization":"key=SERVER_KEY_HERE"}
+    headers={"Content-Type":"application/json","Authorization":"key=AAAAA2RG7L4:APA91bGHQ0Q8L5rOI2uQbZDJgHOkpx2nkf4_IIcEcZhBWd-AXqYHBCCUHSibJYYu6MemU2aMza9ERk0t2HFG56hhQ8195OBjyq9JBHWnajPCKHkoFTWZl7Mq0sG_LmA6x3c44_TWkMSM"}
     data=requests.post(url,data=json.dumps(body),headers=headers)
     notification=notificationstaff(staff_id=staffs,message=message)
     notification.save()

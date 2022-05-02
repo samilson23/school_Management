@@ -1,19 +1,39 @@
 import django_filters
+from django_filters import CharFilter
+from django import forms
+# from django.utils.translation import ugettext as_
+from django.forms.utils import flatatt
+from .models import courses, subject, students, hod, staff
 
-from .models import CustomUser, courses, subject
 
-
-class UserFilter(django_filters.FilterSet):
+class StudentFilter(django_filters.FilterSet):
+    admin__username=django_filters.CharFilter(field_name='admin__username',lookup_expr='icontains')
     class Meta:
-        model = CustomUser
-        fields = "__all__"
+        model = students
+        fields = ['admin__username']
 
 class CourseFilter(django_filters.FilterSet):
+    course_name=django_filters.CharFilter(field_name='course_name',lookup_expr='icontains')
     class Meta:
         model = courses
-        fields = "__all__"
+        fields = ['course_name']
 
 class SubjectFilter(django_filters.FilterSet):
+    subject_name=django_filters.CharFilter(field_name='subject_name',lookup_expr='icontains')
     class Meta:
         model = subject
-        fields = ['subject_name','stage']
+        fields = [
+            'subject_name'
+        ]
+
+class HodFilter(django_filters.FilterSet):
+    admin__username = django_filters.CharFilter(field_name='admin__username', lookup_expr='icontains')
+    class Meta:
+        model = hod
+        fields = ['admin__username']
+
+class StaffFilter(django_filters.FilterSet):
+    admin__username = django_filters.CharFilter(field_name='admin__username', lookup_expr='icontains')
+    class Meta:
+        model = staff
+        fields = ['admin__username']

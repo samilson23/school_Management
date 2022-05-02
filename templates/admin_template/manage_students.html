@@ -1,0 +1,130 @@
+{% extends 'admin_template/base.html' %}
+{% block page_title %} Manage Student {% endblock page_title %}
+{% load static %}
+{% load i18n %}
+{% block main_content %}
+<section class="content">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+                <div class="row">
+                  <div class="col-lg-7">
+                    <h3 class="card-title">Student Details</h3>
+                  </div>
+                  <div class="col-lg-5">
+                    <form method="get" class="form-inline">
+                      <div class="form-group">
+                        <label>{% trans 'Search' %}:&nbsp;&nbsp;&nbsp;</label>
+                        {{filters.admin__username}}&nbsp;&nbsp;&nbsp;
+                        <button class="btn-primary">Search</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+              <div id="example2_wrapper" class="dataTables_wrapper dt-bootstrap4"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+                <table id="example2" class="table table-hover text-nowrap" role="grid" aria-describedby="example2_info">
+                <thead>
+                <tr role="row">
+                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">ID</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">First Name</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">Last Name</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">User Name</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Email</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Address</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Gender</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Profile Pic</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Course</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Last Login</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Date Joined</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Session Year</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Action</th></tr>
+                </thead>
+                <tbody>
+                {% for student in student %}
+                  <tr>
+                      <td>{{ student.admin.id }}</td>
+                      <td>{{ student.admin.first_name }}</td>
+                      <td>{{ student.admin.last_name }}</td>
+                      <td>{{ student.admin.username }}</td>
+                      <td>{{ student.admin.email }}</td>
+                      <td>{{ student.address }}</td>
+                      <td>{{ student.gender }}</td>
+                      <td><img src="{{ student.profile_pic }}" style="width:50px"/></td>
+                      <td>{{ student.course_id.course_name }}</td>
+                      <td>{{ student.admin.last_login }}</td>
+                      <td>{{ student.admin.date_joined }}</td>
+                      <td>{{ student.session_year_id.session_start_year }} TO {{ student.session_year_id.session_end_year }}</td>
+                      <td><a href="#" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</a></td>
+                      <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="deleteModalLabel">Confirm to delete</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              Are you sure you want to delete {{ student.admin.username }}
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-sm btn-info" data-dismiss="modal">Close</button>
+                              <a class="btn btn-sm btn-danger" href="{% url 'delete_student' student.admin.id %}">Delete</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+          <div class="row">
+              <div class="col-lg-6">
+                  <div class="pagination">
+                      <span class="step-links">
+                          <span class="current">
+                               Page  {{ page_obj.number }}  of  {{ page_obj.paginator.num_pages }}.
+                          </span>
+                      </span>
+                  </div>
+              </div>
+              <div class="col-lg-6">
+                  {% if student.has_other_pages %}
+                    <ul class="pagination float-right">
+                        {% if student.has_previous %}
+                            <li class="paginate_button page-item"><a class="page-link" href="?page={{ student.previous_page_number }}" data-dt-idx="0" tabindex="0">Previous</a></li>
+                        {% else %}
+                            <li class="paginate_button page-item disabled"><a class="page-link" href="#" >Previous</a></li>
+                        {% endif %}
+                        {% for i in page_range|default_if_none:student.paginator.get_elided_page_range %}
+                            {% if page_obj.number == i %}
+                                <li class="paginate_button page-item active"><a class="page-link">{{ i }}<span class="sr-only">(current)</span></a></li>
+                            {% else %}
+                                {% if i == page_obj.paginator.ELLIPSIS %}
+                                    <li class="paginate_button page-item"><a class="page-link" href="#">{{ i }}</a></li>
+                                {% else %}
+                                    <li class="paginate_button page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if student.has_next %}
+                          <li class="page-item"><a class="page-link" href="?page={{ student.next_page_number }}" >Next</a></li>
+                        {% else %}
+                          <li class="page-item disabled"><a class="page-link" href="#" >Next</a></li>
+                        {% endif %}
+                    </ul>
+                  {% endif %}
+              </div>
+          </div>
+      </div>
+</section>
+{% endblock main_content %}

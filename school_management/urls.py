@@ -19,13 +19,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
-from Student import views, hod_views, staffviews, student_views
+from Student import views, hod_views, staffviews, student_views, admin_views
 from Student.EditResultViewClass import EditResultViewClass
 from school_management import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("home",views.home),
+    # path("home",views.home),
     path('accounts/',include("django.contrib.auth.urls")),
     path('',views.showLoginPage,name="show_login"),
     path('doLogin',views.doLogin,name="dologin"),
@@ -118,5 +118,17 @@ urlpatterns = [
     path('unit_registration',student_views.unit_registration,name="unit_registration"),
     # path('join_class_room/<int:subject_id>/<int:session_year_id>',student_views.join_class_room,name="join_class_room"),
     # path('node_modules/canvas-designer/widget.html',staffviews.returnHtmlWidget,name="returnHtmlWidget"),
+
+
+    # admin
+    path('home',admin_views.home,name="home"),
+    path('add_hod',admin_views.add_hod,name="add_hod"),
+    path('add_hod_save',admin_views.add_hod_save,name="add_hod_save"),
+    path('manage_hod',admin_views.manage_hod,name="manage_hod"),
+    path('delete_hod/<int:id>',admin_views.delete_hod,name="delete_hod"),
+    path('delete_staff/<int:id>',admin_views.delete_staff,name="delete_staff"),
+    path('delete_student/<int:id>',admin_views.delete_student,name="delete_student"),
+    path('Staff',admin_views.Staff,name="Staff"),
+    path('Student',admin_views.Student,name="Student"),
 
     ]+static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

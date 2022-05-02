@@ -10,7 +10,7 @@ class sessionmodel(models.Model):
     objects = models.Manager()
 
 class CustomUser(AbstractUser):
-    user_type_data=((1,"HOD"),(2,"staff"),(3,"student"))
+    user_type_data=((1,"HOD"),(3,"staff"),(4,"student"),(2,"admin"))
     user_type= models.CharField(default=1, choices=user_type_data,max_length=10)
 
 
@@ -21,6 +21,17 @@ class Adminhod(models.Model):
    created_at = models.DateTimeField(auto_now_add=True)
    updated_at = models.DateTimeField(auto_now_add=True)
    objects=models.Manager()
+
+
+class hod(models.Model):
+    id = models.AutoField(primary_key=True)
+    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    address = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    fcm_token=models.TextField(default="")
+    objects=models.Manager()
+
 
 class staff(models.Model):
     id = models.AutoField(primary_key=True)
@@ -170,13 +181,16 @@ def create_user_profile(sender,instance,created, **kwargs):
     if created:
         if instance.user_type==1:
             Adminhod.objects.create(admin=instance)
-
     if created:
         if instance.user_type==2:
-            staff.objects.create(admin=instance)
+            hod.objects.create(admin=instance)
 
     if created:
         if instance.user_type==3:
+            staff.objects.create(admin=instance)
+
+    if created:
+        if instance.user_type==4:
             students.objects.create(admin=instance,course_id=courses.objects.get(id=1),session_year_id=sessionmodel.objects.get(id=1),address="",profile_pic="",gender="")
 
 @receiver(post_save, sender=CustomUser)
@@ -185,7 +199,10 @@ def save_user_profile(sender,instance, **kwargs):
         instance.adminhod.save()
 
     if instance.user_type==2:
-        instance.staff.save()
+        instance.hod.save()
 
     if instance.user_type==3:
+        instance.staff.save()
+
+    if instance.user_type==4:
         instance.students.save()             

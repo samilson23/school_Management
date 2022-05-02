@@ -226,7 +226,6 @@ def staff_fcmtoken_save(request):
         return HttpResponse("False")  
 
 
-
 def staff_all_notification(request):
     staffs=staff.objects.get(admin=request.user.id)
     notification=notificationstaff.objects.filter(staff_id=staffs.id)
@@ -284,6 +283,12 @@ def start_live_classroom(request):
     subjects=subject.objects.filter(staff_id=request.user.id)
     session_years=sessionmodel.objects.all()
     return render(request,"staff_template/start_live_classroom.html",{"subjects":subjects,"session_years":session_years})
+
+
+def staff_notifications(request):
+    staffs=staff.objects.get(admin=request.user.id)
+    notification=notificationstaff.objects.filter(staff_id=staffs.id)
+    return render(request,"staff_template/base_template.html",{"notification":notification})
 
 # def start_live_classroom_process(request):
 #     session_year=request.POST.get("session_year")

@@ -32,7 +32,6 @@ class hod(models.Model):
     # fcm_token=models.TextField(default="")
     objects=models.Manager()
 
-
 class staff(models.Model):
     id = models.AutoField(primary_key=True)
     admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)

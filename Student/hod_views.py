@@ -629,8 +629,8 @@ def send_staff_notification(request):
         "notification":{
             "title":"School Management System",
             "body":message,
-            "click_action": "https://samilson.herokuapp.com/staff_all_notification",
-            "icon": "http://samilson.herokuapp.com/static/dist/img/user2-160x160.jpg"
+            "click_action": "https://localhost:8000/staff_all_notification",
+            "icon": "static/dist/img/user2-160x160.jpg"
         },
         "to":token
     }

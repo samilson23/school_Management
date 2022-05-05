@@ -28,7 +28,7 @@ class LoginCheckMiddleWare(MiddlewareMixin):
                 else:
                     return HttpResponseRedirect(reverse("admin_home"))
             elif user.user_type == "3":
-                if modulename == "Student.staffviews" or modulename == "Student.EditResultVIewClass":
+                if modulename == "Student.staffviews" or modulename == "Student.EditResultViewClass":
                     pass
                 elif modulename == "Student.views" or modulename == "django.views.static":
                     pass

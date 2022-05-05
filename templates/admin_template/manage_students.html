@@ -58,26 +58,10 @@
                       <td>{{ student.admin.last_login }}</td>
                       <td>{{ student.admin.date_joined }}</td>
                       <td>{{ student.session_year_id.session_start_year }} TO {{ student.session_year_id.session_end_year }}</td>
-                      <td><a href="#" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</a></td>
-                      <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5 class="modal-title" id="deleteModalLabel">Confirm to delete</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                              </button>
-                            </div>
-                            <div class="modal-body">
-                              Are you sure you want to delete {{ student.admin.username }}
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-sm btn-info" data-dismiss="modal">Close</button>
-                              <a class="btn btn-sm btn-danger" href="{% url 'delete_student' student.admin.id %}">Delete</a>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      <td>
+                          <a href="/student_edit/{{ student.admin.id }}" class="btn btn-sm btn-success">Edit</a>
+                          <a href="{% url 'delete_student' student.admin.id %}" class="btn btn-sm btn-danger">Delete</a>
+                      </td>
                     </tr>
                 {% endfor %}
                 </tbody>

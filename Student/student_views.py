@@ -133,7 +133,8 @@ def student_feedback_save(request):
 def student_profile(request):
     User=CustomUser.objects.get(id=request.user.id)
     student=students.objects.get(admin=User)
-    return render(request,"student_template/student_profile.html",{"User":User,"student":student})  
+    # std=students.objects.get(id=id)
+    return render(request,"student_template/student_profile.html",{"User":User,"student":student})
 
 def student_profile_save(request):
     first_name=request.POST.get("first_name") 
@@ -145,6 +146,8 @@ def student_profile_save(request):
     try:
         customuser.first_name=first_name
         customuser.last_name=last_name
+        if password!=None and password!="":
+            customuser.set_password(password)
         customuser.save()
         student=students.objects.get(admin=customuser)
         student.address=address
@@ -185,4 +188,7 @@ def student_view_result(request):
     return render(request,"student_template/results.html",{"studentresult":studentresult})
 
 def unit_registration(request):
-    return render(request,"student_template/register_units.html")
+    student = students.objects.get(admin=request.user.id)
+    subjects = students.objects.filter(course_id=student.id)
+    # session_year_id = sessionmodel.objects.all()
+    return render(request,"student_template/register_units.html",{"subjects":subjects})

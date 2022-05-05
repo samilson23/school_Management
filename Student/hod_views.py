@@ -94,7 +94,8 @@ def admin_home(request):
 
 
 def add_staff(request):
-    return render(request,"Hod_template/add_staff_template.html")
+    subjects = subject.objects.all()
+    return render(request,"Hod_template/add_staff_template.html",{"subjects":subjects})
 def add_staff_save(request):
     if request.method!="POST":
         return HttpResponse("Method Not Allowed")
@@ -103,17 +104,20 @@ def add_staff_save(request):
         last_name = request.POST.get("last_name")
         user_name = request.POST.get("user_name")
         email = request.POST.get("email")
-        password = request.POST.get("password")
+        subject_id = request.POST.get("subject")
         address = request.POST.get("address")
-        try:
-            user = CustomUser.objects.create_user(username=user_name,email=email,password=password,first_name=first_name, last_name=last_name,user_type=3)
-            user.staff.address = address
-            user.save()
-            messages.success(request,"Successfully Added Staff")
-            return HttpResponseRedirect(reverse("add_staff"))
-        except:
-            messages.error(request, "Failed to add Staff")
-            return HttpResponseRedirect(reverse("add_staff"))
+        # try:
+        user = CustomUser.objects.create_user(username=user_name,email=email,first_name=first_name, last_name=last_name,user_type=3)
+        user.set_password('changeme')
+        user.staff.address = address
+        # subjectss = subject.objects.get(id=subject_id)
+        # user.staff.subject_id=subjectss
+        user.save()
+        messages.success(request,"Successfully Added Staff")
+        return HttpResponseRedirect(reverse("add_staff"))
+    # except:
+        messages.error(request, "Failed to add Staff")
+        return HttpResponseRedirect(reverse("add_staff"))
 
 def add_course(request):
     return render(request, "Hod_template/add_course_template.html")
@@ -155,7 +159,7 @@ def add_student_save(request):
         profile_pic_url = fs.url(filename)
 
         try:
-            user = CustomUser.objects.create_user(username=username, email=email, password=password,
+            user = CustomUser.objects.create_user(username=username, email=email,
                                                   first_name=first_name, last_name=last_name, user_type=4)
             user.students.address = address
             course_obj = courses.objects.get(id=course_id)
@@ -164,6 +168,7 @@ def add_student_save(request):
             user.students.session_year_id = session
             user.students.gender = sex
             user.students.profile_pic = profile_pic_url
+            user.set_password("changeme")
             user.save()
             messages.success(request, "Successfully Added Student")
             return HttpResponseRedirect(reverse("add_student"))
@@ -189,7 +194,7 @@ def add_subject_save(request):
         staff = CustomUser.objects.get(id=staff_id)
 
         try:
-            subjects = subject(subject_name=subject_name,course_id=course,staff_id=staff,stage=stage)
+            subjects = subject(subject_name=subject_name,course_id=course,stage=stage)
             subjects.save()
             messages.success(request, "Successfully Added Subject")
             return HttpResponseRedirect(reverse("add_subject"))
@@ -576,9 +581,9 @@ def admin_profile_save(request):
             customuser=CustomUser.objects.get(id=request.user.id)
             customuser.first_name=first_name
             customuser.last_name=last_name
-            # if password!=None and password!="":
-            #      customuser.set_password(password)
-            # customuser.save()
+            if password!=None and password!="":
+                 customuser.set_password(password)
+            customuser.save()
             messages.success(request, "Profile Changed")
             return HttpResponseRedirect(reverse("admin_profile"))
         except:

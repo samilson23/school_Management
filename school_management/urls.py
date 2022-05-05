@@ -21,6 +21,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from Student import views, hod_views, staffviews, student_views, admin_views
 from Student.EditResultViewClass import EditResultViewClass
+from Student.admin_views import delete_hod
 from school_management import settings
 
 urlpatterns = [
@@ -99,6 +100,7 @@ urlpatterns = [
     path('result_save',staffviews.result_save,name="result_save"),
     path('edit_student_result',EditResultViewClass.as_view(),name="edit_student_result"),
     path('fetch_student_result',staffviews.fetch_student_result,name="fetch_student_result"),
+    # path('delete_not/<int:id>',staffviews.delete_not,name="delete_not"),
     # path('start_live_classroom',staffviews.start_live_classroom, name="start_live_classroom"),
     # path('start_live_classroom_process',staffviews.start_live_classroom_process, name="start_live_classroom_process"),
 
@@ -117,6 +119,7 @@ urlpatterns = [
     path('student_all_notification',student_views.student_all_notification,name="student_all_notification"),
     path('student_view_result',student_views.student_view_result,name="student_view_result"),
     path('unit_registration',student_views.unit_registration,name="unit_registration"),
+    # path('staff_update_attendance', staffviews.staff_update_attendance, name="staff_update_attendance"),
     # path('join_class_room/<int:subject_id>/<int:session_year_id>',student_views.join_class_room,name="join_class_room"),
     # path('node_modules/canvas-designer/widget.html',staffviews.returnHtmlWidget,name="returnHtmlWidget"),
 
@@ -126,9 +129,15 @@ urlpatterns = [
     path('add_hod',admin_views.add_hod,name="add_hod"),
     path('add_hod_save',admin_views.add_hod_save,name="add_hod_save"),
     path('manage_hod',admin_views.manage_hod,name="manage_hod"),
-    path('delete_hod/<int:id>',admin_views.delete_hod,name="delete_hod"),
-    path('delete_staff/<int:id>',admin_views.delete_staff,name="delete_staff"),
+    path('delete_hod/<int:pk>',admin_views.delete_hod,name="delete_hod"),
+    path('delete_staff/<int:pk>',admin_views.delete_staff,name="delete_staff"),
     path('delete_student/<int:id>',admin_views.delete_student,name="delete_student"),
+    path('staff_edit/<int:staff_id>',admin_views.staff_edit,name="staff_edit"),
+    path('hod_edit/<int:hod_id>',admin_views.hod_edit,name="hod_edit"),
+    path('student_edit/<int:student_id>',admin_views.student_edit,name="student_edit"),
+    path('staff_edit_save',admin_views.staff_edit_save,name="staff_edit_save"),
+    path('hod_edit_save',admin_views.hod_edit_save,name="hod_edit_save"),
+    path('student_edit_save',admin_views.student_edit_save,name="student_edit_save"),
     path('Staff',admin_views.Staff,name="Staff"),
     path('Student',admin_views.Student,name="Student"),
 

@@ -32,21 +32,23 @@ class hod(models.Model):
     # fcm_token=models.TextField(default="")
     objects=models.Manager()
 
-class staff(models.Model):
-    id = models.AutoField(primary_key=True)
-    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    address = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
-    fcm_token=models.TextField(default="")
-    objects=models.Manager()
-
 class courses(models.Model):
     id = models.AutoField(primary_key=True)
     course_name = models.CharField(max_length=250)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
-    objects=models.Manager()    
+    objects=models.Manager()
+
+
+class staff(models.Model):
+    id = models.AutoField(primary_key=True)
+    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    address = models.TextField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    fcm_token=models.TextField(default="")
+    objects=models.Manager()
 
 # class semesters(models.Model):
 #     id=models.AutoField(primary_key=True)
@@ -61,7 +63,7 @@ class subject(models.Model):
     subject_name = models.CharField(max_length=250)
     course_id = models.ForeignKey(courses,on_delete=models.CASCADE,default=1)
     stage=models.CharField(max_length=100,default=1)
-    staff_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    staff_id = models.ForeignKey(staff, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     objects=models.Manager()
@@ -90,16 +92,25 @@ class attendance(models.Model):
 
 class attendancereport(models.Model):
     id = models.AutoField(primary_key=True)
-    student_id = models.ForeignKey(students, on_delete=models.DO_NOTHING)
+    student_id = models.ForeignKey(students, on_delete=models.CASCADE)
     attendance_id = models.ForeignKey(attendance, on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     objects=models.Manager() 
 
+class units_registration(models.Model):
+    id = models.AutoField(primary_key=True)
+    student_id = models.ForeignKey(students, on_delete=models.CASCADE)
+    status = models.BooleanField(default=False)
+    stage_id = models.ForeignKey(subject, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager()
+
 class leavereportstudent(models.Model):
     id = models.AutoField(primary_key=True)
-    student_id=models.ForeignKey(students, on_delete=models.DO_NOTHING)
+    student_id=models.ForeignKey(students, on_delete=models.CASCADE)
     leave_date = models.CharField(max_length=50)
     leave_message = models.CharField(max_length=50)
     leave_status = models.IntegerField(default=0)
@@ -109,7 +120,7 @@ class leavereportstudent(models.Model):
 
 class leavereportstaff(models.Model):
     id = models.AutoField(primary_key=True)
-    staff_id=models.ForeignKey(staff, on_delete=models.DO_NOTHING)
+    staff_id=models.ForeignKey(staff, on_delete=models.CASCADE)
     leave_date = models.CharField(max_length=50)
     leave_message = models.CharField(max_length=50)
     leave_status = models.IntegerField(default=0)
@@ -120,7 +131,7 @@ class leavereportstaff(models.Model):
 
 class feedbackstudent(models.Model):
     id = models.AutoField(primary_key=True)
-    student_id=models.ForeignKey(students, on_delete=models.DO_NOTHING)
+    student_id=models.ForeignKey(students, on_delete=models.CASCADE)
     feedback = models.TextField()
     feedback_reply = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -130,7 +141,7 @@ class feedbackstudent(models.Model):
 
 class feedbackstaff(models.Model):
     id = models.AutoField(primary_key=True)
-    staff_id=models.ForeignKey(staff, on_delete=models.DO_NOTHING)
+    staff_id=models.ForeignKey(staff, on_delete=models.CASCADE)
     feedback = models.TextField()
     feedback_reply = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -139,7 +150,7 @@ class feedbackstaff(models.Model):
 
 class notificationstudent(models.Model):
     id = models.AutoField(primary_key=True)
-    student_id=models.ForeignKey(students, on_delete=models.DO_NOTHING)
+    student_id=models.ForeignKey(students, on_delete=models.CASCADE)
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True) 
@@ -147,7 +158,7 @@ class notificationstudent(models.Model):
 
 class notificationstaff(models.Model):
     id = models.AutoField(primary_key=True)
-    staff_id=models.ForeignKey(staff, on_delete=models.DO_NOTHING)
+    staff_id=models.ForeignKey(staff, on_delete=models.CASCADE)
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True) 

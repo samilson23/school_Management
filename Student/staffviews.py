@@ -202,6 +202,8 @@ def staff_profile_save(request):
             customuser=CustomUser.objects.get(id=request.user.id)
             customuser.first_name=first_name
             customuser.last_name=last_name
+            if password != None and password!="":
+                customuser.set_password(password)
             customuser.save()
             staffs=staff.objects.get(admin=customuser)
             staffs.address=address
@@ -285,6 +287,10 @@ def start_live_classroom(request):
     session_years=sessionmodel.objects.all()
     return render(request,"staff_template/start_live_classroom.html",{"subjects":subjects,"session_years":session_years})
 
+# def delete_not(request,id):
+#     NOT = notificationstaff.objects.get(staff_id=id)
+#     NOT.delete()
+#     return HttpResponseRedirect(reverse('staff_all_notification'))
 
 # def start_live_classroom_process(request):
 #     session_year=request.POST.get("session_year")

@@ -26,12 +26,37 @@
                   <thead>
                     <tr>
                       <th>Notifications</th>
+                      <th>Time Received</th>
+<!--                      <th>Action</th>-->
                     </tr>
                   </thead>
                   <tbody>
                   {% for notification in notification %}
                     <tr>
                       <td>{{ notification.message }}</td>
+                      <td>{{ notification.created_at }}</td>
+<!--                      <td>-->
+<!--                        <a href="#" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</a>-->
+<!--                      </td>-->
+                      <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="deleteModalLabel">Confirm to delete</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              Are you sure you want to delete This notification
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-sm btn-info" data-dismiss="modal">Close</button>
+                              <a class="btn btn-sm btn-danger" href="{% url 'delete_not' notification.id %}">Delete</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </tr>
                   {% endfor %}
                   </tbody>

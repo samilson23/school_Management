@@ -7,11 +7,86 @@ from django.urls import reverse
 
 from Student.filters import HodFilter, StaffFilter, StudentFilter
 from Student.models import CustomUser, hod, staff, students, attendancereport, units_registration, leavereportstudent, \
-    feedbackstudent, notificationstudent, StudentResult, subject
+    feedbackstudent, notificationstudent, StudentResult, subject, courses, attendance, leavereportstaff
 
 
 def home(request):
-    return render(request,"admin_template/home.html")
+    student_count = students.objects.all().count()
+    hod_count = hod.objects.all().count()
+    staff_count = staff.objects.all().count()
+    course_count = courses.objects.all().count()
+    subject_count = subject.objects.all().count()
+
+    course_all = courses.objects.all()
+    course_name_list = []
+    subject_count_list = []
+    student_count_in_course_list = []
+    for course in course_all:
+        Subjects = subject.objects.filter(course_id=course.id).count()
+        Students = students.objects.filter(course_id=course.id).count()
+        course_name_list.append(course.course_name)
+        subject_count_list.append(Subjects)
+        student_count_in_course_list.append(Students)
+
+    subject_list = []
+    student_count_in_subject_list = []
+    subjects_all = subject.objects.all()
+    for Subject in subjects_all:
+        course = courses.objects.get(id=Subject.course_id.id)
+        students_count = subject.objects.filter(course_id=course.id).count()
+        subject_list.append(Subject.subject_name)
+        student_count_in_subject_list.append(students_count)
+
+    attendance_absent_list_staff = []
+    attendance_present_list_staff = []
+    staff_name_list = []
+    staffs = staff.objects.all()
+    for Staff in staffs:
+        subject_ids = subject.objects.filter(staff_id=Staff.admin.id)
+        Attendance = attendance.objects.filter(subject_id__in=subject_ids).count()
+        leaves = leavereportstaff.objects.filter(staff_id=Staff.id, leave_status=1).count()
+        attendance_present_list_staff.append(Attendance)
+        attendance_absent_list_staff.append(leaves)
+        staff_name_list.append(Staff.admin.username)
+
+    attendance_absent_list_student = []
+    attendance_present_list_student = []
+    attendance_leave_list_student = []
+    student_name_list = []
+    Student_all = students.objects.all()
+    for student in Student_all:
+        present = attendancereport.objects.filter(student_id=student.id, status=True).count()
+        Absent = attendancereport.objects.filter(student_id=student.id, status=False).count()
+        leaves = leavereportstudent.objects.filter(student_id=student.id, leave_status=1).count()
+        attendance_present_list_student.append(present)
+        attendance_absent_list_student.append(Absent)
+        attendance_leave_list_student.append(leaves)
+        student_name_list.append(student.admin.username)
+
+    subjects = subject.objects.all()
+    context={
+        "student_count": student_count,
+         "hod_count": hod_count,
+         "staff_count": staff_count,
+         "course_count": course_count,
+         "subject_count": subject_count,
+         "course_name_list": course_name_list,
+         "subject_count_list": subject_count_list,
+         "student_count_in_course_list": student_count_in_course_list,
+         "subject_list": subject_list,
+         "student_count_in_subject_list": student_count_in_subject_list,
+         "attendance_present_list_staff": attendance_present_list_staff,
+         "staff_name_list": staff_name_list,
+         "attendance_absent_list_student": attendance_absent_list_student,
+         "attendance_present_list_student": attendance_present_list_student,
+         "student_name_list": student_name_list,
+         "attendance_leave_list_student": attendance_leave_list_student,
+         "attendance_absent_list_staff": attendance_absent_list_staff,
+         "subjects": subjects
+    }
+    return render(request,
+                  "admin_template/home.html",context)
+
 
 def add_hod(request):
     return render(request,"admin_template/add_hod.html")

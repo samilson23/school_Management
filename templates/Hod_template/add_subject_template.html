@@ -54,7 +54,7 @@
                   <div class="form-group">
                     <label>Staff</label>
                     <select class="form-control"  name="staff">
-                        {% for staff in staff %}
+                        {% for staff in Staff %}
                           <option value="{{ staff.id }}">{{ staff.first_name }} {{ staff.last_name }}</option>
                         {% endfor %}
                     </select>

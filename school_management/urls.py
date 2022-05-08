@@ -101,8 +101,9 @@ urlpatterns = [
     path('edit_student_result',EditResultViewClass.as_view(),name="edit_student_result"),
     path('fetch_student_result',staffviews.fetch_student_result,name="fetch_student_result"),
     # path('delete_not/<int:id>',staffviews.delete_not,name="delete_not"),
-    # path('start_live_classroom',staffviews.start_live_classroom, name="start_live_classroom"),
-    # path('start_live_classroom_process',staffviews.start_live_classroom_process, name="start_live_classroom_process"),
+    path('start_live_classroom',staffviews.start_live_classroom, name="start_live_classroom"),
+    path('start_live_classroom_process',staffviews.start_live_classroom_process, name="start_live_classroom_process"),
+    path('firebase-messaging-sw.js',views.showFirebaseJS,name="show_firebase_js"),
 
     # student url
     path('student_home', student_views.student_home, name="student_home"),
@@ -115,13 +116,12 @@ urlpatterns = [
     path('student_profile',student_views.student_profile,name="student_profile"),
     path('student_profile_save',student_views.student_profile_save,name="student_profile_save"),
     path('student_fcmtoken_save',student_views.student_fcmtoken_save,name="student_fcmtoken_save"),
-    path('firebase-messaging-sw.js',student_views.showFirebaseJS,name="showFirebase_JS"),
     path('student_all_notification',student_views.student_all_notification,name="student_all_notification"),
     path('student_view_result',student_views.student_view_result,name="student_view_result"),
     path('unit_registration',student_views.unit_registration,name="unit_registration"),
     # path('staff_update_attendance', staffviews.staff_update_attendance, name="staff_update_attendance"),
-    # path('join_class_room/<int:subject_id>/<int:session_year_id>',student_views.join_class_room,name="join_class_room"),
-    # path('node_modules/canvas-designer/widget.html',staffviews.returnHtmlWidget,name="returnHtmlWidget"),
+    path('join_class_room/<int:subject_id>/<int:session_year_id>',student_views.join_class_room,name="join_class_room"),
+    path('node_modules/canvas-designer/widget.html',staffviews.returnHtmlWidget,name="returnHtmlWidget"),
 
 
     # admin
@@ -129,8 +129,8 @@ urlpatterns = [
     path('add_hod',admin_views.add_hod,name="add_hod"),
     path('add_hod_save',admin_views.add_hod_save,name="add_hod_save"),
     path('manage_hod',admin_views.manage_hod,name="manage_hod"),
-    path('delete_hod/<int:pk>',admin_views.delete_hod,name="delete_hod"),
-    path('delete_staff/<int:pk>',admin_views.delete_staff,name="delete_staff"),
+    path('delete_hod/<int:id>',admin_views.delete_hod,name="delete_hod"),
+    path('delete_staff/<int:id>',admin_views.delete_staff,name="delete_staff"),
     path('delete_student/<int:id>',admin_views.delete_student,name="delete_student"),
     path('staff_edit/<int:staff_id>',admin_views.staff_edit,name="staff_edit"),
     path('hod_edit/<int:hod_id>',admin_views.hod_edit,name="hod_edit"),

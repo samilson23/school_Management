@@ -179,27 +179,47 @@ def add_student_save(request):
 
 def add_subject(request):
     course = courses.objects.all()
-    staff = CustomUser.objects.filter(user_type=3)
-    return render(request, "Hod_template/add_subject_template.html", {"staff": staff,"course": course})
+    Staff = CustomUser.objects.filter(user_type=3)
+    return render(request, "Hod_template/add_subject_template.html", {"Staff": Staff,"course": course})
+
+# def add_subject_save(request):
+#     if request.method!="POST":
+#         return HttpResponse("<h1>Method Not Allowed</h1>")
+#     else:
+#         subject_name = request.POST.get("subject_name")
+#         course_id = request.POST.get("course")
+#         course = courses.objects.get(id=course_id)
+#         staff_id = request.POST.get("Staff")
+#         stage=request.POST.get("stage")
+#         Staff = staff.objects.get(admin=staff_id)
+#
+#         # try:
+#         subjects = subject(subject_name=subject_name,course_id=course,stage=stage,staff_id=Staff)
+#         subjects.save()
+#         messages.success(request, "Successfully Added Subject")
+#         return HttpResponseRedirect(reverse("add_subject"))
+#     # except:
+#         messages.error(request, "Subject Not Added")
+#         return HttpResponseRedirect(reverse("add_subject"))
+
 
 def add_subject_save(request):
     if request.method!="POST":
-        return HttpResponse("<h1>Method Not Allowed</h1>")
+        return HttpResponse("<h2>Method Not Allowed</h2>")
     else:
-        subject_name = request.POST.get("subject_name")
-        course_id = request.POST.get("course")
-        course = courses.objects.get(id=course_id)
-        staff_id = request.POST.get("staff")
-        stage=request.POST.get("stage")
-        staff = CustomUser.objects.get(id=staff_id)
+        subject_name=request.POST.get("subject_name")
+        course_id=request.POST.get("course")
+        course=courses.objects.get(id=course_id)
+        staff_id=request.POST.get("staff")
+        staff=CustomUser.objects.get(id=staff_id)
 
         try:
-            subjects = subject(subject_name=subject_name,course_id=course,stage=stage)
+            subjects=subject(subject_name=subject_name,course_id=course,staff_id=staff)
             subjects.save()
-            messages.success(request, "Successfully Added Subject")
+            messages.success(request,"Successfully Added Subject")
             return HttpResponseRedirect(reverse("add_subject"))
         except:
-            messages.error(request, "Subject Not Added")
+            messages.error(request,"Failed to Add Subject")
             return HttpResponseRedirect(reverse("add_subject"))
 
 def manage_staff(request):

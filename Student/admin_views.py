@@ -50,10 +50,12 @@ def manage_hod(request):
     return render(request,'admin_template/manage_hod.html',context)
 
 
-def delete_hod(request,pk):
-    obj = hod.objects.get(pk=pk)
+def delete_hod(request,id):
+    obj = hod.objects.get(admin=id)
+    hod_obj = CustomUser.objects.get(id=id)
     if request.method=="POST":
         obj.delete()
+        hod_obj.delete()
         return HttpResponseRedirect(reverse('manage_hod'))
     return render(request,"admin_template/delete.html",{"obj":obj})
 
@@ -79,10 +81,12 @@ def Staff(request):
     }
     return render(request,'admin_template/manage_staff.html',context)
 
-def delete_staff(request,pk):
-    staf = staff.objects.get(pk=pk)
+def delete_staff(request,id):
+    staf = staff.objects.get(admin=id)
+    staffUser = CustomUser.objects.get(id=id)
     if request.method=="POST":
         staf.delete()
+        staffUser.delete()
         return HttpResponseRedirect(reverse('Staff'))
     return render(request,"admin_template/delete_staff.html",{"staf":staf})
 
@@ -111,11 +115,14 @@ def Student(request):
 
 def delete_student(request,id):
     student = students.objects.get(admin=id)
+    customuser = CustomUser.objects.get(id=id)
     context={
         "student":student
     }
     if request.method == "POST":
         student.delete()
+        customuser.delete()
+
         return HttpResponseRedirect(reverse('Student'))
     return render(request,"admin_template/delete_student.html",context)
 

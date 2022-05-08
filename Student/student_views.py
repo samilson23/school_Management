@@ -18,9 +18,9 @@ def student_home(request):
     course=courses.objects.get(id=student_obj.course_id.id)
     subjects=subject.objects.filter(course_id=course).count()
     # pic=students.objects.get("profile_pic")
-    # subjects_data=subject.objects.filter(course_id=course)
-    # session_obj=sessionmodel.objects.get(id=student_obj.session_year_id.id)
-    # class_room=OnlineClassRoom.objects.filter(subjects__in=subjects_data,is_active=True,session_years=session_obj)
+    subjects_data=subject.objects.filter(course_id=course)
+    session_obj=sessionmodel.objects.get(id=student_obj.session_year_id.id)
+    class_room=OnlineClassRoom.objects.filter(subjects__in=subjects_data,is_active=True,session_years=session_obj)
     subject_name=[]
     data_present=[]
     data_absent=[]
@@ -33,32 +33,42 @@ def student_home(request):
         data_present.append(Attendance_present_count)
         data_absent.append(Attendance_absent_count)
 
+    context={
+        "Attendance_total":Attendance_total,
+        "Attendance_present":Attendance_present,
+        "Attendance_absent":Attendance_absent,
+        "subjects":subjects,
+        "data_name":subject_name,
+        "data1":data_present,
+        "data2":data_absent,
+        "class_room":class_room
+    }
 
-    return render(request,"student_template/student_home_template.html",{"Attendance_total":Attendance_total,"Attendance_present":Attendance_present,"Attendance_absent":Attendance_absent,"subjects":subjects,"data_name":subject_name,"data1":data_present,"data2":data_absent})
+    return render(request,"student_template/student_home_template.html",context)
 
-# def join_class_room(request,subject_id,session_year_id):
-#     session_year_obj=sessionmodel.object.get(id=session_year_id)
-#     subjects=subject.objects.filter(id=subject_id)
-#     if subjects.exists():
-#         session=sessionmodel.object.filter(id=session_year_obj.id)
-#         if session.exists():
-#             subject_obj=subject.objects.get(id=subject_id)
-#             course=courses.objects.get(id=subject_obj.course_id.id)
-#             check_course=students.objects.filter(admin=request.user.id,course_id=course.id)
-#             if check_course.exists():
-#                 session_check=students.objects.filter(admin=request.user.id,session_year_id=session_year_obj.id)
-#                 if session_check.exists():
-#                     onlineclass=OnlineClassRoom.objects.get(session_years=session_year_id,subject=subject_id)
-#                     return render(request,"student_template/join_class_room_start.html",{"username":request.user.username,"password":onlineclass.room_pwd,"roomid":onlineclass.room_name})
+def join_class_room(request,subject_id,session_year_id):
+    session_year_obj=sessionmodel.objects.get(id=session_year_id)
+    subjects=subject.objects.filter(id=subject_id)
+    if subjects.exists():
+        session=sessionmodel.objects.filter(id=session_year_obj.id)
+        if session.exists():
+            subject_obj=subject.objects.get(id=subject_id)
+            course=courses.objects.get(id=subject_obj.course_id.id)
+            check_course=students.objects.filter(admin=request.user.id,course_id=course.id)
+            if check_course.exists():
+                session_check=students.objects.filter(admin=request.user.id,session_year_id=session_year_obj.id)
+                if session_check.exists():
+                    onlineclass=OnlineClassRoom.objects.get(session_years=session_year_id,subjects=subject_id)
+                    return render(request,"student_template/join_class_room_start.html",{"username":request.user.username,"password":onlineclass.room_pwd,"roomid":onlineclass.room_name})
 
-#                 else:
-#                     return HttpResponse("This Online Session is Not For You")
-#             else:
-#                 return HttpResponse("This Subject is Not For You")
-#         else:
-#             return HttpResponse("Session Year Not Found")
-#     else:
-#         return HttpResponse("Subject Not Found")
+                else:
+                    return HttpResponse("This Online Session is Not For You")
+            else:
+                return HttpResponse("This Subject is Not For You")
+        else:
+            return HttpResponse("Session Year Not Found")
+    else:
+        return HttpResponse("Subject Not Found")
 
 
 def student_view_attendance(request):
@@ -172,8 +182,6 @@ def student_fcmtoken_save(request):
     except: 
         return HttpResponse("False") 
 
-def showFirebaseJS(request):
-    pass
 
 def student_all_notification(request):
     student=students.objects.get(admin=request.user.id)

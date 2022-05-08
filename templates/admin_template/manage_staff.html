@@ -52,7 +52,7 @@
                       <td>{{ staff.admin.last_login }}</td>
                       <td>{{ staff.admin.date_joined }}</td>
                       <td><a href="/staff_edit/{{ staff.admin.id }}" class="btn btn-sm btn-success">edit</a>
-                        <a href="{% url 'delete_staff' staff.id %}" class="btn btn-sm btn-danger">Delete</a></td>
+                        <a href="{% url 'delete_staff' staff.admin.id %}" class="btn btn-sm btn-danger">Delete</a></td>
                     </tr>
                   {% endfor %}
                   </tbody>

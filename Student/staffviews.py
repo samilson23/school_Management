@@ -287,30 +287,32 @@ def start_live_classroom(request):
     session_years=sessionmodel.objects.all()
     return render(request,"staff_template/start_live_classroom.html",{"subjects":subjects,"session_years":session_years})
 
-# def delete_not(request,id):
-#     NOT = notificationstaff.objects.get(staff_id=id)
-#     NOT.delete()
-#     return HttpResponseRedirect(reverse('staff_all_notification'))
 
-# def start_live_classroom_process(request):
-#     session_year=request.POST.get("session_year")
-#     subjects=request.POST.get("subject")
-#
-#     subject_obj=subject.objects.get(id=subjects)
-#     session_obj=sessionmodel.objects.get(id=session_year)
-#     checks=OnlineClassRoom.objects.filter(subjects=subject_obj,session_years=session_obj,is_active=True).exists()
-#     if checks:
-#         data=OnlineClassRoom.objects.get(subjects=subject_obj,session_years=session_obj,is_active=True)
-#         room_pwd=data.room_pwd
-#         roomname=data.room_name
-#     else:
-#         room_pwd=datetime.now().strftime('%Y%m-%d%H-%M%S-') + str(uuid4())
-#         roomname=datetime.now().strftime('%Y%m-%d%H-%M%S-') + str(uuid4())
-#         staff_obj=staff.objects.get(admin=request.user.id)
-#         onlineClass=OnlineClassRoom(room_name=roomname,room_pwd=room_pwd,subjects=subject_obj,session_years=session_obj,started_by=staff_obj,is_active=True)
-#         onlineClass.save()
-#
-#     return render(request,"staff_template/live_class_room_start.html",{"username":request.user.username,"password":room_pwd,"roomid":roomname,"subject":subject_obj.subject_name,"session_year":session_obj})
-#
-# def returnHtmlWidget(request):
-#     return render(request,"widget.html")
+def start_live_classroom_process(request):
+    session_year=request.POST.get("session_year")
+    Subject=request.POST.get("Subject")
+
+    subject_obj=subject.objects.get(id=Subject)
+    session_obj=sessionmodel.objects.get(id=session_year)
+    checks=OnlineClassRoom.objects.filter(subjects=subject_obj,session_years=session_obj,is_active=True).exists()
+    if checks:
+        data=OnlineClassRoom.objects.get(subjects=subject_obj,session_years=session_obj,is_active=True)
+        room_pwd=data.room_pwd
+        roomname=data.room_name
+    else:
+        room_pwd=datetime.now().strftime('%Y%m-%d%H-%M%S-') + str(uuid4())
+        roomname=datetime.now().strftime('%Y%m-%d%H-%M%S-') + str(uuid4())
+        staff_obj=staff.objects.get(admin=request.user.id)
+        onlineClass=OnlineClassRoom(room_name=roomname,room_pwd=room_pwd,subjects=subject_obj,session_years=session_obj,started_by=staff_obj,is_active=True)
+        onlineClass.save()
+    context={
+        "username":request.user.username,
+        "password":room_pwd,
+        "roomid":roomname,
+        "subject":subject_obj.subject_name,
+        "session_year":session_obj
+    }
+    return render(request,"staff_template/live_class_room_start.html",context)
+
+def returnHtmlWidget(request):
+    return render(request,"widget.html")

@@ -66,7 +66,7 @@ def get_students(request):
     student = students.objects.filter(course_id=Subject.course_id,session_year_id=session_model)
     list_data = []
     for student in student:
-        data_small = {"id":student.admin.id,"name":student.admin.first_name+"  "+student.admin.last_name}
+        data_small = {"id":student.admin.id,"name":student.admin.username+""}
         list_data.append(data_small)   
     return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
 

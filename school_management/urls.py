@@ -105,7 +105,7 @@ urlpatterns = [
     path('start_live_classroom_process',staffviews.start_live_classroom_process, name="start_live_classroom_process"),
     path('firebase-messaging-sw.js',views.showFirebaseJS,name="show_firebase_js"),
 
-    # student url
+    # student urls
     path('student_home', student_views.student_home, name="student_home"),
     path('student_view_attendance', student_views.student_view_attendance, name="student_view_attendance"),
     path('student_view_attendance_save', student_views.student_view_attendance_save, name="student_view_attendance_save"),

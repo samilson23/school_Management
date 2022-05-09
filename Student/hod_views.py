@@ -150,15 +150,11 @@ def add_student_save(request):
         last_name = request.POST.get("last_name")
         username = request.POST.get("username")
         email = request.POST.get("email")
-        password = request.POST.get("password")
+        # password = request.POST.get("password")
         address = request.POST.get("address")
         session_year_id = request.POST.get("session")
         course_id = request.POST.get("course")
         sex = request.POST.get("sex")
-        profile_pic = request.FILES['profile_pic']
-        fs = FileSystemStorage()
-        filename = fs.save(profile_pic.name,profile_pic)
-        profile_pic_url = fs.url(filename)
 
         try:
             user = CustomUser.objects.create_user(username=username, email=email,
@@ -169,7 +165,6 @@ def add_student_save(request):
             session = sessionmodel.objects.get(id=session_year_id)
             user.students.session_year_id = session
             user.students.gender = sex
-            user.students.profile_pic = profile_pic_url
             user.set_password("changeme")
             user.save()
             messages.success(request, "Successfully Added Student")
@@ -339,6 +334,7 @@ def edit_student(request,student_id):
     form.fields['username'].initial=student.admin.username
     form.fields['address'].initial=student.address
     form.fields['course'].initial=student.course_id.id
+    # form.fields['profile_pic'].initial=student.profile_pic
     # form.fields['sex'].initial=student.gender
     form.fields['session_year_id'].initial=student.session_year_id.id
     return render(request,"hod_template/edit_student_template.html",{"form":form,"id":student_id,"username":student.admin.username})

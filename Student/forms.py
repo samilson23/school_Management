@@ -118,3 +118,15 @@ class EditResultForm(forms.Form):
     exam_marks=forms.CharField(label="Exam Marks",widget=forms.TextInput(attrs={"class":"form-control"}))
 
 
+class EditProfile(forms.Form):
+    email = forms.EmailField(label="Email", max_length=50, widget=forms.EmailInput(attrs={"class": "form-control","autocomplete":"off","disabled":"disabled"}),required=False)
+    first_name = forms.CharField(label="Firstname", max_length=50,
+                                 widget=forms.TextInput(attrs={"class": "form-control","disabled":"disabled"}),required=False)
+    last_name = forms.CharField(label="Lastname", max_length=50,
+                                widget=forms.TextInput(attrs={"class": "form-control","disabled":"disabled"}),required=False)
+    username = forms.CharField(label="Username", max_length=50,
+                                widget=forms.TextInput(attrs={"class": "form-control","autocomplete":"off","disabled":"disabled"}),required=False)
+    password = forms.CharField(label="Id Number", max_length=50,
+                               widget=forms.TextInput(attrs={"class": "form-control", "autocomplete": "off","placeholder":"Only Fill if you want to change your password"}),required=False)
+    profile_pic = forms.FileField(label="Profile Pic", max_length=50,
+                                  widget=forms.FileInput(attrs={"class": "form-control"}), required=False)

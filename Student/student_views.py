@@ -1,12 +1,13 @@
 import datetime
+
+from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 
-
-
+from Student.forms import EditProfile
 from Student.models import OnlineClassRoom, StudentResult, feedbackstudent, leavereportstudent, notificationstudent, sessionmodel, students, courses, subject, CustomUser, attendance, attendancereport
 
 
@@ -141,34 +142,42 @@ def student_feedback_save(request):
 
 
 def student_profile(request):
-    User=CustomUser.objects.get(id=request.user.id)
-    student=students.objects.get(admin=User)
-    # std=students.objects.get(id=id)
-    return render(request,"student_template/student_profile.html",{"User":User,"student":student})
+    user = CustomUser.objects.get(id=request.user.id)
+    student = students.objects.get(admin=user)
+    return render(request,"student_template/student_profile.html",{"student":student})
 
 def student_profile_save(request):
-    first_name=request.POST.get("first_name") 
-    last_name=request.POST.get("last_name") 
-    password=request.POST.get("password")
-    address=request.POST.get("address")
-    
-    customuser=CustomUser.objects.get(id=request.user.id)
-    try:
-        customuser.first_name=first_name
-        customuser.last_name=last_name
-        if password!=None and password!="":
-            customuser.set_password(password)
-        customuser.save()
-        student=students.objects.get(admin=customuser)
-        student.address=address
-        student.save()
-        if password!=None and password!="":
-            customuser.set_password(password)
-        messages.success(request,"Profile Changed")
-        return HttpResponseRedirect(reverse("student_profile"))
-    except:
-        messages.error(request, "Profile not changed")
-        return HttpResponseRedirect(reverse("student_profile")) 
+    if request.method != "POST":
+        return HttpResponse("<h2>Method Not Allowed</h2>")
+    else:
+        address = request.POST.get("address")
+        password = request.POST.get("password")
+        if request.FILES.get('profile_pic', False):
+            profile_pic = request.FILES['profile_pic']
+            fs = FileSystemStorage()
+            filename = fs.save(profile_pic.name, profile_pic)
+            profile_pic_url = fs.url(filename)
+        else:
+            profile_pic_url = None
+
+
+        try:
+            customuser = CustomUser.objects.get(id=request.user.id)
+            if password != None and password != "":
+                customuser.set_password(password)
+            customuser.save()
+            student = students.objects.get(admin=customuser)
+            student.address = address
+            if profile_pic_url != None:
+                student.profile_pic = profile_pic_url
+            student.save()
+            if password != None and password != "":
+                customuser.set_password(password)
+            messages.success(request, "Profile Changed")
+            return HttpResponseRedirect(reverse("student_profile"))
+        except:
+            messages.error(request, " Failed To Change Profile ")
+            return HttpResponseRedirect(reverse("student_profile"))
 
 
 @csrf_exempt

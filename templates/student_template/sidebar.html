@@ -10,10 +10,12 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src="{{ user.profile_pic }}" class="img-circle elevation-2" alt="User Image">
+          <a href="{% url 'student_profile' %}" class="d-block">
+            <img src="{{ students.profile_pic }}" class="img-circle elevation-2">
+          </a>
         </div>
         <div class="info">
-          <a href="{% url 'student_profile'%}" class="d-block">{{ user.username }}</a>
+          <a href="{% url 'student_profile' %}" class="d-block">{{ user.username }}</a>
         </div>
       </div>
 
@@ -76,7 +78,7 @@
             <a href="{{ student_feedback }}" class="nav-link {% if request.path == student_feedback %} active {% endif %} ">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                Feed Back
+                Complaints
               </p>
             </a>
           </li>

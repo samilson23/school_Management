@@ -59,7 +59,7 @@
                       <td>{{ student.admin.date_joined }}</td>
                       <td>{{ student.session_year_id.session_start_year }} TO {{ student.session_year_id.session_end_year }}</td>
                       <td>
-                          <a href="/student_edit/{{ student.admin.id }}" class="btn btn-sm btn-success">Edit</a>
+                          <a href="/student_edit/{{ student.admin.id }}" class="btn btn-sm btn-success">Reset Password</a>
                           <a href="{% url 'delete_student' student.admin.id %}" class="btn btn-sm btn-danger">Delete</a>
                       </td>
                     </tr>

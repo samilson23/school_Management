@@ -17,7 +17,7 @@ class EditResultViewClass(View):
     def post(self,request,*args,**kwargs):
         form=EditResultForm(request.POST,staff_id=request.user.id)
         if form.is_valid():
-            student_admin_id=form.cleaned_data["student_ids"] 
+            student_admin_id=form.cleaned_data["student_ids"]
             assignment_marks=form.cleaned_data["assignment_marks"] 
             exam_marks=form.cleaned_data["exam_marks"]
             subject_id=form.cleaned_data["subject_id"]

@@ -9,19 +9,18 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <div class="row">
-                  <div class="col-lg-7">
-                    <h3 class="card-title">HOD Details</h3>
-                  </div>
-                  <div class="col-lg-5">
+                <h3 class="card-title">Heads of Departments</h3>
+                <div class="card-tools">
                     <form method="get" class="form-inline">
-                      <div class="form-group">
-                        <label>{% trans 'Search' %}:&nbsp;&nbsp;&nbsp;</label>
-                        {{Myfilter.admin__username }}&nbsp;&nbsp;&nbsp;
-                        <button class="btn-primary">Search</button>
+                      <div class="input-group input-group-sm border" style="width: 150px;">
+                        {{Myfilter.admin__username }}
+                        <div class="input-group-append">
+                          <button class="btn" type="submit">
+                            <i class="fas fa-search"></i>
+                          </button>
+                        </div>
                       </div>
                     </form>
-                  </div>
                 </div>
               </div>
               <!-- /.card-header -->

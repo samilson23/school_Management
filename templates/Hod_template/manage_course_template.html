@@ -9,17 +9,18 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                  <div class="row">
-                      <div class="col-lg-7">
-                          Courses
-                      </div>
-                      <div class="col-lg-5">
-                        <form method="get">
-                            <label>{% trans 'Search' %}:&nbsp;&nbsp;&nbsp;</label>
-                            {{ Myfilter.course_name }}&nbsp;&nbsp;&nbsp;
-                            <button class="btn-primary">Search</button>
-                        </form>
-                      </div>
+                  <h3 class="card-title">Courses</h3>
+                  <div class="card-tools">
+                    <form method="get" class="form-inline ml-3">
+                        <div class="input-group input-group-sm border" style="width: 150px;">
+                            {{ Myfilter.course_name }}
+                            <div class="input-group-append">
+                              <button class="btn" type="submit">
+                                <i class="fas fa-search"></i>
+                              </button>
+                            </div>
+                        </div>
+                    </form>
                   </div>
               </div>
               <!-- /.card-header -->

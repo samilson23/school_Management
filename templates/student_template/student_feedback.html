@@ -11,7 +11,7 @@
               <div class="card-header">
                 <h3 class="card-title">Complaints</h3>
               </div>
-              <form action="{% url 'student_feedback_save' %}" method="POST"
+              <form action="{% url 'student_feedback_save' %}" method="POST">
                 <div class="card-body">
                     {% csrf_token %}
                   <div class="form-group">
@@ -43,7 +43,7 @@
               <table class="table">
                   <tr>
                       <th>ID</th>
-                      <th>Compalaint</th>
+                      <th>Complaint</th>
                       <th>Reply</th>
                   </tr>
                   {% for row in feedback_data %}

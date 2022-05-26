@@ -118,9 +118,21 @@ def manage_hod(request):
     HOD = hod.objects.all()
     Myfilter = HodFilter(request.GET, queryset=HOD)
     HOD=Myfilter.qs
+    paginator = Paginator(HOD, 10)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
+    try:
+        HOD = paginator.page(page)
+    except PageNotAnInteger:
+        HOD = paginator.page(1)
+    except EmptyPage:
+        HOD = paginator.page(paginator.num_pages)
     context={
         'HOD':HOD,
-        'Myfilter':Myfilter.form
+        'Myfilter':Myfilter.form,
+        'page_obj':page_obj,
+        'page_range':page_range
     }
     return render(request,'admin_template/manage_hod.html',context)
 
@@ -263,6 +275,31 @@ def hod_edit_save(request):
             messages.error(request, "Failed to Update Hod")
             return HttpResponseRedirect(reverse("hod_edit",kwargs={"hod_id":hod_id}))
 
+
+def Admin(request):
+    user = CustomUser.objects.get(id=request.user.id)
+    return render(request, "admin_template/admin_profile.html", {"user": user})
+
+
+def admin_save(request):
+    if request.method != "POST":
+        return HttpResponse("<h2>Method Not Allowed</h2>")
+    else:
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        password = request.POST.get("password")
+        try:
+            customuser = CustomUser.objects.get(id=request.user.id)
+            customuser.first_name = first_name
+            customuser.last_name = last_name
+            if password != None and password != "":
+                customuser.set_password(password)
+            customuser.save()
+            messages.success(request, "Profile Changed")
+            return HttpResponseRedirect(reverse("Admin"))
+        except:
+            messages.error(request, " Failed To Change Profile ")
+            return HttpResponseRedirect(reverse("Admin"))
 
 
 

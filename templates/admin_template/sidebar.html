@@ -1,12 +1,5 @@
 {% load static %}
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <!-- Brand Logo -->
-    <a href="#" class="brand-link">
-      <img src="{% static "dist/img/AdminLTELogo.png" %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
-           style="opacity: .8">
-      <span class="brand-text font-weight-light">HOD Admin</span>
-    </a>
-
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
@@ -15,8 +8,8 @@
           <img src="{% static "dist/img/user2-160x160.jpg" %}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          {% url 'admin_profile' as admin_profile %}
-          <a>{{ user.username }}</a>
+          {% url 'Admin' as Admin %}
+          <a href="{% url 'Admin' %}" class="d-block">{{ user.username }}</a>
         </div>
       </div>
 
@@ -28,7 +21,7 @@
           <li class="nav-item">
             {% url 'home' as home %}
             <a href="{{ home }}" class="nav-link {% if request.path == home %} active {% endif %} ">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-home"></i>
               <p>
                 Home
               </p>
@@ -37,7 +30,7 @@
           <li class="nav-item">
             {% url 'add_hod' as add_hod %}
             <a href="{{ add_hod }}" class="nav-link {% if request.path == add_hod %} active {% endif %} ">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-user"></i>
               <p>
                 Add HOD
               </p>
@@ -46,7 +39,7 @@
           <li class="nav-item">
             {% url 'manage_hod' as manage_hod %}
             <a href="{{ manage_hod }}" class="nav-link {% if request.path == manage_hod %} active {% endif %} ">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-address-card"></i>
               <p>
                 Manage HOD
               </p>
@@ -55,7 +48,7 @@
           <li class="nav-item">
             {% url 'Staff' as Staff %}
             <a href="{{ Staff }}" class="nav-link {% if request.path == Staff %} active {% endif %} ">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-universal-access"></i>
               <p>
                 Manage Staff
               </p>
@@ -64,7 +57,7 @@
           <li class="nav-item">
             {% url 'Student' as Student %}
             <a href="{{ Student }}" class="nav-link {% if request.path == Student %} active {% endif %} ">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-child"></i>
               <p>
                 Manage Student
               </p>

@@ -1,10 +1,5 @@
 {% load static %}
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <!-- Brand Logo -->
-    <a href="#" class="brand-link">
-      <span class="brand-text font-weight-light">STUDENT</span>
-    </a>
-
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
@@ -15,7 +10,7 @@
           </a>
         </div>
         <div class="info">
-          <a href="{% url 'student_profile' %}" class="d-block">{{ user.username }}</a>
+          <a href="{% url 'student_profile' %}" class="d-block"><i class="nav-icon fas fa-user"></i>&nbsp;&nbsp;&nbsp;{{ user.username }}</a>
         </div>
       </div>
 
@@ -31,7 +26,7 @@
           <li class="nav-item">
             {% url 'student_home' as student_home %}
             <a href="{{ student_home }}" class="nav-link {% if request.path == student_home %} active {% endif %} ">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-home"></i>
               <p>
                 HOME
               </p>
@@ -40,25 +35,25 @@
           <li class="nav-item">
             {% url 'student_view_attendance' as student_view_attendance %}
             <a href="{{ student_view_attendance }}" class="nav-link {% if request.path == student_view_attendance %} active {% endif %} ">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-user"></i>
               <p>
                 My Attendance
               </p>
             </a>
           </li>
-          <li class="nav-item">
-            {% url 'unit_registration' as unit_registration %}
-            <a href="{{ unit_registration }}" class="nav-link {% if request.path == unit_registration %} active {% endif %} ">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-                Register Units
-              </p>
-            </a>
-          </li>
+<!--          <li class="nav-item">-->
+<!--            {% url 'unit_registration' as unit_registration %}-->
+<!--            <a href="{{ unit_registration }}" class="nav-link {% if request.path == unit_registration %} active {% endif %} ">-->
+<!--              <i class="nav-icon fas fa-plus-circle"></i>-->
+<!--              <p>-->
+<!--                Register Units-->
+<!--              </p>-->
+<!--            </a>-->
+<!--          </li>-->
           <li class="nav-item">
             {% url 'student_view_result' as student_view_result %}
             <a href="{{ student_view_result }}" class="nav-link {% if request.path == student_view_result %} active {% endif %} ">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-address-card"></i>
               <p>
                 Results
               </p>
@@ -67,16 +62,16 @@
           <li class="nav-item">
             {% url 'student_apply_leave' as student_apply_leave %}
             <a href="{{ student_apply_leave }}" class="nav-link {% if request.path == student_apply_leave %} active {% endif %} ">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-user-times"></i>
               <p>
-                Apply Student Leave
+                Apply For Leave
               </p>
             </a>
           </li>
           <li class="nav-item">
             {% url 'student_feedback' as student_feedback %}
             <a href="{{ student_feedback }}" class="nav-link {% if request.path == student_feedback %} active {% endif %} ">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-envelope"></i>
               <p>
                 Complaints
               </p>
@@ -85,7 +80,7 @@
           <li class="nav-item">
             {% url 'student_all_notification' as student_all_notification %}
             <a href="{{ student_all_notification }}" class="nav-link {% if request.path == student_all_notification %} active {% endif %} ">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-share-square"></i>
               <p>
                 Notifications
               </p>

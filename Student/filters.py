@@ -7,19 +7,19 @@ from .models import courses, subject, students, hod, staff
 
 
 class StudentFilter(django_filters.FilterSet):
-    admin__username=django_filters.CharFilter(field_name='admin__username',lookup_expr='icontains')
+    admin__username=django_filters.CharFilter(field_name='admin__username',lookup_expr='icontains',widget=forms.TextInput(attrs={"class": "form-control border-0","placeholder":"search..."}))
     class Meta:
         model = students
         fields = ['admin__username']
 
 class CourseFilter(django_filters.FilterSet):
-    course_name=django_filters.CharFilter(field_name='course_name',lookup_expr='icontains')
+    course_name=django_filters.CharFilter(field_name='course_name',lookup_expr='icontains',widget=forms.TextInput(attrs={"class": "form-control border-0","placeholder":"search..."}))
     class Meta:
         model = courses
         fields = ['course_name']
 
 class SubjectFilter(django_filters.FilterSet):
-    subject_name=django_filters.CharFilter(field_name='subject_name',lookup_expr='icontains')
+    subject_name=django_filters.CharFilter(field_name='subject_name',lookup_expr='icontains',widget=forms.TextInput(attrs={"class": "form-control border-0","placeholder":"search..."}))
     class Meta:
         model = subject
         fields = [
@@ -27,13 +27,13 @@ class SubjectFilter(django_filters.FilterSet):
         ]
 
 class HodFilter(django_filters.FilterSet):
-    admin__username = django_filters.CharFilter(field_name='admin__username', lookup_expr='icontains')
+    admin__username = django_filters.CharFilter(field_name='admin__username', lookup_expr='icontains',widget=forms.TextInput(attrs={"class": "form-control border-0","placeholder":"search..."}))
     class Meta:
         model = hod
         fields = ['admin__username']
 
 class StaffFilter(django_filters.FilterSet):
-    admin__username = django_filters.CharFilter(field_name='admin__username', lookup_expr='icontains')
+    admin__username = django_filters.CharFilter(field_name='admin__username', lookup_expr='icontains',widget=forms.TextInput(attrs={"class": "form-control border-0","placeholder":"search..."}))
     class Meta:
         model = staff
         fields = ['admin__username']

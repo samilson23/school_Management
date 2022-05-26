@@ -1,82 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c7799b95-03bd-4513-8c8c-f8cc93ad9a76" name="Changes" comment="Fixed all bugs">
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/add_course_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/add_course_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/add_staff_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/add_staff_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/add_student_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/add_student_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/add_subject_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/add_subject_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/admin_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/admin_profile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/admin_view_attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/admin_view_attendance.html" afterDir="false" />
+    <list default="true" id="c7799b95-03bd-4513-8c8c-f8cc93ad9a76" name="Changes" comment="Made changes">
+      <change afterPath="$PROJECT_DIR$/media/avatar04_ytste2P_2iDOAua_g3jEL96.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/avatar_DkHNiNF.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/admin_template/admin_profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Student/admin_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Student/admin_views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Student/filters.py" beforeDir="false" afterPath="$PROJECT_DIR$/Student/filters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/school_management/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/school_management/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/Hod_template/base_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/base_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/datatable.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/datatable.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/edit_course_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/edit_course_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/edit_staff_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/edit_staff_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/edit_student_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/edit_student_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/edit_subject_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/edit_subject_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/footer.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/footer.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/form_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/form_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/home_content.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/home_content.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/manage_course_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/manage_course_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/manage_session_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/manage_session_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/manage_staff_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/manage_staff_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/manage_student_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/manage_student_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/manage_subjects_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/manage_subjects_template.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/Hod_template/sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/sidebar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/staff_feedback_msg.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/staff_feedback_msg.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/staff_leave_reply.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/staff_leave_reply.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/staff_notification.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/staff_notification.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/student_feedback_msg.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/student_feedback_msg.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/student_leave_reply.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/student_leave_reply.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/student_notification.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/student_notification.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin_template/add_hod.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/add_hod.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin_template/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin_template/delete.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/delete.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin_template/delete_staff.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/delete_staff.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin_template/delete_student.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/delete_student.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin_template/footer.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/footer.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin_template/hod_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/hod_edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin_template/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/home.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/admin_template/manage_hod.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/manage_hod.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin_template/manage_staff.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/manage_staff.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin_template/manage_students.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/manage_students.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/admin_template/sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/sidebar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin_template/staff_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/staff_edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin_template/student_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/student_edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/registration/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/registration/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/registration/password_reset_complete.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/registration/password_reset_complete.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/registration/password_reset_confirm.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/registration/password_reset_confirm.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/registration/password_reset_done.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/registration/password_reset_done.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/registration/password_reset_email.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/registration/password_reset_email.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/registration/password_reset_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/registration/password_reset_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/staff_template/Notifications.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/Notifications.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/staff_template/add_result.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/add_result.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/staff_template/base_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/base_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/staff_template/edit_student_result.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/edit_student_result.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/staff_template/footer.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/footer.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/staff_template/live_class_room_start.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/live_class_room_start.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/staff_template/sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/sidebar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/staff_template/staff_apply_leave.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/staff_apply_leave.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/staff_template/staff_feedback.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/staff_feedback.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/staff_template/staff_home_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/staff_home_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/staff_template/staff_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/staff_profile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/staff_template/staff_take_attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/staff_take_attendance.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/staff_template/start_live_classroom.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/start_live_classroom.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/staff_template/update_attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/update_attendance.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/student_template/Notifications.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/Notifications.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/student_template/base_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/base_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/student_template/footer.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/footer.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/student_template/form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/student_template/join_class_room_start.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/join_class_room_start.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/student_template/my_attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/my_attendance.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/student_template/register_units.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/register_units.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/student_template/results.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/results.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/student_template/sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/sidebar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/student_template/student_apply_leave.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/student_apply_leave.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/student_template/student_attendance_data.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/student_attendance_data.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/student_template/student_feedback.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/student_feedback.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/student_template/student_home_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/student_home_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/student_template/student_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/student_profile.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,11 +58,13 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/Samilson/Documents/school_Management"
+    "last_opened_file_path": "C:/Users/Samilson/Documents/Django_projects/school_Management/templates/admin_template"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Samilson\Documents\Django_projects\school_Management\templates\admin_template" />
+      <recent name="C:\Users\Samilson\Documents\Django_projects\school_Management\templates\Hod_template" />
       <recent name="C:\Users\SAM\Documents\Django_projects\school_management\templates" />
       <recent name="C:\Users\SAM\Documents\Django_projects\school_management\templates\student_template" />
       <recent name="C:\Users\SAM\Documents\Django_projects\school_management\templates\admin_template" />
@@ -209,7 +151,14 @@
       <option name="project" value="LOCAL" />
       <updated>1652004163126</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Made changes">
+      <created>1653472618529</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1653472618529</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -227,6 +176,7 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Initial commit" />
     <MESSAGE value="Fixed all bugs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed all bugs" />
+    <MESSAGE value="Made changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Made changes" />
   </component>
 </project>

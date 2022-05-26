@@ -140,5 +140,7 @@ urlpatterns = [
     path('student_edit_save',admin_views.student_edit_save,name="student_edit_save"),
     path('Staff',admin_views.Staff,name="Staff"),
     path('Student',admin_views.Student,name="Student"),
+    path('Admin',admin_views.Admin,name="Admin"),
+    path('admin_save',admin_views.admin_save,name="admin_save"),
 
     ]+static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

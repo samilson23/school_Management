@@ -28,7 +28,7 @@
           <li class="nav-item">
             {% url 'admin_home' as admin_home %}
             <a href="{{ admin_home }}" class="nav-link {% if request.path == admin_home %} active {% endif %} ">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-home"></i>
               <p>
                 Home
               </p>
@@ -87,7 +87,7 @@
                 <a href="{% url 'admin_send_notification_staff' %}" class="nav-link {% if request.path == admin_send_notification_staff %} active {% endif %}" >
                   <i class="far fa-circle nav-icon"></i>
                   <p>
-                    Send Staff Notification
+                    Send Notification
                   </p>
                 </a>
               </li>
@@ -145,7 +145,7 @@
                 <a href="{% url 'admin_send_notification_student' %}" class="nav-link {% if request.path == admin_send_notification_student %} active {% endif %}" >
                   <i class="far fa-circle nav-icon"></i>
                   <p>
-                    Send Student Notification
+                    Send Notification
                   </p>
                 </a>
               </li>
@@ -221,7 +221,7 @@
                 <a href="{{ manage_session }}" class="nav-link {% if request.path == manage_session %} active {% endif %} ">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
-                    Manage Session Year
+                    Add Session Year
                   </p>
                 </a>
               </li>

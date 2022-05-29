@@ -1,12 +1,14 @@
 import datetime
 
 from django.core.files.storage import FileSystemStorage
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 
+from Student.filters import SubjectFilter
 from Student.forms import EditProfile
 from Student.models import OnlineClassRoom, StudentResult, feedbackstudent, leavereportstudent, notificationstudent, sessionmodel, students, courses, subject, CustomUser, attendance, attendancereport
 
@@ -205,7 +207,24 @@ def student_view_result(request):
     return render(request,"student_template/results.html",{"studentresult":studentresult})
 
 def unit_registration(request):
-    student = students.objects.get(admin=request.user.id)
-    subjects = students.objects.filter(course_id=student.id)
-    # session_year_id = sessionmodel.objects.all()
-    return render(request,"student_template/register_units.html",{"subjects":subjects})
+    student_obj = students.objects.get(admin=request.user.id)
+    subject_data = subject.objects.filter(course_id=student_obj.course_id)
+    Myfilter = SubjectFilter(request.GET, queryset=subject_data)
+    subject_data = Myfilter.qs
+    paginator = Paginator(subject_data, 10)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
+    try:
+        subject_data = paginator.page(page)
+    except PageNotAnInteger:
+        subject_data = paginator.page(1)
+    except EmptyPage:
+        subject_data = paginator.page(paginator.num_pages)
+    context={
+        "subject_data":subject_data,
+        "page_obj":page_obj,
+        "page_range":page_range,
+        "Myfilter":Myfilter.form
+    }
+    return render(request,"student_template/register_units.html",context)

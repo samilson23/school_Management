@@ -5,15 +5,15 @@
 {% block main_content %}
 <section class="content">
       <div class="container-fluid">
-       <div class="row">
+        <div class="row">
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                    <h3 class="card-title">Subject Details</h3>
+                    <h3 class="card-title text-bold">Subject Details</h3>
                   <div class="card-tools">
                     <form method="get" class="form-inline">
                       <div class="input-group input-group-sm border" style="width: 150px;">
-                        {{Myfilter.subject_name}}
+                        {{Myfilter.code}}
                         <div class="input-group-append">
                           <button class="btn" type="submit">
                             <i class="fas fa-search"></i>
@@ -27,11 +27,12 @@
               <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
                   <thead>
-                    <tr>
+                    <tr text-bold>
                       <th>ID</th>
                       <th>Subject Name</th>
                       <th>Course Name</th>
                       <th>Stage</th>
+                      <th>Code</th>
                       <th>Staff Name</th>
                       <th>Action</th>
                     </tr>
@@ -43,6 +44,7 @@
                       <td>{{ subject.subject_name }}</td>
                       <td>{{ subject.course_id.course_name }}</td>
                       <td>{{ subject.stage }}</td>
+                      <td>{{ subject.code }}</td>
                       <td>{{ subject.staff_id.first_name }} {{ subject.staff_id.last_name }}</td>
                       <td><a href="/edit_subject/{{ subject.id}}" class="btn btn-sm btn-success">Edit</a></td>
                     </tr>
@@ -55,6 +57,48 @@
             <!-- /.card -->
           </div>
         </div>
+        <div class="card">
+           <div class="card-footer">
+              <div class="row">
+                  <div class="col-lg-6">
+                      <div class="pagination">
+                          <span class="step-links">
+                              <span class="current">
+                                   Page  {{ page_obj.number }}  of  {{ page_obj.paginator.num_pages }}.
+                              </span>
+                          </span>
+                      </div>
+                  </div>
+                  <div class="col-lg-6">
+                      {% if subjects.has_other_pages %}
+                        <ul class="pagination float-right">
+                            {% if subjects.has_previous %}
+                                <li class="paginate_button page-item"><a class="page-link" href="?page={{ subjects.previous_page_number }}" data-dt-idx="0" tabindex="0">Previous</a></li>
+                            {% else %}
+                                <li class="paginate_button page-item disabled"><a class="page-link" href="#" >Previous</a></li>
+                            {% endif %}
+                            {% for i in page_range|default_if_none:subjects.paginator.get_elided_page_range %}
+                                {% if page_obj.number == i %}
+                                    <li class="paginate_button page-item active"><a class="page-link">{{ i }}<span class="sr-only">(current)</span></a></li>
+                                {% else %}
+                                    {% if i == page_obj.paginator.ELLIPSIS %}
+                                        <li class="paginate_button page-item"><a class="page-link" href="#">{{ i }}</a></li>
+                                    {% else %}
+                                        <li class="paginate_button page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if subjects.has_next %}
+                              <li class="page-item"><a class="page-link" href="?page={{ subjects.next_page_number }}" >Next</a></li>
+                            {% else %}
+                              <li class="page-item disabled"><a class="page-link" href="#" >Next</a></li>
+                            {% endif %}
+                        </ul>
+                      {% endif %}
+                  </div>
+              </div>
+          </div>
+       </div>
       </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->

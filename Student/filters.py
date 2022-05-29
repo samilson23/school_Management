@@ -19,11 +19,11 @@ class CourseFilter(django_filters.FilterSet):
         fields = ['course_name']
 
 class SubjectFilter(django_filters.FilterSet):
-    subject_name=django_filters.CharFilter(field_name='subject_name',lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Search", "aria-label":"Search"}))
+    code=django_filters.CharFilter(field_name='code',lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Search", "aria-label":"Search"}))
     class Meta:
         model = subject
         fields = [
-            'subject_name'
+            'code'
         ]
 
 class HodFilter(django_filters.FilterSet):

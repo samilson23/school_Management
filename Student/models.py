@@ -61,8 +61,9 @@ class staff(models.Model):
 class subject(models.Model):
     id = models.AutoField(primary_key=True)
     subject_name = models.CharField(max_length=250)
+    code = models.CharField(max_length=250)
     course_id = models.ForeignKey(courses,on_delete=models.CASCADE,default=1)
-    stage=models.CharField(max_length=100,default=1)
+    stage=models.CharField(max_length=100,default=1.1)
     staff_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)

@@ -21,6 +21,10 @@
                     <input type="text" class="form-control" name="subject_name" placeholder="Enter Subject">
                   </div>
                   <div class="form-group">
+                    <label>Unit Code</label>
+                    <input type="text" class="form-control" name="code" placeholder="Enter Unit Code" autocomplete="off" id="id_code">
+                  </div>
+                  <div class="form-group">
                     <label>Course</label>
                     <select class="form-control"  name="course">
                         {% for course in course %}
@@ -28,7 +32,7 @@
                         {% endfor %}
                     </select>
                   </div>
-                    <div class="form-group">
+                  <div class="form-group">
                     <label>Stage</label>
                     <select class="form-control"  name="stage">
                         <option>1.1</option>
@@ -87,3 +91,36 @@
     </section>
     <!-- /.content -->
 {% endblock main_content %}
+{% block custom_js %}
+<script>
+  $(document).ready(function(){
+    $("#id_code").keyup(function(){
+      var code=$(this).val();
+      if(code!=""){
+        $.ajax({
+          url:'{% url 'check_subject_code' %}',
+          type:'POST',
+          data:{code:code}
+        })
+        .done(function(response){
+          console.log(response);
+          if(response=="True"){
+            $(".code_error").remove();
+            $("<span class='code_error' style='padding: 5px;color: red;font-weight: bold;'>Subject Code Exists</span>").insertAfter("#id_code");
+          }
+          else{
+            $(".code_error").remove();
+            $("<span class='code_error' style='padding: 5px;color: green;font-weight: bold;'>Subject Code Available</span>").insertAfter("#id_code");
+          }
+          })
+          .fail(function(){
+            console.log("failed");
+          })
+        }
+        else{
+          $(".code_error").remove();
+        }
+  });
+  });
+</script>
+{% endblock custom_js %}

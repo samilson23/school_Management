@@ -60,6 +60,15 @@
             </a>
           </li>
           <li class="nav-item">
+            {% url 'unit_registration' as unit_registration %}
+            <a href="{{ unit_registration }}" class="nav-link {% if request.path == unit_registration %} active {% endif %} ">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Units
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
             {% url 'student_apply_leave' as student_apply_leave %}
             <a href="{{ student_apply_leave }}" class="nav-link {% if request.path == student_apply_leave %} active {% endif %} ">
               <i class="nav-icon fas fa-user-times"></i>

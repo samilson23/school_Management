@@ -179,45 +179,46 @@ def add_subject(request):
     Staff = CustomUser.objects.filter(user_type=3)
     return render(request, "Hod_template/add_subject_template.html", {"Staff": Staff,"course": course})
 
-# def add_subject_save(request):
-#     if request.method!="POST":
-#         return HttpResponse("<h1>Method Not Allowed</h1>")
-#     else:
-#         subject_name = request.POST.get("subject_name")
-#         course_id = request.POST.get("course")
-#         course = courses.objects.get(id=course_id)
-#         staff_id = request.POST.get("Staff")
-#         stage=request.POST.get("stage")
-#         Staff = staff.objects.get(admin=staff_id)
-#
-#         # try:
-#         subjects = subject(subject_name=subject_name,course_id=course,stage=stage,staff_id=Staff)
-#         subjects.save()
-#         messages.success(request, "Successfully Added Subject")
-#         return HttpResponseRedirect(reverse("add_subject"))
-#     # except:
-#         messages.error(request, "Subject Not Added")
-#         return HttpResponseRedirect(reverse("add_subject"))
-
-
 def add_subject_save(request):
     if request.method!="POST":
-        return HttpResponse("<h2>Method Not Allowed</h2>")
+        return HttpResponse("<h1>Method Not Allowed</h1>")
     else:
-        subject_name=request.POST.get("subject_name")
-        course_id=request.POST.get("course")
-        course=courses.objects.get(id=course_id)
-        staff_id=request.POST.get("staff")
-        staff=CustomUser.objects.get(id=staff_id)
+        subject_name = request.POST.get("subject_name")
+        course_id = request.POST.get("course")
+        course = courses.objects.get(id=course_id)
+        staff_id = request.POST.get("staff")
+        code = request.POST.get("code")
+        stage=request.POST.get("stage")
+        staff = CustomUser.objects.get(id=staff_id)
 
-        try:
-            subjects=subject(subject_name=subject_name,course_id=course,staff_id=staff)
-            subjects.save()
-            messages.success(request,"Successfully Added Subject")
-            return HttpResponseRedirect(reverse("add_subject"))
-        except:
-            messages.error(request,"Failed to Add Subject")
-            return HttpResponseRedirect(reverse("add_subject"))
+        # try:
+        subjects = subject(subject_name=subject_name,course_id=course,stage=stage,staff_id=staff,code=code)
+        subjects.save()
+        messages.success(request, "Successfully Added Subject")
+        return HttpResponseRedirect(reverse("add_subject"))
+    # except:
+        messages.error(request, "Subject Not Added")
+        return HttpResponseRedirect(reverse("add_subject"))
+
+
+# def add_subject_save(request):
+#     if request.method!="POST":
+#         return HttpResponse("<h2>Method Not Allowed</h2>")
+#     else:
+#         subject_name=request.POST.get("subject_name")
+#         course_id=request.POST.get("course")
+#         course=courses.objects.get(id=course_id)
+#         staff_id=request.POST.get("staff")
+#         staff=CustomUser.objects.get(id=staff_id)
+#
+#         try:
+#             subjects=subject(subject_name=subject_name,course_id=course,staff_id=staff)
+#             subjects.save()
+#             messages.success(request,"Successfully Added Subject")
+#             return HttpResponseRedirect(reverse("add_subject"))
+#         except:
+#             messages.error(request,"Failed to Add Subject")
+#             return HttpResponseRedirect(reverse("add_subject"))
 
 def manage_staff(request):
     staf = staff.objects.all()
@@ -291,8 +292,23 @@ def manage_subjects(request):
     subjects = subject.objects.all()
     Myfilter = SubjectFilter(request.GET, queryset=subjects)
     subjects = Myfilter.qs
-
-    return render(request, "hod_template/manage_subjects_template.html", {"subjects": subjects,"Myfilter":Myfilter.form})
+    paginator = Paginator(subjects, 10)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
+    try:
+        subjects = paginator.page(page)
+    except PageNotAnInteger:
+        subjects = paginator.page(1)
+    except EmptyPage:
+        subjects = paginator.page(paginator.num_pages)
+    context= {
+        "subjects": subjects,
+        "Myfilter":Myfilter.form,
+        "page_obj":page_obj,
+        "page_range":page_range
+    }
+    return render(request, "hod_template/manage_subjects_template.html",context)
 
 def edit_staff(request,staff_id):
     staffss = staff.objects.get(admin=staff_id)
@@ -482,6 +498,14 @@ def check_username(request):
         return HttpResponse(False)         
 
 
+@csrf_exempt
+def check_subject_code(request):
+    code=request.POST.get("code")
+    sub_code=subject.objects.filter(code=code).exists()
+    if sub_code:
+        return HttpResponse(True)
+    else:
+        return HttpResponse(False)
 
 def student_feedback_msg(request):
     feedbacks=feedbackstudent.objects.all()

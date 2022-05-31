@@ -250,10 +250,10 @@ def get_units(request):
     stage_id=request.POST.get("stage")
     student_obj = students.objects.get(admin=request.user.id)
     Subject = subject.objects.filter(course_id=student_obj.course_id,stage_id=stage_id)
+    # student_unit = registrationreport.objects.filter(student_id=student_obj)
     list_data = []
     for Subject in Subject:
-        Student = students.objects.get(admin=request.user.id)
-        data_small = {"id":Subject.id,"No":Student.admin.id,"code":Subject.code,"name":Subject.subject_name+""}
+        data_small = {"id": Subject.id,"code": Subject.code, "name": Subject.subject_name + ""}
         list_data.append(data_small)
     return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
 

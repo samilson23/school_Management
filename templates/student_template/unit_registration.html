@@ -45,22 +45,14 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <table class="table border">
-                                <tr>
-                                    <td class="text-bold">
-                                        Student Details
-                                    </td>
-                                </tr>
+<!--                                <tr>-->
+<!--                                    <td class="text-bold" colspan="2">-->
+<!--                                        Student Details-->
+<!--                                    </td>-->
+<!--                                </tr>-->
                                 <tr>
                                     <td class="text-bold">Course:</td>
                                     <td>{{ student_obj.course_id.course_name }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-bold">Name:</td>
-                                    <td>{{ student_obj.admin.first_name }}&nbsp;{{ student_obj.admin.last_name }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-bold">Reg No:</td>
-                                    <td>{{ student_obj.admin.username }}</td>
                                 </tr>
                             </table>
                         </div>
@@ -123,11 +115,7 @@
         console.log(json_data)
         var div_data="<div class='form-group'><div class='row'>";
         for(key in json_data){
-            if(key!=null){
-                div_data+="<div class='col-lg-4 attendance_div_green'><div class='form-check'><table class='table'><tr><td><input type='checkbox' name='student_data[]' value='"+json_data[key]['id']+"'><input type='hidden' value='"+json_data[key]['No']+"'></td><td><label class='form-check-label text-bold'>"+json_data[key]['code']+":&nbsp;&nbsp;</label><label class='form-check-label'>"+json_data[key]['name']+"</label></td></tr></table></div></div>";
-            }else{
-                div_data+="<div class='col-lg-4 attendance_div_red'>No Units Found</div>"
-            }
+           div_data+="<div class='col-lg-4 attendance_div_green'><div class='form-check'><table class='table'><tr><td><input type='checkbox' name='student_data[]' value='"+json_data[key]['id']+"'></td><td><label class='form-check-label text-bold'>"+json_data[key]['code']+":&nbsp;&nbsp;</label><label class='form-check-label'>"+json_data[key]['name']+"</label></td></tr></table></div></div>";
         }
         div_data+="</div></div>";
         div_data+="<div class='form-group'>";

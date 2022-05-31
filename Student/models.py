@@ -32,6 +32,13 @@ class hod(models.Model):
     # fcm_token=models.TextField(default="")
     objects=models.Manager()
 
+class semester(models.Model):
+    id = models.AutoField(primary_key=True)
+    stage = models.CharField(max_length=250,default=1.1)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager()
+
 class courses(models.Model):
     id = models.AutoField(primary_key=True)
     course_name = models.CharField(max_length=250)
@@ -50,21 +57,13 @@ class staff(models.Model):
     fcm_token=models.TextField(default="")
     objects=models.Manager()
 
-# class semesters(models.Model):
-#     id=models.AutoField(primary_key=True)
-#     stage=models.ChoiceField(max_length=200)
-#     course_id = models.ForeignKey(courses, on_delete=models.CASCADE, default=1)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now_add=True)
-#     objects = models.Manager()
-
 class subject(models.Model):
     id = models.AutoField(primary_key=True)
     subject_name = models.CharField(max_length=250)
     code = models.CharField(max_length=250)
     course_id = models.ForeignKey(courses,on_delete=models.CASCADE,default=1)
-    stage=models.CharField(max_length=100,default=1.1)
-    staff_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    stage_id = models.ForeignKey(semester,on_delete=models.SET_DEFAULT,default=1)
+    staff_id = models.ForeignKey(CustomUser,on_delete=models.SET_DEFAULT,default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     objects=models.Manager()
@@ -89,7 +88,25 @@ class attendance(models.Model):
     session_year_id = models.ForeignKey(sessionmodel, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True) 
-    objects=models.Manager()  
+    objects=models.Manager()
+
+class unitregistration(models.Model):
+    id = models.AutoField(primary_key=True)
+    semester_id = models.ForeignKey(semester,on_delete=models.CASCADE)
+    student_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE,default=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    objects=models.Manager()
+
+class registrationreport(models.Model):
+    id = models.AutoField(primary_key=True)
+    unit_id = models.ForeignKey(unitregistration, on_delete=models.CASCADE)
+    subject_id = models.ForeignKey(subject, on_delete=models.CASCADE)
+    student_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=6)
+    status = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    objects=models.Manager()
 
 class attendancereport(models.Model):
     id = models.AutoField(primary_key=True)
@@ -100,14 +117,6 @@ class attendancereport(models.Model):
     updated_at = models.DateTimeField(auto_now_add=True)
     objects=models.Manager() 
 
-class units_registration(models.Model):
-    id = models.AutoField(primary_key=True)
-    student_id = models.ForeignKey(students, on_delete=models.CASCADE)
-    status = models.BooleanField(default=False)
-    stage_id = models.ForeignKey(subject, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
-    objects = models.Manager()
 
 class leavereportstudent(models.Model):
     id = models.AutoField(primary_key=True)
@@ -183,7 +192,7 @@ class OnlineClassRoom(models.Model):
     subjects=models.ForeignKey(subject,on_delete=models.CASCADE)
     session_years=models.ForeignKey(sessionmodel,on_delete=models.CASCADE)
     started_by=models.ForeignKey(staff,on_delete=models.CASCADE)
-    is_active=models.BooleanField(default=True)
+    is_active=models.BooleanField(default=False)
     created_on=models.DateTimeField(auto_now_add=True)
     objects=models.Manager()      
 

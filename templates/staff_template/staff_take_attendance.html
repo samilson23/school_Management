@@ -83,7 +83,7 @@
         $("#student_data").html(div_data);
       })
       .fail(function(){
-      alert("error in fetching student")
+      alert("error in fetching Student")
       })
 
       $(document).on("click","#save_attendance",function(){
@@ -98,6 +98,7 @@
           else{
             return {"id":$(this).val(),"status":0 };
           }
+          console.log(student_data)
         }).get()
         var attendance_date=$("#attendance_date").val();
         var subject_id=$("#subjects").val();
@@ -113,7 +114,7 @@
           alert("Attendance Data Saved")
          }
          else{
-          alert("Error In Saving Data")
+          alert("Error In Saving data")
          }
          location.reload()
         })

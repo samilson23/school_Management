@@ -29,15 +29,15 @@
                         <tr class="text-bold">
                             <th>UNIT</th>
                             <th>CODE</th>
-                            <th>STAGE</th>
+                            <th>ACTION</th>
                         </tr>
                       </thead>
                       <tbody>
                       {% for subjects in subject_data %}
                         <tr>
-                            <td>{{ subjects.subject_name }}</td>
-                            <td>{{ subjects.code }}</td>
-                            <td>{{ subjects.stage }}</td>
+                            <td>{{ subjects.subject_id.subject_name }}</td>
+                            <td>{{ subjects.subject_id.code }}</td>
+                            <td><a href="#" class="btn-sm btn-danger">remove</a></td>
                         </tr>
                       {% endfor %}
                       </tbody>

@@ -1,8 +1,10 @@
 import datetime
 
 from django.core.files.storage import FileSystemStorage
+from django.core.mail.backends import console
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.http import HttpResponse, HttpResponseRedirect
+import json
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib import messages
@@ -10,7 +12,9 @@ from django.views.decorators.csrf import csrf_exempt
 
 from Student.filters import SubjectFilter
 from Student.forms import EditProfile
-from Student.models import OnlineClassRoom, StudentResult, feedbackstudent, leavereportstudent, notificationstudent, sessionmodel, students, courses, subject, CustomUser, attendance, attendancereport
+from Student.models import OnlineClassRoom, StudentResult, feedbackstudent, leavereportstudent, notificationstudent, \
+    sessionmodel, students, courses, subject, CustomUser, attendance, attendancereport, semester, unitregistration, \
+    registrationreport
 
 
 def student_home(request):
@@ -206,9 +210,9 @@ def student_view_result(request):
     # std = students.objects.get(admin=id)
     return render(request,"student_template/results.html",{"studentresult":studentresult})
 
-def unit_registration(request):
-    student_obj = students.objects.get(admin=request.user.id)
-    subject_data = subject.objects.filter(course_id=student_obj.course_id)
+def Units(request):
+    student_obj = CustomUser.objects.get(id=request.user.id)
+    subject_data = registrationreport.objects.filter(status=1,student_id=student_obj)
     Myfilter = SubjectFilter(request.GET, queryset=subject_data)
     subject_data = Myfilter.qs
     paginator = Paginator(subject_data, 10)
@@ -225,6 +229,58 @@ def unit_registration(request):
         "subject_data":subject_data,
         "page_obj":page_obj,
         "page_range":page_range,
-        "Myfilter":Myfilter.form
+        "Myfilter":Myfilter.form,
     }
-    return render(request,"student_template/register_units.html",context)
+    return render(request,"student_template/units.html",context)
+
+
+def unit_registration(request):
+    student_obj = students.objects.get(admin=request.user.id)
+    subject_data = subject.objects.filter(course_id=student_obj.course_id)
+    Stage = semester.objects.all()
+    context = {
+        "Stage":Stage,
+        "student_obj":student_obj,
+        "subject_data":subject_data,
+    }
+    return render(request,"student_template/unit_registration.html", context)
+
+@csrf_exempt
+def get_units(request):
+    stage_id=request.POST.get("stage")
+    student_obj = students.objects.get(admin=request.user.id)
+    Subject = subject.objects.filter(course_id=student_obj.course_id,stage_id=stage_id)
+    list_data = []
+    for Subject in Subject:
+        Student = students.objects.get(admin=request.user.id)
+        data_small = {"id":Subject.id,"No":Student.admin.id,"code":Subject.code,"name":Subject.subject_name+""}
+        list_data.append(data_small)
+    return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
+
+
+@csrf_exempt
+def save_units_data(request):
+    student_ids=request.POST.get("student_ids")
+    stage_id=request.POST.get("stage_id")
+    student_id=request.POST.get("student_id")
+    stage_model = semester.objects.get(id=stage_id)
+    Student = CustomUser.objects.get(id=student_id)
+    json_student = json.loads(student_ids)
+    try:
+        Attendance=unitregistration(semester_id=stage_model,student_id=Student)
+        Attendance.save()
+        for stud in json_student:
+            subjects = subject.objects.get(id=stud['id'])
+            attendance_report=registrationreport(subject_id=subjects,student_id=Student,unit_id=Attendance,status=stud['status'])
+            attendance_report.save()
+        return HttpResponse("OK")
+    except:
+        return HttpResponse("ERR")
+
+def deregister(request,id):
+    # register = CustomUser.objects.get(id=id)
+    if request.method == "POST":
+        register=registrationreport(status=0)
+        register.save()
+        return HttpResponseRedirect(reverse('Units'))
+    return render(request, "student_template/deregister.html")

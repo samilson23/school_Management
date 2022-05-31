@@ -41,15 +41,15 @@
               </p>
             </a>
           </li>
-<!--          <li class="nav-item">-->
-<!--            {% url 'unit_registration' as unit_registration %}-->
-<!--            <a href="{{ unit_registration }}" class="nav-link {% if request.path == unit_registration %} active {% endif %} ">-->
-<!--              <i class="nav-icon fas fa-plus-circle"></i>-->
-<!--              <p>-->
-<!--                Register Units-->
-<!--              </p>-->
-<!--            </a>-->
-<!--          </li>-->
+          <li class="nav-item">
+            {% url 'unit_registration' as unit_registration %}
+            <a href="{{ unit_registration }}" class="nav-link {% if request.path == unit_registration %} active {% endif %} ">
+              <i class="nav-icon fas fa-plus-circle"></i>
+              <p>
+                Register Units
+              </p>
+            </a>
+          </li>
           <li class="nav-item">
             {% url 'student_view_result' as student_view_result %}
             <a href="{{ student_view_result }}" class="nav-link {% if request.path == student_view_result %} active {% endif %} ">
@@ -60,8 +60,8 @@
             </a>
           </li>
           <li class="nav-item">
-            {% url 'unit_registration' as unit_registration %}
-            <a href="{{ unit_registration }}" class="nav-link {% if request.path == unit_registration %} active {% endif %} ">
+            {% url 'Units' as Units %}
+            <a href="{{ Units }}" class="nav-link {% if request.path == Units %} active {% endif %} ">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Units

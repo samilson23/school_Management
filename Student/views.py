@@ -7,6 +7,8 @@ from django.urls import reverse
 from Student.EmailBackend import EmailBackend
 import requests
 
+from Student.models import staff
+
 
 def showLoginPage(request):
     return render(request,"login.html")

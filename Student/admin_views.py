@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
 from Student.filters import HodFilter, StaffFilter, StudentFilter
-from Student.models import CustomUser, hod, staff, students, attendancereport, units_registration, leavereportstudent, \
+from Student.models import CustomUser, hod, staff, students, attendancereport, leavereportstudent, \
     feedbackstudent, notificationstudent, StudentResult, subject, courses, attendance, leavereportstaff
 
 

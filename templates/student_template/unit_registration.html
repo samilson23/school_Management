@@ -1,0 +1,181 @@
+{% extends "student_template/base_template.html" %}
+{% block custom_css %}
+<style>
+.col-lg-4.attendance_div_green {
+    padding: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background: #388e3c;
+    border: 10px solid white;
+    text-align: left;
+    color: #fff;
+    border-radius: 30px;
+    box-shadow: 1px 1px 1px grey;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.col-lg-3.attendance_div_red {
+    padding: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background: #f44336;
+    border: 10px solid white;
+    text-align: center;
+    color: #fff;
+    border-radius: 30px;
+    box-shadow: 1px 1px 1px grey;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+</style>
+{% endblock custom_css %}
+{% block page_title %} Register Units {% endblock page_title %}
+{% load static %}
+{% block main_content %}
+<section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Register Units</h3>
+              </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <table class="table border">
+                                <tr>
+                                    <td class="text-bold">
+                                        Student Details
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-bold">Course:</td>
+                                    <td>{{ student_obj.course_id.course_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-bold">Name:</td>
+                                    <td>{{ student_obj.admin.first_name }}&nbsp;{{ student_obj.admin.last_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-bold">Reg No:</td>
+                                    <td>{{ student_obj.admin.username }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label>Stage</label>
+
+                            <select class="form-control"  name="stage" id="stage">
+                                {% for Stage in Stage %}
+                                  <option value="{{ Stage.id }}">{{ Stage.stage }}</option>
+                                {% endfor %}
+                                </select>
+                                {% for Stage in Stage %}
+                                    <input type="hidden" name="Students" id="Students" value="{{ student_obj.admin.id }}">
+                                {% endfor %}
+                          </div>
+                        </div>
+                    </div>
+                  <div class="form-group">
+                    {% if messages %}
+                      {% for message in messages %}
+                      {% if message.tags == 'error' %}
+                     <div class="alert alert-danger" style="margin-top:10px" >{{ message }}</div>
+                     {% endif %}
+                     {% if message.tags == 'success' %}
+                     <div class="alert alert-success" style="margin-top:10px" >{{ message }}</div>
+                     {% endif %}
+                     {% endfor %}
+                   {% endif %}
+                  </div>
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <button type="button" class="btn btn-primary btn-block " id="fetch_units">Fetch Units</button>
+                </div>
+                <div id="student_data" class="card-footer" ></div>
+            </div>
+          </div>
+        </div>
+            <!-- /.card -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
+{% block custom_js %}
+<script>
+  $(document).ready(function(){
+    $("#fetch_units").click(function(){
+      var stage=$("#stage").val();
+
+
+      $.ajax({
+        url:'{% url 'get_units' %}',
+        type:'POST',
+        data:{stage:stage},
+      })
+      .done(function(response){
+        var json_data=JSON.parse(response);
+        console.log(json_data)
+        var div_data="<div class='form-group'><div class='row'>";
+        for(key in json_data){
+            if(key!=null){
+                div_data+="<div class='col-lg-4 attendance_div_green'><div class='form-check'><table class='table'><tr><td><input type='checkbox' name='student_data[]' value='"+json_data[key]['id']+"'><input type='hidden' value='"+json_data[key]['No']+"'></td><td><label class='form-check-label text-bold'>"+json_data[key]['code']+":&nbsp;&nbsp;</label><label class='form-check-label'>"+json_data[key]['name']+"</label></td></tr></table></div></div>";
+            }else{
+                div_data+="<div class='col-lg-4 attendance_div_red'>No Units Found</div>"
+            }
+        }
+        div_data+="</div></div>";
+        div_data+="<div class='form-group'>";
+        div_data+="<button id='submit_units' class='btn btn-success btn-block' type='button'>Submit</button>";
+        div_data+="</div>";
+        $("#student_data").html(div_data);
+      })
+      .fail(function(){
+      alert("error in fetching Units")
+      })
+
+      $(document).on("click","#submit_units",function(){
+
+        $(this).attr("disabled","disabled")
+        $(this).text("Submitting Units...")
+
+        var student_data=$("input[name='student_data[]']" ).map(function(){
+          if($(this).is(":checked")){
+            return {"id":$(this).val(),"status":1};
+          }
+          else{
+            return {"id":$(this).val(),"status":0 };
+          }
+        }).get()
+        var stage_id=$("#stage").val();
+        var student_id=$("#Students").val();
+        student_data=JSON.stringify(student_data)
+        $.ajax({
+          url:'{% url 'save_units_data' %}',
+          type:'POST',
+          data:{student_ids:student_data,stage_id:stage_id,student_id:student_id},
+         })
+         .done(function(response){
+         console.log(response)
+         if(response=="OK"){
+          alert("Units successfully submitted")
+         }
+         else{
+          alert("Error in submitting units")
+         }
+         location.reload()
+        })
+      .fail(function(){
+      alert("error in Saving Units")
+      })
+    })
+  })
+})
+
+</script>
+{% endblock custom_js %}

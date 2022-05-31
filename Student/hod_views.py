@@ -9,7 +9,9 @@ from django.shortcuts import render
 from django.core.files.storage import FileSystemStorage
 from Student import admin
 from Student.forms import EditStudentForm
-from Student.models import CustomUser, attendance, attendancereport, courses, feedbackstaff, feedbackstudent, leavereportstaff, leavereportstudent, notificationstaff, notificationstudent, staff, subject, students,sessionmodel
+from Student.models import CustomUser, attendance, attendancereport, courses, feedbackstaff, feedbackstudent, \
+    leavereportstaff, leavereportstudent, notificationstaff, notificationstudent, staff, subject, students, \
+    sessionmodel, semester
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from .filters import CourseFilter,SubjectFilter,StudentFilter,StaffFilter
@@ -176,8 +178,9 @@ def add_student_save(request):
 
 def add_subject(request):
     course = courses.objects.all()
+    Stage = semester.objects.all()
     Staff = CustomUser.objects.filter(user_type=3)
-    return render(request, "Hod_template/add_subject_template.html", {"Staff": Staff,"course": course})
+    return render(request, "Hod_template/add_subject_template.html", {"Staff": Staff,"course": course,"Stage":Stage})
 
 def add_subject_save(request):
     if request.method!="POST":
@@ -188,11 +191,12 @@ def add_subject_save(request):
         course = courses.objects.get(id=course_id)
         staff_id = request.POST.get("staff")
         code = request.POST.get("code")
-        stage=request.POST.get("stage")
+        stage_id = request.POST.get("stage")
+        stage = semester.objects.get(id=stage_id)
         staff = CustomUser.objects.get(id=staff_id)
 
         # try:
-        subjects = subject(subject_name=subject_name,course_id=course,stage=stage,staff_id=staff,code=code)
+        subjects = subject(subject_name=subject_name,course_id=course,stage_id=stage,staff_id=staff,code=code)
         subjects.save()
         messages.success(request, "Successfully Added Subject")
         return HttpResponseRedirect(reverse("add_subject"))

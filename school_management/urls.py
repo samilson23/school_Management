@@ -122,6 +122,7 @@ urlpatterns = [
     path('student_view_result',student_views.student_view_result,name="student_view_result"),
     path('unit_registration',student_views.unit_registration,name="unit_registration"),
     path('get_units',student_views.get_units,name="get_units"),
+    path('units',student_views.units,name="units"),
     path('save_units_data',student_views.save_units_data,name="save_units_data"),
     path('deregister/<int:id>',student_views.deregister,name="deregister"),
     # path('staff_update_attendance', staffviews.staff_update_attendance, name="staff_update_attendance"),

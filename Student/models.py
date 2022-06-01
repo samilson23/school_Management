@@ -103,6 +103,7 @@ class registrationreport(models.Model):
     unit_id = models.ForeignKey(unitregistration, on_delete=models.CASCADE)
     subject_id = models.ForeignKey(subject, on_delete=models.CASCADE)
     student_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=6)
+    semester_id = models.ForeignKey(semester, on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)

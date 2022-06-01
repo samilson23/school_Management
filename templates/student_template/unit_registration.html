@@ -87,7 +87,7 @@
                 <!-- /.card-body -->
 
                 <div class="card-footer">
-                  <button type="button" class="btn btn-primary btn-block " id="fetch_units">Fetch Units</button>
+                    <button type="button" class="btn btn-primary btn-block " id="fetch_units">Fetch Units</button>
                 </div>
                 <div id="student_data" class="card-footer" ></div>
             </div>
@@ -111,11 +111,14 @@
         data:{stage:stage},
       })
       .done(function(response){
+        if(response=="Exists"){
+            alert("Semester Already Registered")
+        }
         var json_data=JSON.parse(response);
         console.log(json_data)
         var div_data="<div class='form-group'><div class='row'>";
         for(key in json_data){
-           div_data+="<div class='col-lg-4 attendance_div_green'><div class='form-check'><table class='table'><tr><td><input type='checkbox' name='student_data[]' value='"+json_data[key]['id']+"'></td><td><label class='form-check-label text-bold'>"+json_data[key]['code']+":&nbsp;&nbsp;</label><label class='form-check-label'>"+json_data[key]['name']+"</label></td></tr></table></div></div>";
+            div_data+="<div class='col-lg-4 attendance_div_green'><div class='form-check'><table class='table'><tr><td><input type='checkbox' name='student_data[]' value='"+json_data[key]['id']+"'></td><td><label class='form-check-label text-bold'>"+json_data[key]['code']+":&nbsp;&nbsp;</label><label class='form-check-label'>"+json_data[key]['name']+"</label></td></tr></table></div></div>";
         }
         div_data+="</div></div>";
         div_data+="<div class='form-group'>";

@@ -211,27 +211,29 @@ def student_view_result(request):
     return render(request,"student_template/results.html",{"studentresult":studentresult})
 
 def Units(request):
-    student_obj = CustomUser.objects.get(id=request.user.id)
-    subject_data = registrationreport.objects.filter(status=1,student_id=student_obj)
-    Myfilter = SubjectFilter(request.GET, queryset=subject_data)
-    subject_data = Myfilter.qs
-    paginator = Paginator(subject_data, 10)
-    page = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page)
-    page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
-    try:
-        subject_data = paginator.page(page)
-    except PageNotAnInteger:
-        subject_data = paginator.page(1)
-    except EmptyPage:
-        subject_data = paginator.page(paginator.num_pages)
-    context={
+    student_obj = students.objects.get(admin=request.user.id)
+    subject_data = subject.objects.filter(course_id=student_obj.course_id)
+    Stage = semester.objects.all()
+    reg = unitregistration.objects.filter(student_id=request.user.id)
+    context = {
+        "Stage":Stage,
+        "student_obj":student_obj,
         "subject_data":subject_data,
-        "page_obj":page_obj,
-        "page_range":page_range,
-        "Myfilter":Myfilter.form,
+        "reg":reg
     }
-    return render(request,"student_template/units.html",context)
+    return render(request,"student_template/units.html", context)
+
+@csrf_exempt
+def units(request):
+    stage_id = request.POST.get("stage")
+    student_obj = students.objects.get(admin=request.user.id)
+    subjects = subject.objects.filter(course_id=student_obj.course_id, stage_id=stage_id)
+    reg = registrationreport.objects.filter(student_id=request.user.id, semester_id=stage_id,status=1)
+    list_data = []
+    for Subject in reg:
+        data_small = {"id": Subject.id,"code": Subject.subject_id.code, "name": Subject.subject_id.subject_name}
+        list_data.append(data_small)
+    return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
 
 
 def unit_registration(request):
@@ -250,8 +252,10 @@ def get_units(request):
     stage_id=request.POST.get("stage")
     student_obj = students.objects.get(admin=request.user.id)
     Subject = subject.objects.filter(course_id=student_obj.course_id,stage_id=stage_id)
-    # student_unit = registrationreport.objects.filter(student_id=student_obj)
+    reg = unitregistration.objects.filter(student_id=request.user.id, semester_id=stage_id)
     list_data = []
+    if reg.exists():
+        return HttpResponse("Exists")
     for Subject in Subject:
         data_small = {"id": Subject.id,"code": Subject.code, "name": Subject.subject_name + ""}
         list_data.append(data_small)
@@ -271,7 +275,7 @@ def save_units_data(request):
         Attendance.save()
         for stud in json_student:
             subjects = subject.objects.get(id=stud['id'])
-            attendance_report=registrationreport(subject_id=subjects,student_id=Student,unit_id=Attendance,status=stud['status'])
+            attendance_report=registrationreport(subject_id=subjects,student_id=Student,unit_id=Attendance,status=stud['status'],semester_id=stage_model)
             attendance_report.save()
         return HttpResponse("OK")
     except:

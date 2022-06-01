@@ -23,8 +23,7 @@ def student_home(request):
     Attendance_present=attendancereport.objects.filter(student_id=student_obj,status=True).count()
     Attendance_absent=attendancereport.objects.filter(student_id=student_obj,status=False).count()
     course=courses.objects.get(id=student_obj.course_id.id)
-    subjects=subject.objects.filter(course_id=course).count()
-    # pic=students.objects.get("profile_pic")
+    subjects=registrationreport.objects.filter(student_id=request.user.id,status=1).count()
     subjects_data=subject.objects.filter(course_id=course)
     session_obj=sessionmodel.objects.get(id=student_obj.session_year_id.id)
     class_room=OnlineClassRoom.objects.filter(subjects__in=subjects_data,is_active=True,session_years=session_obj)
@@ -288,3 +287,39 @@ def deregister(request,id):
         register.save()
         return HttpResponseRedirect(reverse('Units'))
     return render(request, "student_template/deregister.html")
+
+def resit(request):
+    reg = unitregistration.objects.filter(student_id=request.user.id)
+    return render(request,"student_template/update_registration.html",{"reg":reg})
+
+@csrf_exempt
+def get_unregistered_units(request):
+    stage=request.POST.get("stage")
+    stage_id = unitregistration.objects.get(id=stage)
+    attendance_data = registrationreport.objects.filter(student_id=request.user.id,unit_id=stage_id)
+    list_data = []
+    for student in attendance_data:
+        data_small = {"id": student.subject_id.id,
+                      "name": student.subject_id.subject_name,
+                      "code":student.subject_id.code,
+                      "status": student.status}
+        list_data.append(data_small)
+    return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
+
+@csrf_exempt
+def save_update_units(request):
+    student_ids = request.POST.get("student_ids")
+    stage = request.POST.get("stage")
+    stage_id = unitregistration.objects.get(id=stage)
+    json_student = json.loads(student_ids)
+    # try:
+    for stud in json_student:
+        student = CustomUser.objects.get(id=request.user.id)
+        Subject = subject.objects.get(id=stud['id'])
+        attendance_report = registrationreport.objects.get(student_id=student,unit_id=stage_id,subject_id=Subject)
+        attendance_report.status = stud['status']
+        attendance_report.save()
+    return HttpResponse("OK")
+    # except:
+    #     return HttpResponse("ERR")
+

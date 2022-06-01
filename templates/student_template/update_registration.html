@@ -1,0 +1,151 @@
+{% extends 'student_template/base_template.html' %}
+{% block custom_css %}
+<style>
+.col-lg-4.attendance_div_green {
+    padding: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background: #388e3c;
+    border: 10px solid white;
+    text-align: left;
+    color: #fff;
+    border-radius: 30px;
+    box-shadow: 1px 1px 1px grey;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.col-lg-3.attendance_div_red {
+    padding: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background: #f44336;
+    border: 10px solid white;
+    text-align: center;
+    color: #fff;
+    border-radius: 30px;
+    box-shadow: 1px 1px 1px grey;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+</style>
+{% endblock custom_css %}
+{% block page_title %} Resit Registration {% endblock page_title %}
+{% load static %}
+{% block main_content %}
+<section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Resit Registration</h3>
+              </div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label>Subject</label>
+                    <select class="form-control"  name="stage" id="stage">
+                        {% for subject in reg %}
+                          <option value="{{ subject.id }}">{{ subject.semester_id.stage }}</option>
+                        {% endfor %}
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <button type="button" class="btn btn-primary btn-block " id="fetch_units">Fetch Units</button>
+                  </div>
+                  <div class="form-group">
+                      <div class="alert alert-danger" id="error_attendance" style="display:none">
+
+                      </div>    
+                  </div>
+                <!-- /.card-body -->
+                <div id="student_data" class="card-footer" ></div>
+            </div>
+          </div>
+        </div>
+            <!-- /.card -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
+{% block custom_js %}
+<script>
+  $(document).ready(function(){
+      $("#fetch_units").click(function(){
+
+          var stage=$("#stage").val()
+
+          $.ajax({
+              url:'{% url 'get_unregistered_units' %}',
+              type:'POST',
+              data:{stage:stage},
+          })
+          .done(function(response){
+              var json_data=JSON.parse(response);
+              var div_data="<div class='form-group'><label></label></div><div class='form-group'><div class='row'>";
+              for(key in json_data)
+              {
+                  div_data+="<div class='col-lg-4 attendance_div_green'><div class='form-check'><table class='table'><tr><td width='10px'><input type='checkbox' ";
+                  if(json_data[key]['status'])
+                  {
+                      div_data+="checked='checked'";
+                  }
+                  else{
+                      div_data+="";
+                  }
+                  div_data+="name='student_data[]' value='"+json_data[key]['id']+"'></td><td width='100px'><label class='form-check-label'>"+json_data[key]['code']+"</label></td><td width='150px'><label class='form-check-label'>"+json_data[key]['name']+"</label></td>";
+                  div_data+="</tr></table></div></div>";
+              }
+              div_data+="</div></div>";
+              div_data+="<div class='form-group'>";
+              div_data+="<button id='save_units' class='btn btn-success btn-block' type='button'>Submit</button>";
+              div_data+="</div>";
+
+              $("#student_data").html(div_data);
+
+          })
+          .fail(function(){
+              alert("Error in Fetching Student")
+          })
+
+       })
+
+       $(document).on("click","#save_units",function(){
+
+              $(this).attr("disabled","disabled")
+              $(this).text("Submitting Units...")
+              var student_data=$("input[name='student_data[]']").map(function(){
+                      if($(this).is(":checked")){
+                          return {"id":$(this).val(),"status":1};
+                      }
+                      else{
+                          return {"id":$(this).val(),"status":0};
+                      }
+               }).get()
+              var stage=$("#stage").val()
+              student_data=JSON.stringify(student_data)
+
+              $.ajax({
+                      url:'{% url 'save_update_units' %}',
+                      type:'POST',
+                      data:{student_ids:student_data,stage:stage},
+                  })
+                  .done(function(response){
+
+                      if(response=="OK"){
+                          alert("Units saved")
+                      }
+                      else{
+                          alert("Error in Submitting Units")
+                      }
+                      location.reload()
+                  })
+                  .fail(function(){
+                      alert("Error in Saving Units")
+                  })
+
+      })
+
+  })
+</script>
+{% endblock custom_js %}

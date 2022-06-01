@@ -29,7 +29,6 @@ def staff_home(request):
     Attendance_count=attendance.objects.filter(subject_id__in=Subjects).count()
     Staff=staff.objects.get(admin=request.user.id)
     leave_count=leavereportstaff.objects.filter(staff_id=Staff.id,leave_status=1).count()
-    # print(Subjects.count())
     subject_count=Subjects.count()
     
     subject_list=[]

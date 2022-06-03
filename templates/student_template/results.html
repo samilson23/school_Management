@@ -1,62 +1,129 @@
 {% extends 'student_template/base_template.html' %}
-{% block page_title %} RESULTS {% endblock page_title %}
+{% block custom_css %}
+<style>
+.col-lg-4.attendance_div_green {
+    padding: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background: #388e3c;
+    border: 10px solid white;
+    text-align: left;
+    color: #fff;
+    border-radius: 30px;
+    box-shadow: 1px 1px 1px grey;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.col-lg-3.attendance_div_red {
+    padding: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background: #f44336;
+    border: 10px solid white;
+    text-align: center;
+    color: #fff;
+    border-radius: 30px;
+    box-shadow: 1px 1px 1px grey;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+</style>
+{% endblock custom_css %}
+{% block page_title %} Resit Registration {% endblock page_title %}
 {% load static %}
 {% block main_content %}
 <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-6">
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title"> Results </h3>
+                <h3 class="card-title">Resit Registration</h3>
+                  <div class="card-tools">
+<!--                    <button type="button" class="btn btn-sm btn-success" id="exam">Transcript</button>-->
+                  </div>
               </div>
-            <div class="table">
-              <table class="table">
-                  <tr align="center">
-                      <th>CODE</th>
-                      <th>Subject</th>
-                      <th>Assignment Marks</th>
-                      <th>Exam Marks</th>
-                      <th>Status</th>
-                  </tr>
-                  {% for row in studentresult %}
-                  <tr align="center">
-                      <td>{{ row.subject_id.code }}</td>
-                      <td>{{ row.subject_id.subject_name }}</td>
-                      <td>{{ row.subject_assignment_marks }}</td>
-                      <td align="center">
-                        {% if row.subject_exam_marks >= 40 %}
-                         {{ row.subject_exam_marks }}
-                         <div class="progress progress-xs progress-striped active">
-                          <div class="progress-bar bg-success" style="width: {{ row.subject_exam_marks }}%"></div>
-                        </div>
-                        {% elif row.subject_exam_marks >= 35 %} 
-                         {{ row.subject_exam_marks }}
-                         <div class="progress progress-xs progress-striped active">
-                          <div class="progress-bar bg-warning" style="width: {{ row.subject_exam_marks }}%"></div>
-                        </div>
-                        {% else %}
-                        {{ row.subject_exam_marks }}
-                        <div class="progress progress-xs progress-striped active">
-                          <div class="progress-bar bg-danger" style="width: {{ row.subject_exam_marks }}%"></div>
-                        </div>
-                        {% endif %}
-                      </td>
-                      <td align="center">
-                          {% if row.subject_exam_marks >= 40 %}
-                            <span class="badge badge-success">PASS</span>
-                          {% else %}
-                            <span class="badge badge-danger">FAIL</span>
-                          {% endif %}
-                      </td>
-                  </tr>
-                  {% endfor %}
-              </table>
-            </div>
-           </div>
+              <div class="card-body">
+                  <div class="form-group">
+                    <label>Subject</label>
+                    <select class="form-control"  name="stage" id="stage">
+                        {% for subject in reg %}
+                          <option value="{{ subject.semester_id.id }}">{{ subject.semester_id.stage }}</option>
+                        {% endfor %}
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <button type="button" class="btn btn-primary btn-block " id="fetch_units">View Results</button>
+                  </div>
+                  <div class="form-group">
+                      <div class="alert alert-danger" id="error_attendance" style="display:none">
+
+                      </div>
+                  </div>
+              </div>
+          </div>
         </div>
-        </div>
- </section>
+      </div>
+      <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-6">
+                <div class="card"  id="student_data">
+                </div>
+              </div>
+          </div>
+      </div><!-- /.container-fluid -->
+</section>
     <!-- /.content -->
 {% endblock main_content %}
+{% block custom_js %}
+<script>
+  $(document).ready(function(){
+    $("#fetch_units").click(function(){
+      var stage=$("#stage").val();
+
+
+      $.ajax({
+        url:'{% url 'get_results' %}',
+        type:'POST',
+        data:{stage:stage},
+      })
+      .done(function(response){
+        var json_data=JSON.parse(response);
+        console.log(json_data)
+        if(json_data==""){
+            alert("Results Not Posted Yet")
+        }else{
+            var div_data="<div class='card-body'><div class='row'><div class='col-md-5'></div><div class='col-md-5'></div></div><div class='row'><div class='col-md-3'></div><div class='col-md-8'><h4 class='text-bold'>TRANSCRIPT</h4></div></div><div class='row'><table class='table text-bold' style='width:100%'><tr><td width='100px'>Stud. No</td><td>{{ student_obj.admin.username }}</td></tr><tr><td width='100px'>Name</td><td>{{ student_obj.admin.first_name }}&nbsp;&nbsp;{{ student_obj.admin.last_name }}</td></tr><tr><td width='100px'>Prog</td><td>{{ student_obj.course_id.course_name }}</td></tr><tr></table></div><div class='row'><table class='table' border='1' name='student_data[]' style='width:100%'><tr><th>Course Code</th><th>Description</th><th>Grade</th></tr>";
+            for(key in json_data){
+                div_data+="<tr value='"+json_data[key]['id']+"'><td>"+json_data[key]['code']+"</td><td>"+json_data[key]['name']+"</td>";
+                if(json_data[key]['marks']>=70){
+                    div_data+="<td>A</td>";
+                }
+                else if(json_data[key]['marks']>=60){
+                    div_data+="<td>B</td>";
+                }
+                else if(json_data[key]['marks']>=50){
+                    div_data+="<td>C</td>";
+                }
+                else if(json_data[key]['marks']>=40){
+                    div_data+="<td>D</td>";
+                }
+                else{
+                    div_data+="<td>E</td>";
+                }
+            }
+            div_data+="</tr></table></div></div>";
+            div_data+="<div class='form-group'>";
+            div_data+="</div>";
+            $("#student_data").html(div_data);
+        }
+      })
+      .fail(function(){
+        alert("error in fetching Results")
+      })
+    })
+  })
+
+</script>
+{% endblock custom_js %}

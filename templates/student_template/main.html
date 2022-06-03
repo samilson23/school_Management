@@ -1,0 +1,13 @@
+{% extends 'student_template/base.html' %}
+{% block title %}
+Results
+{% endblock title %}
+
+{% block content %}
+        {% for result in Obj %}
+            {{ result.student_id.admin.username }}
+            <a href="{% url 'Student:result-pdf-view' result.subject_id.id result.student_id.id %}"><button class="btn btn-primary">Pdf</button></a>
+            <br/>
+            <hr/>
+        {% endfor %}
+{% endblock content %}

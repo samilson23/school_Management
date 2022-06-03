@@ -259,7 +259,7 @@ def result_save(request):
             messages.success(request, "Results Updated")
             return HttpResponseRedirect(reverse("result_save"))
         else:    
-            result=StudentResult(subject_assignment_marks=assignment_marks,subject_exam_marks=exam_marks,student_id=student_obj,subject_id=subject_obj)
+            result=StudentResult(subject_assignment_marks=assignment_marks,subject_exam_marks=exam_marks,student_id=student_obj,subject_id=subject_obj,semester_id=subject_obj.stage_id)
             result.save()
             messages.success(request, "Results Saved")
             return HttpResponseRedirect(reverse("result_save"))

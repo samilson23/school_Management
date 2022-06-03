@@ -1,17 +1,20 @@
 import datetime
-
-from django.core.files.storage import FileSystemStorage
-from django.core.mail.backends import console
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 import json
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render
-from django.urls import reverse
-from django.contrib import messages
-from django.views.decorators.csrf import csrf_exempt
 
-from Student.filters import SubjectFilter
-from Student.forms import EditProfile
+from django.contrib import messages
+from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import render, get_object_or_404
+from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+import os
+from django.conf import settings
+from xhtml2pdf import pisa
+from django.contrib.staticfiles import finders
+from django.template.loader import get_template
+from django.views.generic import ListView
+
+
 from Student.models import OnlineClassRoom, StudentResult, feedbackstudent, leavereportstudent, notificationstudent, \
     sessionmodel, students, courses, subject, CustomUser, attendance, attendancereport, semester, unitregistration, \
     registrationreport
@@ -204,10 +207,32 @@ def student_all_notification(request):
 
 
 def student_view_result(request):
-    student=students.objects.get(admin=request.user.id)
-    studentresult=StudentResult.objects.filter(student_id=student.id)
-    # std = students.objects.get(admin=id)
-    return render(request,"student_template/results.html",{"studentresult":studentresult})
+    student_obj = students.objects.get(admin=request.user.id)
+    subject_data = subject.objects.filter(course_id=student_obj.course_id)
+    Stage = semester.objects.all()
+    reg = unitregistration.objects.filter(student_id=request.user.id)
+    context = {
+        "Stage": Stage,
+        "student_obj": student_obj,
+        "subject_data": subject_data,
+        "reg": reg
+    }
+    return render(request, "student_template/results.html", context)
+
+@csrf_exempt
+def get_results(request):
+    stage_id = request.POST.get("stage")
+    student_obj = students.objects.get(admin=request.user.id)
+    reg = StudentResult.objects.filter(student_id=student_obj,semester_id=stage_id)
+    list_data = []
+    for Subject in reg:
+        check_exist = registrationreport.objects.filter(status=1, student_id=request.user.id, semester_id=stage_id,subject_id=Subject.subject_id).exists()
+        if check_exist:
+            Sum = int(Subject.subject_exam_marks) + int(Subject.subject_assignment_marks)
+            data_small = {"id": Subject.id, "code": Subject.subject_id.code, "name": Subject.subject_id.subject_name,'marks':Sum}
+            list_data.append(data_small)
+    return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
+
 
 def Units(request):
     student_obj = students.objects.get(admin=request.user.id)
@@ -281,7 +306,6 @@ def save_units_data(request):
         return HttpResponse("ERR")
 
 def deregister(request,id):
-    # register = CustomUser.objects.get(id=id)
     if request.method == "POST":
         register=registrationreport(status=0)
         register.save()
@@ -312,14 +336,38 @@ def save_update_units(request):
     stage = request.POST.get("stage")
     stage_id = unitregistration.objects.get(id=stage)
     json_student = json.loads(student_ids)
-    # try:
-    for stud in json_student:
-        student = CustomUser.objects.get(id=request.user.id)
-        Subject = subject.objects.get(id=stud['id'])
-        attendance_report = registrationreport.objects.get(student_id=student,unit_id=stage_id,subject_id=Subject)
-        attendance_report.status = stud['status']
-        attendance_report.save()
-    return HttpResponse("OK")
-    # except:
-    #     return HttpResponse("ERR")
+    try:
+        for stud in json_student:
+            student = CustomUser.objects.get(id=request.user.id)
+            Subject = subject.objects.get(id=stud['id'])
+            attendance_report = registrationreport.objects.get(student_id=student,unit_id=stage_id,subject_id=Subject)
+            attendance_report.status = stud['status']
+            attendance_report.save()
+        return HttpResponse("OK")
+    except:
+        return HttpResponse("ERR")
 
+@csrf_exempt
+def Result_List_View(request, **kwargs):
+    Student = students.objects.get(admin=request.user.id)
+    Subject = subject.objects.filter(course_id=Student.course_id)
+    Obj = StudentResult.objects.filter(student_id=Student)
+    return render(request,'student_template/main.html',{"Obj":Obj})
+
+
+@csrf_exempt
+def render_pdf(request, *args, **kwargs):
+    # subject_id=kwargs.get('subject_id')
+    # student_id = kwargs.get('student_id')
+    # result = get_object_or_404(StudentResult)
+    template_path = 'student_template/result.html'
+    context = {'result': "result"}
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="report.pdf"'
+    template = get_template(template_path)
+    html = template.render(context)
+    pisa_status = pisa.CreatePDF(
+        html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('we had some errors <pre>' + html + '</pre>')
+    return response

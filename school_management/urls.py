@@ -19,6 +19,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
+# from Student.urls import render_pdf_view
 from Student import views, hod_views, staffviews, student_views, admin_views
 from Student.EditResultViewClass import EditResultViewClass
 from Student.admin_views import delete_hod
@@ -123,7 +124,9 @@ urlpatterns = [
     path('unit_registration',student_views.unit_registration,name="unit_registration"),
     path('get_units',student_views.get_units,name="get_units"),
     path('units',student_views.units,name="units"),
+    path('get_results',student_views.get_results,name="get_results"),
     path('resit',student_views.resit,name="resit"),
+    # path('view_result',student_views.view_result,name="view_result"),
     path('save_update_units',student_views.save_update_units,name="save_update_units"),
     path('get_unregistered_units',student_views.get_unregistered_units,name="get_unregistered_units"),
     path('save_units_data',student_views.save_units_data,name="save_units_data"),
@@ -151,5 +154,8 @@ urlpatterns = [
     path('Student',admin_views.Student,name="Student"),
     path('Admin',admin_views.Admin,name="Admin"),
     path('admin_save',admin_views.admin_save,name="admin_save"),
+
+    # pdf
+    path('render_pdf',student_views.render_pdf,name="render_pdf")
 
     ]+static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

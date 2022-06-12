@@ -15,8 +15,7 @@
                <table class="table">
                 <tr>
                   <th>ID</th>
-                  <th> Student Id</th>
-                  <th>Student Name</td>
+                  <th>Student Reg.No</td>
                   <th>Session</th>
                   <th>Message</th>
                   <th> Sent On</th>
@@ -25,8 +24,7 @@
                 {% for feedback in feedbacks %}
                  <tr>
                    <td> {{ feedback.id }} </td>
-                   <td> {{ feedback.student_id.admin.id }} </td>
-                   <td> {{ feedback.student_id.admin.first_name }}  {{ feedback.student_id.admin.last_name }} </td>
+                   <td> {{ feedback.student_id.admin.username }}</td>
                    <td> {{ feedback.student_id.session_year_id.session_start_year }} TO {{ feedback.student_id.session_year_id.session_end_year }} </td>
                    <td> {{ feedback.feedback }} </td>
                    <td> {{ feedback.created_at }} </td>

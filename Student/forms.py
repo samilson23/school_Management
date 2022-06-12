@@ -96,7 +96,7 @@ class EditResultForm(forms.Form):
         try:
             subjects=subject.objects.filter(staff_id=self.staff_id)
             for Subject in subjects:
-                subjects_single=(Subject.id,Subject.subject_name)
+                subjects_single=(Subject.id,Subject.code)
                 subject_list.append(subjects_single)
         except:
             subject_list=[] 
@@ -125,7 +125,7 @@ class EditProfile(forms.Form):
     last_name = forms.CharField(label="Lastname", max_length=50,
                                 widget=forms.TextInput(attrs={"class": "form-control","disabled":"disabled"}),required=False)
     username = forms.CharField(label="Username", max_length=50,
-                                widget=forms.TextInput(attrs={"class": "form-control","autocomplete":"off","disabled":"disabled"}),required=False)
+                               widget=forms.TextInput(attrs={"class": "form-control","autocomplete":"off","disabled":"disabled"}),required=False)
     password = forms.CharField(label="Id Number", max_length=50,
                                widget=forms.TextInput(attrs={"class": "form-control", "autocomplete": "off","placeholder":"Only Fill if you want to change your password"}),required=False)
     profile_pic = forms.FileField(label="Profile Pic", max_length=50,

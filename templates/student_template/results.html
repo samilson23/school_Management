@@ -29,7 +29,7 @@
 }
 </style>
 {% endblock custom_css %}
-{% block page_title %} Resit Registration {% endblock page_title %}
+{% block page_title %} Transcript {% endblock page_title %}
 {% load static %}
 {% block main_content %}
 <section class="content">
@@ -39,14 +39,14 @@
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Resit Registration</h3>
+                <h3 class="card-title">Transcript</h3>
                   <div class="card-tools">
 <!--                    <button type="button" class="btn btn-sm btn-success" id="exam">Transcript</button>-->
                   </div>
               </div>
               <div class="card-body">
                   <div class="form-group">
-                    <label>Subject</label>
+                    <label>Stage</label>
                     <select class="form-control"  name="stage" id="stage">
                         {% for subject in reg %}
                           <option value="{{ subject.semester_id.id }}">{{ subject.semester_id.stage }}</option>
@@ -96,22 +96,7 @@
         }else{
             var div_data="<div class='card-body'><div class='row'><div class='col-md-5'></div><div class='col-md-5'></div></div><div class='row'><div class='col-md-3'></div><div class='col-md-8'><h4 class='text-bold'>TRANSCRIPT</h4></div></div><div class='row'><table class='table text-bold' style='width:100%'><tr><td width='100px'>Stud. No</td><td>{{ student_obj.admin.username }}</td></tr><tr><td width='100px'>Name</td><td>{{ student_obj.admin.first_name }}&nbsp;&nbsp;{{ student_obj.admin.last_name }}</td></tr><tr><td width='100px'>Prog</td><td>{{ student_obj.course_id.course_name }}</td></tr><tr></table></div><div class='row'><table class='table' border='1' name='student_data[]' style='width:100%'><tr><th>Course Code</th><th>Description</th><th>Grade</th></tr>";
             for(key in json_data){
-                div_data+="<tr value='"+json_data[key]['id']+"'><td>"+json_data[key]['code']+"</td><td>"+json_data[key]['name']+"</td>";
-                if(json_data[key]['marks']>=70){
-                    div_data+="<td>A</td>";
-                }
-                else if(json_data[key]['marks']>=60){
-                    div_data+="<td>B</td>";
-                }
-                else if(json_data[key]['marks']>=50){
-                    div_data+="<td>C</td>";
-                }
-                else if(json_data[key]['marks']>=40){
-                    div_data+="<td>D</td>";
-                }
-                else{
-                    div_data+="<td>E</td>";
-                }
+                div_data+="<tr value='"+json_data[key]['id']+"'><td>"+json_data[key]['code']+"</td><td>"+json_data[key]['name']+"</td><td>"+json_data[key]['marks']+"</td>";
             }
             div_data+="</tr></table></div></div>";
             div_data+="<div class='form-group'>";

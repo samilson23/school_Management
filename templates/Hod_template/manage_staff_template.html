@@ -42,15 +42,27 @@
                   <tbody>
                   {% for staff in staf %}
                     <tr>
-                      <td>{{ staff.admin.id }}</td>
-                      <td>{{ staff.admin.first_name }}</td>
-                      <td>{{ staff.admin.last_name }}</td>
-                      <td>{{ staff.admin.username }}</td>
-                      <td>{{ staff.admin.email }}</td>
-                      <td>{{ staff.address }}</td>
-                      <td>{{ staff.admin.last_login }}</td>
-                      <td>{{ staff.admin.date_joined }}</td>
-                      <td><a href="/edit_staff/{{ staff.admin.id }}" class="btn btn-sm btn-success">Edit</a></td>
+                        {% if staff.admin.id == 3 %}
+<!--                            <td></td>-->
+<!--                            <td></td>-->
+<!--                            <td></td>-->
+<!--                            <td></td>-->
+<!--                            <td></td>-->
+<!--                            <td></td>-->
+<!--                            <td></td>-->
+<!--                            <td></td>-->
+<!--                            <td></td>-->
+                      {% else %}
+                          <td>{{ staff.admin.id }}</td>
+                          <td>{{ staff.admin.first_name }}</td>
+                          <td>{{ staff.admin.last_name }}</td>
+                          <td>{{ staff.admin.username }}</td>
+                          <td>{{ staff.admin.email }}</td>
+                          <td>{{ staff.address }}</td>
+                          <td>{{ staff.admin.last_login }}</td>
+                          <td>{{ staff.admin.date_joined }}</td>
+                          <td><a href="/edit_staff/{{ staff.admin.id }}" class="btn btn-sm btn-success">Edit</a></td>
+                      {% endif %}
                     </tr>
                   {% endfor %}
                   </tbody>

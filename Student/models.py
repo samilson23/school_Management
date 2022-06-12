@@ -61,9 +61,9 @@ class subject(models.Model):
     id = models.AutoField(primary_key=True)
     subject_name = models.CharField(max_length=250)
     code = models.CharField(max_length=250)
-    course_id = models.ForeignKey(courses,on_delete=models.CASCADE,default=1)
+    course_id = models.ForeignKey(courses,on_delete=models.SET_DEFAULT,default=1)
     stage_id = models.ForeignKey(semester,on_delete=models.SET_DEFAULT,default=1)
-    staff_id = models.ForeignKey(CustomUser,on_delete=models.SET_DEFAULT,default=0)
+    staff_id = models.ForeignKey(CustomUser,on_delete=models.SET_DEFAULT,default=3)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     objects=models.Manager()
@@ -83,9 +83,9 @@ class students(models.Model):
 
 class attendance(models.Model):
     id = models.AutoField(primary_key=True)
-    subject_id = models.ForeignKey(subject, on_delete=models.DO_NOTHING)
+    subject_id = models.ForeignKey(subject, on_delete=models.CASCADE)
     attendance_date = models.DateField(auto_now_add=False)
-    session_year_id = models.ForeignKey(sessionmodel, on_delete=models.CASCADE)
+    session_year_id = models.ForeignKey(sessionmodel, on_delete=models.DO_NOTHING)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True) 
     objects=models.Manager()
@@ -178,11 +178,12 @@ class notificationstaff(models.Model):
 
 class StudentResult(models.Model):
     id=models.AutoField(primary_key=True)
-    student_id=models.ForeignKey(students,on_delete=models.CASCADE)
+    student_id=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     subject_id=models.ForeignKey(subject,on_delete=models.CASCADE)
     semester_id=models.ForeignKey(semester,on_delete=models.CASCADE)
     subject_exam_marks=models.FloatField(default=0)
     subject_assignment_marks=models.FloatField(default=0)
+    grade = models.CharField(max_length=100)
     created_at=models.DateField(auto_now_add=True)
     updated_at=models.DateField(auto_now_add=True)
     objects=models.Manager()

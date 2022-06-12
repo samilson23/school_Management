@@ -13,7 +13,8 @@ from Student.models import CustomUser, hod, staff, students, attendancereport, l
 def home(request):
     student_count = students.objects.all().count()
     hod_count = hod.objects.all().count()
-    staff_count = staff.objects.all().count()
+    staff_count1 = staff.objects.all().count()
+    staff_count = int(staff_count1)-1
     course_count = courses.objects.all().count()
     subject_count = subject.objects.all().count()
 
@@ -47,7 +48,10 @@ def home(request):
         leaves = leavereportstaff.objects.filter(staff_id=Staff.id, leave_status=1).count()
         attendance_present_list_staff.append(Attendance)
         attendance_absent_list_staff.append(leaves)
-        staff_name_list.append(Staff.admin.username)
+        if Staff.admin.id == 3:
+            pass
+        else:
+            staff_name_list.append(Staff.admin.username)
 
     attendance_absent_list_student = []
     attendance_present_list_student = []
@@ -169,13 +173,16 @@ def Staff(request):
     return render(request,'admin_template/manage_staff.html',context)
 
 def delete_staff(request,id):
-    staf = staff.objects.get(admin=id)
-    staffUser = CustomUser.objects.get(id=id)
-    if request.method=="POST":
-        staf.delete()
-        staffUser.delete()
+    student = staff.objects.get(admin=id)
+    customuser = CustomUser.objects.get(id=id)
+    context = {
+        "student": student
+    }
+    if request.method == "POST":
+        student.delete()
+        customuser.delete()
         return HttpResponseRedirect(reverse('Staff'))
-    return render(request,"admin_template/delete_staff.html",{"staf":staf})
+    return render(request,"admin_template/delete_staff.html",context)
 
 def Student(request):
     student = students.objects.all()

@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.views import View
 
 from Student.forms import EditResultForm
-from Student.models import StudentResult, students, subject
+from Student.models import StudentResult, students, subject, CustomUser
 from django.contrib import messages
 
 class EditResultViewClass(View):
@@ -21,12 +21,25 @@ class EditResultViewClass(View):
             assignment_marks=form.cleaned_data["assignment_marks"] 
             exam_marks=form.cleaned_data["exam_marks"]
             subject_id=form.cleaned_data["subject_id"]
+            grade = float(assignment_marks) + float(exam_marks)
+            print(grade)
+            if grade >= 70:
+                Grade = "A"
+            elif grade >= 60:
+                Grade = "B"
+            elif grade >= 50:
+                Grade = "C"
+            elif grade >= 40:
+                Grade = "D"
+            elif grade < 40:
+                Grade = "E"
 
-            student_obj=students.objects.get(admin=student_admin_id)
+            student_obj=CustomUser.objects.get(id=student_admin_id)
             subject_obj=subject.objects.get(id=subject_id) 
             result=StudentResult.objects.get(subject_id=subject_obj,student_id=student_obj)
             result.subject_exam_marks=exam_marks
             result.subject_assignment_marks=assignment_marks
+            result.grade=Grade
             result.save()
             messages.success(request, "Results Successfully changed")
             return HttpResponseRedirect("/edit_student_result")

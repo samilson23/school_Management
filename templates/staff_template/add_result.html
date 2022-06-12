@@ -18,7 +18,7 @@
                       <label>Subject</label>
                       <select class="form-control"  name="subjects" id="subjects">
                           {% for subjects in subjects %}
-                            <option value="{{ subjects.id }}">{{ subjects.subject_name }}</option>
+                            <option value="{{ subjects.id }}">{{ subjects.code }}</option>
                           {% endfor %}
                       </select>
                     </div>

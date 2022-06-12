@@ -36,12 +36,13 @@ def student_home(request):
     subject_data=subject.objects.filter(course_id=student_obj.course_id)
     for Subjects in subject_data:
         Attendance=attendance.objects.filter(subject_id=Subjects.id)
-        Attendance_present_count=attendancereport.objects.filter(attendance_id__in=Attendance,status=True,student_id=student_obj.id).count()
-        Attendance_absent_count=attendancereport.objects.filter(attendance_id__in=Attendance,status=False,student_id=student_obj.id).count()
-        subject_name.append(Subjects.subject_name)
-        data_present.append(Attendance_present_count)
-        data_absent.append(Attendance_absent_count)
-
+        check_exists = registrationreport.objects.filter(status=1,subject_id=Subjects.id,student_id=student_obj.admin).exists()
+        if check_exists:
+            Attendance_present_count=attendancereport.objects.filter(attendance_id__in=Attendance,status=True,student_id=student_obj.id).count()
+            Attendance_absent_count=attendancereport.objects.filter(attendance_id__in=Attendance,status=False,student_id=student_obj.id).count()
+            subject_name.append(Subjects.code)
+            data_present.append(Attendance_present_count)
+            data_absent.append(Attendance_absent_count)
     context={
         "Attendance_total":Attendance_total,
         "Attendance_present":Attendance_present,
@@ -139,13 +140,16 @@ def student_feedback_save(request):
    else:
         feedback_msg = request.POST.get("feedback_msg")
         student_obj = students.objects.get(admin=request.user.id)
-        try:
-            feedback_obj = feedbackstudent(student_id=student_obj,feedback=feedback_msg,feedback_reply="")
-            feedback_obj.save()
-            messages.success(request, "Successfully Submitted Feedback")
-            return HttpResponseRedirect(reverse("student_feedback"))
-        except:
-            messages.error(request, "Failed To Submit Feedback")
+        if feedback_msg!="":
+            try:
+                feedback_obj = feedbackstudent(student_id=student_obj,feedback=feedback_msg,feedback_reply="")
+                feedback_obj.save()
+                messages.success(request, "Successfully Submitted Feedback")
+                return HttpResponseRedirect(reverse("student_feedback"))
+            except:
+                messages.error(request, "Failed To Submit Feedback")
+                return HttpResponseRedirect(reverse("student_feedback"))
+        else:
             return HttpResponseRedirect(reverse("student_feedback"))
 
 
@@ -222,15 +226,15 @@ def student_view_result(request):
 @csrf_exempt
 def get_results(request):
     stage_id = request.POST.get("stage")
-    student_obj = students.objects.get(admin=request.user.id)
+    student_obj = CustomUser.objects.get(id=request.user.id)
     reg = StudentResult.objects.filter(student_id=student_obj,semester_id=stage_id)
     list_data = []
     for Subject in reg:
-        check_exist = registrationreport.objects.filter(status=1, student_id=request.user.id, semester_id=stage_id,subject_id=Subject.subject_id).exists()
-        if check_exist:
-            Sum = int(Subject.subject_exam_marks) + int(Subject.subject_assignment_marks)
-            data_small = {"id": Subject.id, "code": Subject.subject_id.code, "name": Subject.subject_id.subject_name,'marks':Sum}
-            list_data.append(data_small)
+        # check_exist = registrationreport.objects.filter(status=1,semester_id=stage_id,student_id=request.user.id,subject_id=Subject.subject_id.id).exists()
+        # if check_exist:
+        Sum = int(Subject.subject_exam_marks) + int(Subject.subject_assignment_marks)
+        data_small = {"id": Subject.id, "code": Subject.subject_id.code, "name": Subject.subject_id.subject_name,"marks":Subject.grade}
+        list_data.append(data_small)
     return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
 
 
@@ -320,14 +324,17 @@ def resit(request):
 def get_unregistered_units(request):
     stage=request.POST.get("stage")
     stage_id = unitregistration.objects.get(id=stage)
-    attendance_data = registrationreport.objects.filter(student_id=request.user.id,unit_id=stage_id)
+    attendance_data = registrationreport.objects.filter(student_id=request.user.id,unit_id=stage_id,status=0)
+    student_id = CustomUser.objects.get(id=request.user.id)
     list_data = []
     for student in attendance_data:
-        data_small = {"id": student.subject_id.id,
-                      "name": student.subject_id.subject_name,
-                      "code":student.subject_id.code,
-                      "status": student.status}
-        list_data.append(data_small)
+        student_result = StudentResult.objects.filter(student_id=student_id,subject_id=student.subject_id,grade="E").exists()
+        if student_result:
+            data_small = {"id": student.subject_id.id,
+                          "name": student.subject_id.subject_name,
+                          "code":student.subject_id.code,
+                          "status": student.status}
+            list_data.append(data_small)
     return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
 
 @csrf_exempt

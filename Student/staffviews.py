@@ -1,4 +1,4 @@
-#from django.contrib.core import serializers
+
 from datetime import datetime
 import json
 from uuid import uuid4
@@ -9,8 +9,9 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
-from Student.models import Adminhod, CustomUser, OnlineClassRoom, StudentResult, attendance, attendancereport, courses, leavereportstaff, notificationstaff, staff, subject, sessionmodel, students, \
-    feedbackstaff
+from Student.models import Adminhod, CustomUser, OnlineClassRoom, StudentResult, attendance, attendancereport, courses, \
+    leavereportstaff, notificationstaff, staff, subject, sessionmodel, students, \
+    feedbackstaff, registrationreport
 from django.contrib import messages
 
 def staff_home(request):
@@ -35,7 +36,7 @@ def staff_home(request):
     attendance_list=[]
     for Subject in Subjects:
         Attendance_count1=attendance.objects.filter(subject_id=Subject.id).count()
-        subject_list.append(Subject.subject_name)
+        subject_list.append(Subject.code)
         attendance_list.append(Attendance_count1)
 
     student_attendance=students.objects.filter(course_id__in=final_course)
@@ -65,8 +66,10 @@ def get_students(request):
     student = students.objects.filter(course_id=Subject.course_id,session_year_id=session_model)
     list_data = []
     for student in student:
-        data_small = {"id":student.admin.id,"name":student.admin.username+""}
-        list_data.append(data_small)   
+        reg = registrationreport.objects.filter(student_id=student.admin.id,subject_id=Subject,status=1).exists()
+        if reg:
+            data_small = {"id":student.admin.id,"name":student.admin.username+""}
+            list_data.append(data_small)
     return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
 
 
@@ -174,13 +177,16 @@ def staff_feedback_save(request):
     else:
         feedback_msg = request.POST.get("feedback_msg")
         staff_obj = staff.objects.get(admin=request.user.id)
-        try:
-            feedback_obj = feedbackstaff(staff_id=staff_obj,feedback=feedback_msg,feedback_reply="")
-            feedback_obj.save()
-            messages.success(request, "Successfully Submitted Feedback")
-            return HttpResponseRedirect(reverse("staff_feedback"))
-        except:
-            messages.error(request, "Failed To Submit Feedback")
+        if feedback_msg!="":
+            try:
+                feedback_obj = feedbackstaff(staff_id=staff_obj,feedback=feedback_msg,feedback_reply="")
+                feedback_obj.save()
+                messages.success(request, "Successfully Submitted Feedback")
+                return HttpResponseRedirect(reverse("staff_feedback"))
+            except:
+                messages.error(request, "Failed To Submit Feedback")
+                return HttpResponseRedirect(reverse("staff_feedback"))
+        else:
             return HttpResponseRedirect(reverse("staff_feedback"))
 
 def staff_profile(request):
@@ -247,20 +253,50 @@ def result_save(request):
     exam_marks=request.POST.get("exam_marks")  
     subject_id=request.POST.get("subjects")
 
-    student_obj=students.objects.get(admin=student_admin_id)
+    student_obj=CustomUser.objects.get(id=student_admin_id)
     subject_obj=subject.objects.get(id=subject_id)
+    grade = float(assignment_marks) + float(exam_marks)
+    print(grade)
+    if grade >= 70:
+        Grade = "A"
+    elif grade >= 60:
+        Grade = "B"
+    elif grade >= 50:
+        Grade = "C"
+    elif grade >= 40:
+        Grade = "D"
+    elif grade < 40:
+        Grade = "E"
     try:
         check_exists=StudentResult.objects.filter(subject_id=subject_obj,student_id=student_obj).exists()
         if check_exists:
             result=StudentResult.objects.get(subject_id=subject_obj,student_id=student_obj)
+
             result.subject_exam_marks=exam_marks
             result.subject_assignment_marks=assignment_marks
+            if grade >= 70:
+                result.grade = "A"
+            elif grade >= 60:
+                result.grade = "B"
+            elif grade >= 50:
+                result.grade = "C"
+            elif grade >= 40:
+                result.grade = "D"
+            else:
+                result.grade="E"
             result.save()
+            # if result.grade:
+            reg = registrationreport.objects.get(student_id=student_obj,subject_id=subject_obj)
+            reg.status=0
+            reg.save()
             messages.success(request, "Results Updated")
             return HttpResponseRedirect(reverse("result_save"))
         else:    
-            result=StudentResult(subject_assignment_marks=assignment_marks,subject_exam_marks=exam_marks,student_id=student_obj,subject_id=subject_obj,semester_id=subject_obj.stage_id)
+            result=StudentResult(grade=Grade, subject_assignment_marks=assignment_marks,subject_exam_marks=exam_marks,student_id=student_obj,subject_id=subject_obj,semester_id=subject_obj.stage_id)
             result.save()
+            reg = registrationreport.objects.get(student_id=student_obj, subject_id=subject_obj)
+            reg.status = 0
+            reg.save()
             messages.success(request, "Results Saved")
             return HttpResponseRedirect(reverse("result_save"))
     except:
@@ -271,7 +307,7 @@ def result_save(request):
 def fetch_student_result(request):
     subject_id=request.POST.get("subject_id")
     student_id=request.POST.get("student_id")
-    student_obj=students.objects.get(admin=student_id)
+    student_obj=CustomUser.objects.get(id=student_id)
     result=StudentResult.objects.filter(subject_id=subject_id,student_id=student_obj.id).exists()
     if result:
         result=StudentResult.objects.get(subject_id=subject_id,student_id=student_obj.id)

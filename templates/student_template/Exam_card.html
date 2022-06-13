@@ -8,44 +8,44 @@
           <div class="card">
               <div class="card-header">
                   <div class="card-tools">
-                    <u><h1 class="text-bold" align="center">EXAMINATION CARD</h1></u>
+                    <u><h1 class="text-bold" style="padding-left:15;">EXAMINATION CARD</h1></u>
                   </div>
               </div>
            <div class="card-body">
              <table class="table" style="text-bold" width="100%">
                  <tr>
-                     <td width="100px">Course:</td>
-                     <td>{{ student_obj.course_id.course_name }}</td>
+                     <td width="60px" style="font-weight:bold;padding-bottom:.2;padding-top:.2;font-size:13px;">Course:</td>
+                     <td style="font-size:12px;padding-top:.2;padding-bottom:.2;">{{ student_obj.course_id.course_name }}</td>
                      <td rowspan="3"><img src="static{{student_obj.profile_pic}}" alt="profile_pic" class="brand-image img-square elevation-3" width="70px" align="middle"/></td>
                  </tr>
                  <tr>
-                     <td width="100px">Reg No:</td>
-                     <td>{{ student_obj.admin.username }}</td>
+                     <td width="60px" style="font-weight:bold;padding-bottom:.2;padding-top:.2;font-size:13px;">Reg No:</td>
+                     <td style="font-size:12px;padding-top:.2;padding-bottom:.2;">{{ student_obj.admin.username }}</td>
                  </tr>
                  <tr>
-                     <td width="100px">Name:</td>
-                     <td>{{ student_obj.admin.first_name }} {{ student_obj.admin.last_name }}</td>
+                     <td width="60px" style="font-weight:bold;padding-bottom:.2;padding-top:.2;font-size:13px;">Name:</td>
+                     <td style="font-size:12px;padding-top:.2;padding-bottom:.2;">{{ student_obj.admin.first_name }} {{ student_obj.admin.last_name }}</td>
                  </tr>
-             </table><br/>
-             <table class="table" border="1" width="70%">
+             </table>
+             <table class="table" border="1" width="70%" style="height:auto;">
                 <thead>
                     <tr>
-                      <th width="100px" align="left"><u>Code</u></th>
-                      <th width="100px" align="left"><u>Description</u></th>
-                      <th width="100px" align="left"><u>Signature</u></th>
+                      <th width="100px" align="left" style="padding-top:.2;font-size:12px;padding-left:.2;"><u>Code</u></th>
+                      <th width="100px" align="left" style="padding-top:.2;font-size:12px;padding-left:.2;"><u>Description</u></th>
+                      <th width="100px" align="left" style="padding-top:.2;font-size:12px;padding-left:.2;"><u>Signature</u></th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for student in student %}
                       <tr>
-                          <td width="100px" align="justify">{{ student.subject_id.code }}</td>
-                          <td width="300px" align="justify">{{ student.subject_id.subject_name }}</td>
+                          <td width="100px" style="padding-top:.2;font-size:12px;padding-left:.2;">{{ student.subject_id.code }}</td>
+                          <td width="300px" style="padding-top:.2;font-size:12px;padding-left:.2;">{{ student.subject_id.subject_name }}</td>
                           <td></td>
                       </tr>
                     {% endfor %}
                 </tbody>
              </table>
-            </div>
+           </div>
           </div>
         </div>
       </div>

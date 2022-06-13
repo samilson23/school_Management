@@ -1,34 +1,4 @@
 {% extends 'student_template/base_template.html' %}
-{% block custom_css %}
-<style>
-.col-lg-4.attendance_div_green {
-    padding: 10px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    background: #388e3c;
-    border: 10px solid white;
-    text-align: left;
-    color: #fff;
-    border-radius: 30px;
-    box-shadow: 1px 1px 1px grey;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-.col-lg-3.attendance_div_red {
-    padding: 10px;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    background: #f44336;
-    border: 10px solid white;
-    text-align: center;
-    color: #fff;
-    border-radius: 30px;
-    box-shadow: 1px 1px 1px grey;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-</style>
-{% endblock custom_css %}
 {% block page_title %} Transcript {% endblock page_title %}
 {% load static %}
 {% block main_content %}
@@ -41,26 +11,17 @@
               <div class="card-header">
                 <h3 class="card-title">Transcript</h3>
                   <div class="card-tools">
+                      <img src="{{ student_obj.profile_pic }}" class="brand-image img-square elevation-3" width="70px" />
                   </div>
               </div>
-              <div class="card-body">
-<!--                  <div class="form-group">-->
-<!--                    <label>Stage</label>-->
-<!--                    <select class="form-control"  name="stage" id="stage">-->
-<!--                        {% for subject in reg %}-->
-<!--                          <option value="{{ subject.semester_id.id }}">{{ subject.semester_id.stage }}</option>-->
-<!--                        {% endfor %}-->
-<!--                    </select>-->
-<!--                  </div>-->
-                  {% if reg %}
-                      <div class="form-group">
-                        <label>Transcript({{ student_obj.admin.username }})</label><br/>
-                          <a href="/render_pdf_view/transcript/transc/student_obj.id/student.semester_id"><button class="btn btn-primary">Open</button></a>
-                      </div>
-                  {% else %}
-                    <label>Results not posted</label>
-                  {% endif %}
-              </div>
+              {% if reg %}
+                <div class="card-body">
+                    <label>Transcript({{ student_obj.admin.username }})</label><br/>
+                    <a href="/render_pdf_view/transcript/result/student.id"><button class="btn btn-primary">Open</button></a>
+                </div>
+              {% else %}
+                <label>Results not posted</label>
+              {% endif %}
           </div>
         </div>
       </div><!-- /.container-fluid -->

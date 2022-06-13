@@ -381,24 +381,56 @@ def student_render_pdf_view(request,*args,**kwargs):
     student_obj = students.objects.get(admin=request.user.id)
     subjects = subject.objects.filter(course_id=student_obj.course_id)
     student = registrationreport.objects.filter(student_id=id,status=1)
+    # semesters = semester.objects.filter(id=student)
     template_path = 'student_template/Exam_card.html'
     context = {'student': student,
-               'student_obj':student_obj
+               'student_obj':student_obj,
                }
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=''Exam_Card-'+id.username+'.pdf'
     template = get_template(template_path)
     html = template.render(context)
     pisa_status = pisa.CreatePDF(
-        html, dest=response)
+        html, dest=response,link_callback=link_callback)
     if pisa_status.err:
         return HttpResponse('we had some errors <pre>' + html + '</pre>')
     return response
 
 def ResultListView(request):
     student=CustomUser.objects.get(id=request.user.id)
-    reg = StudentResult.objects.filter(student_id=request.user.id).exists()
-    return render(request,"student_template/results.html",{"reg":reg,"student":student})
+
+    return render(request,"student_template/results.html",{"student":student})
+
+def link_callback(uri, rel):
+    """
+    Convert HTML URIs to absolute system paths so xhtml2pdf can access those
+    resources
+    """
+    result = finders.find(uri)
+    if result:
+        if not isinstance(result, (list, tuple)):
+            result = [result]
+        result = list(os.path.realpath(path) for path in result)
+        path = result[0]
+    else:
+        sUrl = settings.STATIC_URL  # Typically /static/
+        sRoot = settings.STATIC_ROOT  # Typically /home/userX/project_static/
+        mUrl = settings.MEDIA_URL  # Typically /media/
+        mRoot = settings.MEDIA_ROOT  # Typically /home/userX/project_static/media/
+
+        if uri.startswith(mUrl):
+            path = os.path.join(mRoot, uri.replace(mUrl, ""))
+        elif uri.startswith(sUrl):
+            path = os.path.join(sRoot, uri.replace(sUrl, ""))
+        else:
+            return uri
+
+    # make sure that file exists
+    if not os.path.isfile(path):
+        raise Exception(
+            'media URI must start with %s or %s' % (sUrl, mUrl)
+        )
+    return path
 
 def student_render_result_view(request,*args,**kwargs):
     # stage_id = request.POST.get("stage")
@@ -420,3 +452,7 @@ def student_render_result_view(request,*args,**kwargs):
     if pisa_status.err:
         return HttpResponse('we had some errors <pre>' + html + '</pre>')
     return response
+
+
+
+

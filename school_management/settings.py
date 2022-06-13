@@ -138,7 +138,7 @@ STATICFILES_DIRS = (
 )
     
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR,"media")
+MEDIA_ROOT = os.path.join(BASE_DIR,"static/media")
 
 AUTHENTICATION_BACKENDS = ['Student.EmailBackend.EmailBackend']
 EMAIL_BACKEND="django.core.mail.backends.filebased.EmailBackend"

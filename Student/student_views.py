@@ -251,17 +251,13 @@ def Units(request):
     }
     return render(request,"student_template/units.html", context)
 
-@csrf_exempt
+
 def units(request):
     stage_id = request.POST.get("stage")
     student_obj = students.objects.get(admin=request.user.id)
-    subjects = subject.objects.filter(course_id=student_obj.course_id, stage_id=stage_id)
-    reg = registrationreport.objects.filter(student_id=request.user.id, semester_id=stage_id,status=1)
-    list_data = []
-    for Subject in reg:
-        data_small = {"id": Subject.id,"code": Subject.subject_id.code, "name": Subject.subject_id.subject_name}
-        list_data.append(data_small)
-    return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
+    # subjects = subject.objects.filter(course_id=student_obj.course_id, stage_id=stage_id)
+    reg = registrationreport.objects.filter(student_id=request.user.id,status=1)
+    return render(request,"student_template/Exam_card.html", {"reg": reg})
 
 
 def unit_registration(request):
@@ -362,12 +358,11 @@ def Result_List_View(request, **kwargs):
     return render(request,'student_template/main.html',{"Obj":Obj})
 
 
-@csrf_exempt
 def render_pdf(request, *args, **kwargs):
     # subject_id=kwargs.get('subject_id')
     # student_id = kwargs.get('student_id')
     # result = get_object_or_404(StudentResult)
-    template_path = 'student_template/result.html'
+    template_path = 'student_template/Exam_card.html'
     context = {'result': "result"}
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'filename="report.pdf"'

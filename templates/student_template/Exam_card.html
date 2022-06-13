@@ -1,0 +1,32 @@
+{% block page_title %} Exam Card {% endblock page_title %}
+{% load static %}
+{% load i18n %}
+{% block main_content %}
+<section class="content">
+      <div class="row">
+        <div class="col-6">
+          <div class="card">
+           <div class="card-body table-responsive p-0">
+             <table class="table" border="1">
+                <thead>
+                <tr role="row">
+                  <th>Code</th>
+                  <th>Description</th>
+                  <th>Signature</th>
+                </thead>
+                <tbody>
+                {% for student in reg %}
+                  <tr>
+                      <td>{{ student.subject_id.code }}</td>
+                      <td>{{ student.subject_id.subject_name }}</td>
+                      <td></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+             </table>
+            </div>
+          </div>
+        </div>
+      </div>
+</section>
+{% endblock main_content %}

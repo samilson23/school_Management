@@ -156,6 +156,6 @@ urlpatterns = [
     path('admin_save',admin_views.admin_save,name="admin_save"),
 
     # pdf
-    path('render_pdf',student_views.render_pdf,name="render_pdf")
+    path('render_pdf_view/',include('Student.urls',namespace='Student'))
 
     ]+static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

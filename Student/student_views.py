@@ -256,8 +256,8 @@ def units(request):
     stage_id = request.POST.get("stage")
     student_obj = students.objects.get(admin=request.user.id)
     # subjects = subject.objects.filter(course_id=student_obj.course_id, stage_id=stage_id)
-    reg = registrationreport.objects.filter(student_id=request.user.id,status=1)
-    return render(request,"student_template/Exam_card.html", {"reg": reg})
+    reg = registrationreport.objects.filter(student_id=request.user.id,status=1).exists()
+    return render(request,"student_template/Exam_card.html", {"reg": reg,"student_obj":student_obj})
 
 
 def unit_registration(request):
@@ -358,14 +358,61 @@ def Result_List_View(request, **kwargs):
     return render(request,'student_template/main.html',{"Obj":Obj})
 
 
-def render_pdf(request, *args, **kwargs):
-    # subject_id=kwargs.get('subject_id')
-    # student_id = kwargs.get('student_id')
-    # result = get_object_or_404(StudentResult)
+# def render_pdf(request):
+#     template_path = 'student_template/Exam_card.html'
+#     context = {'result':"result"}
+#     response = HttpResponse(content_type='application/pdf')
+#     response['Content-Disposition'] = 'filename="report.pdf"'
+#     template = get_template(template_path)
+#     html = template.render(context)
+#     pisa_status = pisa.CreatePDF(
+#         html, dest=response)
+#     if pisa_status.err:
+#         return HttpResponse('we had some errors <pre>' + html + '</pre>')
+#     return response
+
+def CustomerListView(request):
+    student=CustomUser.objects.get(id=request.user.id)
+    reg = registrationreport.objects.filter(student_id=request.user.id).exists()
+    return render(request,"student_template/units.html",{"reg":reg,"student":student})
+
+def student_render_pdf_view(request,*args,**kwargs):
+    id = CustomUser.objects.get(id=request.user.id)
+    student_obj = students.objects.get(admin=request.user.id)
+    subjects = subject.objects.filter(course_id=student_obj.course_id)
+    student = registrationreport.objects.filter(student_id=id,status=1)
     template_path = 'student_template/Exam_card.html'
-    context = {'result': "result"}
+    context = {'student': student,
+               'student_obj':student_obj
+               }
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="report.pdf"'
+    response['Content-Disposition'] = 'attachment; filename=''Exam_Card-'+id.username+'.pdf'
+    template = get_template(template_path)
+    html = template.render(context)
+    pisa_status = pisa.CreatePDF(
+        html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('we had some errors <pre>' + html + '</pre>')
+    return response
+
+def ResultListView(request):
+    student=CustomUser.objects.get(id=request.user.id)
+    reg = StudentResult.objects.filter(student_id=request.user.id).exists()
+    return render(request,"student_template/results.html",{"reg":reg,"student":student})
+
+def student_render_result_view(request,*args,**kwargs):
+    # stage_id = request.POST.get("stage")
+    # stage = semester.objects.filter(id=stage_id)
+    id = CustomUser.objects.get(id=request.user.id)
+    student_obj = students.objects.get(admin=request.user.id)
+    # subjects = subject.objects.filter(course_id=student_obj.course_id)
+    student = StudentResult.objects.filter(student_id=id)
+    template_path = 'student_template/transcript.html'
+    context = {'student': student,
+               'student_obj':student_obj
+               }
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=''Transcript-'+id.username+'.pdf'
     template = get_template(template_path)
     html = template.render(context)
     pisa_status = pisa.CreatePDF(

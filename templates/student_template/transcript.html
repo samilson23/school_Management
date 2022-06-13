@@ -7,7 +7,7 @@
         <div class="col-12">
           <div class="card">
               <div class="card-header"><u>
-                 <h1 class="text-bold" align="center">EXAMINATION CARD</h1></u>
+                 <h1 class="text-bold" align="center">TRANSCRIPT</h1></u>
               </div>
            <div class="card-body">
              <div class="row">
@@ -35,7 +35,7 @@
                     <tr>
                       <th width="100px" align="left"><u>Code</u></th>
                       <th width="100px" align="left"><u>Description</u></th>
-                      <th width="100px" align="left"><u>Signature</u></th>
+                      <th width="100px" align="left"><u>Grade</u></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,7 +43,7 @@
                       <tr>
                           <td width="100px">{{ student.subject_id.code }}</td>
                           <td width="300px">{{ student.subject_id.subject_name }}</td>
-                          <td></td>
+                          <td>{{ student.grade }}</td>
                       </tr>
                     {% endfor %}
                 </tbody>

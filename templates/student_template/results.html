@@ -41,74 +41,29 @@
               <div class="card-header">
                 <h3 class="card-title">Transcript</h3>
                   <div class="card-tools">
-<!--                    <button type="button" class="btn btn-sm btn-success" id="exam">Transcript</button>-->
                   </div>
               </div>
               <div class="card-body">
-                  <div class="form-group">
-                    <label>Stage</label>
-                    <select class="form-control"  name="stage" id="stage">
-                        {% for subject in reg %}
-                          <option value="{{ subject.semester_id.id }}">{{ subject.semester_id.stage }}</option>
-                        {% endfor %}
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <button type="button" class="btn btn-primary btn-block " id="fetch_units">View Results</button>
-                  </div>
-                  <div class="form-group">
-                      <div class="alert alert-danger" id="error_attendance" style="display:none">
-
+<!--                  <div class="form-group">-->
+<!--                    <label>Stage</label>-->
+<!--                    <select class="form-control"  name="stage" id="stage">-->
+<!--                        {% for subject in reg %}-->
+<!--                          <option value="{{ subject.semester_id.id }}">{{ subject.semester_id.stage }}</option>-->
+<!--                        {% endfor %}-->
+<!--                    </select>-->
+<!--                  </div>-->
+                  {% if reg %}
+                      <div class="form-group">
+                        <label>Transcript({{ student_obj.admin.username }})</label><br/>
+                          <a href="/render_pdf_view/transcript/transc/student_obj.id/student.semester_id"><button class="btn btn-primary">Open</button></a>
                       </div>
-                  </div>
+                  {% else %}
+                    <label>Results not posted</label>
+                  {% endif %}
               </div>
           </div>
         </div>
-      </div>
-      <div class="container-fluid">
-          <div class="row">
-              <div class="col-md-6">
-                <div class="card"  id="student_data">
-                </div>
-              </div>
-          </div>
       </div><!-- /.container-fluid -->
 </section>
     <!-- /.content -->
 {% endblock main_content %}
-{% block custom_js %}
-<script>
-  $(document).ready(function(){
-    $("#fetch_units").click(function(){
-      var stage=$("#stage").val();
-
-
-      $.ajax({
-        url:'{% url 'get_results' %}',
-        type:'POST',
-        data:{stage:stage},
-      })
-      .done(function(response){
-        var json_data=JSON.parse(response);
-        console.log(json_data)
-        if(json_data==""){
-            alert("Results Not Posted Yet")
-        }else{
-            var div_data="<div class='card-body'><div class='row'><div class='col-md-5'></div><div class='col-md-5'></div></div><div class='row'><div class='col-md-3'></div><div class='col-md-8'><h4 class='text-bold'>TRANSCRIPT</h4></div></div><div class='row'><table class='table text-bold' style='width:100%'><tr><td width='100px'>Stud. No</td><td>{{ student_obj.admin.username }}</td></tr><tr><td width='100px'>Name</td><td>{{ student_obj.admin.first_name }}&nbsp;&nbsp;{{ student_obj.admin.last_name }}</td></tr><tr><td width='100px'>Prog</td><td>{{ student_obj.course_id.course_name }}</td></tr><tr></table></div><div class='row'><table class='table' border='1' name='student_data[]' style='width:100%'><tr><th>Course Code</th><th>Description</th><th>Grade</th></tr>";
-            for(key in json_data){
-                div_data+="<tr value='"+json_data[key]['id']+"'><td>"+json_data[key]['code']+"</td><td>"+json_data[key]['name']+"</td><td>"+json_data[key]['marks']+"</td>";
-            }
-            div_data+="</tr></table></div></div>";
-            div_data+="<div class='form-group'>";
-            div_data+="</div>";
-            $("#student_data").html(div_data);
-        }
-      })
-      .fail(function(){
-        alert("error in fetching Results")
-      })
-    })
-  })
-
-</script>
-{% endblock custom_js %}

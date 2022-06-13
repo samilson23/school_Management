@@ -4,10 +4,8 @@ Results
 {% endblock title %}
 
 {% block content %}
-        {% for result in Obj %}
-            {{ result.student_id.admin.username }}
-            <a href="{% url 'Student:result-pdf-view' result.subject_id.id result.student_id.id %}"><button class="btn btn-primary">Pdf</button></a>
-            <br/>
-            <hr/>
-        {% endfor %}
+        {{student.username}}
+        <a href="{% url 'Student:student_render_pdf_view' student.id %}"><button class="btn btn-primary">Pdf</button></a>
+        <br/>
+        <hr/>
 {% endblock content %}

@@ -1,52 +1,92 @@
 {% block page_title %} {% endblock page_title %}
 {% load static %}
 {% load i18n %}
+{% block custom_css %}
+<style>
+    h1
+    {
+        padding-left:10;
+        font-weight: italic;
+        font-family: Georgia;
+    }
+</style>
+{% endblock custom_css %}
 {% block main_content %}
 <section class="content">
       <div class="row">
         <div class="col-12">
           <div class="card">
-              <div class="card-header">
-                 <u><h1 class="text-bold" style="padding-left:15;">TRANSCRIPT</h1></u>
-              </div>
            <div class="card-body">
-             <div class="row">
-                 <div class="col-5"></div>
-                 <div class="col-7">
-                     <img src="{{ student_obj.profile_pic }}" class="brand-image img-circle elevation-3" width="70px" />
-                 </div>
-             </div>
-             <table class="table text-bold" width="70%" >
+             <table width="100%">
                  <tr>
-                     <td width="60px" style="font-weight:bold;padding-bottom:.2;padding-top:.2;font-size:13px;">Course:</td>
-                     <td style="font-size:12px;padding-top:.2;padding-bottom:.2;">{{ student_obj.course_id.course_name }}</td>
+                     <td style="padding-left:7.05;font-weight:bold;font-family-Georgia;font-size:15px">SAMILSON SCHOOL</td>
                  </tr>
                  <tr>
-                     <td width="60px" style="font-weight:bold;padding-bottom:.2;padding-top:.2;font-size:13px;">Reg No:</td>
-                     <td style="font-size:12px;padding-top:.2;padding-bottom:.2;">{{ student_obj.admin.username }}</td>
-                 </tr>
-                 <tr>
-                     <td width="60px" style="font-weight:bold;padding-bottom:.2;padding-top:.2;font-size:13px;">Name:</td>
-                     <td style="font-size:12px;padding-top:.2;padding-bottom:.2;">{{ student_obj.admin.first_name }} {{ student_obj.admin.last_name }}</td>
+                     <td><h1>PROVISIONAL ACADEMIC TRANSCRIPT</h1></td>
                  </tr>
              </table>
-             <table class="table" border="1" width="70%">
-                <thead>
-                    <tr>
-                      <th width="100px" align="left" style="padding-top:.2;font-size:12px;padding-left:.2;"><u>Code</u></th>
-                      <th width="100px" align="left" style="padding-top:.2;font-size:12px;padding-left:.2;"><u>Description</u></th>
-                      <th width="100px" align="left" style="padding-top:.2;font-size:12px;padding-left:.2;"><u>Grade</u></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for student in student %}
-                      <tr>
-                          <td width="100px" style="padding-top:.2;font-size:12px;padding-left:.2;">{{ student.subject_id.code }}</td>
-                          <td width="300px" style="padding-top:.2;font-size:12px;padding-left:.2;">{{ student.subject_id.subject_name }}</td>
-                          <td width="100px" style="padding-top:.2;font-size:12px;padding-left:.2;">{{ student.grade }}</td>
-                      </tr>
-                    {% endfor %}
-                </tbody>
+             <table class="table" width="100%" border="1">
+                 <tr>
+                     <td colspan="3">
+                         <table width="100%">
+                             <tr>
+                                 <td width="60px" style="font-weight:bold;padding-left:.2;padding-bottom:.2;padding-top:.2;font-size:13px;">Stud No:</td>
+                                 <td style="font-size:12px;padding-top:.2;padding-left:.2;padding-bottom:.2;">{{ student_obj.admin.username }}</td>
+                             </tr>
+                             <tr>
+                                 <td width="60px" style="font-weight:bold;padding-bottom:.2;padding-left:.2;padding-top:.2;font-size:13px;">Name:</td>
+                                 <td style="font-size:12px;padding-top:.2;padding-bottom:.2;padding-left:.2;">{{ student_obj.admin.first_name }} {{ student_obj.admin.last_name }}</td>
+                             </tr>
+                             <tr>
+                                 <td width="60px" style="font-weight:bold;padding-left:.2;padding-bottom:.2;padding-top:.2;font-size:13px;">Prog:</td>
+                                 <td style="font-size:12px;padding-top:.2;padding-left:.2;padding-bottom:.2;">{{ student_obj.course_id.course_name }}</td>
+                             </tr>
+                         </table>
+                     </td>
+                 </tr>
+                 <tr>
+                      <td width="100px" align="left" style="font-family:Georgia;padding-top:.3;font-weight:bold;font-size:11px;padding-left:.2;">COURSE CODE</td>
+                      <td width="100px" align="left" style="font-family:Georgia;padding-top:.3;font-weight:bold;font-size:11px;padding-left:.2;">DESCRIPTION</td>
+                      <td width="100px" align="left" style="font-family:Georgia;padding-top:.3;font-weight:bold;font-size:11px;padding-left:.2;">GRADE</td>
+                 </tr>
+                 <tr>
+                     <td width="100px">
+                         <table>
+                             {% for student in student %}
+                                <tr>
+                                   <td width="100px" style="padding-top:.2;font-size:12px;padding-left:.2;">{{ student.subject_id.code }}</td>
+                                </tr>
+                             {% endfor %}
+                         </table>
+                     </td>
+                     <td width="300px">
+                         <table>
+                             {% for student in student %}
+                                <tr>
+                                   <td width="300px" style="padding-top:.2;font-size:12px;padding-left:.2;">{{ student.subject_id.subject_name }}</td>
+                                </tr>
+                             {% endfor %}
+                         </table>
+                     </td>
+                     <td width="100px">
+                         <table>
+                             {% for student in student %}
+                                <tr>
+                                   <td width="100px" style="padding-top:.2;font-size:12px;padding-left:.2;">{{ student.grade }}</td>
+                                </tr>
+                             {% endfor %}
+                         </table>
+                     </td>
+                 </tr>
+                 <tr>
+                   <td colspan="3">
+                       <table style="height:50px;">
+                           <tr>
+                               <td></td>
+                           </tr>
+                       </table>
+                   </td>
+                 </tr>
              </table>
             </div>
           </div>

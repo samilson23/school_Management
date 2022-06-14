@@ -10,11 +10,8 @@
             <div class="card card-primary">
               <div class="card-header">
                 <h3 class="card-title">Transcript</h3>
-                  <div class="card-tools">
-                      <img src="{{ student_obj.profile_pic }}" class="brand-image img-square elevation-3" width="70px" />
-                  </div>
               </div>
-              {% if reg %}
+              {% if reg > 0 %}
                 <div class="card-body">
                     <label>Transcript({{ student_obj.admin.username }})</label><br/>
                     <a href="/render_pdf_view/transcript/result/student.id"><button class="btn btn-primary">Open</button></a>

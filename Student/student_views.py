@@ -214,7 +214,7 @@ def student_view_result(request):
     student_obj = students.objects.get(admin=request.user.id)
     subject_data = subject.objects.filter(course_id=student_obj.course_id)
     Stage = semester.objects.all()
-    reg = unitregistration.objects.filter(student_id=request.user.id)
+    reg = StudentResult.objects.filter(student_id=request.user.id).count()
     context = {
         "Stage": Stage,
         "student_obj": student_obj,
@@ -242,7 +242,7 @@ def Units(request):
     student_obj = students.objects.get(admin=request.user.id)
     subject_data = subject.objects.filter(course_id=student_obj.course_id)
     Stage = semester.objects.all()
-    reg = unitregistration.objects.filter(student_id=request.user.id)
+    reg = unitregistration.objects.filter(student_id=request.user.id).count()
     context = {
         "Stage":Stage,
         "student_obj":student_obj,
@@ -373,7 +373,7 @@ def Result_List_View(request, **kwargs):
 
 def CustomerListView(request):
     student=CustomUser.objects.get(id=request.user.id)
-    reg = registrationreport.objects.filter(student_id=request.user.id).exists()
+    reg = registrationreport.objects.filter(status=1,student_id=student).count()
     return render(request,"student_template/units.html",{"reg":reg,"student":student})
 
 def student_render_pdf_view(request,*args,**kwargs):
@@ -381,13 +381,12 @@ def student_render_pdf_view(request,*args,**kwargs):
     student_obj = students.objects.get(admin=request.user.id)
     subjects = subject.objects.filter(course_id=student_obj.course_id)
     student = registrationreport.objects.filter(student_id=id,status=1)
-    # semesters = semester.objects.filter(id=student)
     template_path = 'student_template/Exam_card.html'
     context = {'student': student,
                'student_obj':student_obj,
                }
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename=''Exam_Card-'+id.username+'.pdf'
+    response['Content-Disposition'] = 'attachment; filename=''ExamCard-'+id.username+'.pdf'
     template = get_template(template_path)
     html = template.render(context)
     pisa_status = pisa.CreatePDF(
@@ -398,8 +397,8 @@ def student_render_pdf_view(request,*args,**kwargs):
 
 def ResultListView(request):
     student=CustomUser.objects.get(id=request.user.id)
-
-    return render(request,"student_template/results.html",{"student":student})
+    std = StudentResult.objects.filter(student_id=student).count()
+    return render(request,"student_template/results.html",{"student":student,"std":std})
 
 def link_callback(uri, rel):
     """
@@ -433,11 +432,8 @@ def link_callback(uri, rel):
     return path
 
 def student_render_result_view(request,*args,**kwargs):
-    # stage_id = request.POST.get("stage")
-    # stage = semester.objects.filter(id=stage_id)
     id = CustomUser.objects.get(id=request.user.id)
     student_obj = students.objects.get(admin=request.user.id)
-    # subjects = subject.objects.filter(course_id=student_obj.course_id)
     student = StudentResult.objects.filter(student_id=id)
     template_path = 'student_template/transcript.html'
     context = {'student': student,

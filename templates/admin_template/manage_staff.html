@@ -31,8 +31,8 @@
                       <th>ID</th>
                       <th>First Name</th>
                       <th>Last Name</th>
-                      <th>User Name</th>
-                      <th>Email</th>
+                      <th>Employee Id</th>
+                      <th>Username</th>
                       <th>Address</th>
                       <th>Last Login</th>
                       <th>Date Joined</th>
@@ -43,17 +43,8 @@
                   {% for staff in staf %}
                     <tr>
                       {% if staff.admin.id == 3 %}
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
-<!--                            <td></td>-->
                       {% else %}
-                          <td>{{ staff.admin.id }}</td>
+                          <td>{{ staff.id }}</td>
                           <td>{{ staff.admin.first_name }}</td>
                           <td>{{ staff.admin.last_name }}</td>
                           <td>{{ staff.admin.username }}</td>

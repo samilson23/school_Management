@@ -31,8 +31,8 @@
                       <th>ID</th>
                       <th>First Name</th>
                       <th>Last Name</th>
-                      <th>User Name</th>
-                      <th>Email</th>
+                      <th>Employee Id</th>
+                      <th>Username</th>
                       <th>Address</th>
                       <th>Last Login</th>
                       <th>Date Joined</th>
@@ -42,14 +42,13 @@
                   <tbody>
                   {% for Hod in HOD %}
                     <tr>
-                      <td>{{ Hod.admin.id }}</td>
+                      <td>{{ Hod.id }}</td>
                       <td>{{ Hod.admin.first_name }}</td>
                       <td>{{ Hod.admin.last_name }}</td>
                       <td>{{ Hod.admin.username }}</td>
                       <td>{{ Hod.admin.email }}</td>
                       <td>{{ Hod.address }}</td>
                       <td>{{ Hod.admin.last_login }}</td>
-<!--                      <td>{{ Hod.admin.password }}</td>-->
                       <td>{{ Hod.admin.date_joined }}</td>
                       <td>
                         <a href="/hod_edit/{{ Hod.admin.id }}" class="btn btn-sm btn-success">Reset Password</a>

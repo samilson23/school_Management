@@ -201,12 +201,15 @@ def staff_profile_save(request):
         last_name=request.POST.get("last_name")
         address=request.POST.get("address")
         password=request.POST.get("password")
+        email=request.POST.get("email")
         try:
             customuser=CustomUser.objects.get(id=request.user.id)
             customuser.first_name=first_name
             customuser.last_name=last_name
             if password != None and password!="":
                 customuser.set_password(password)
+            if email !=None and email != "":
+                customuser.email = email
             customuser.save()
             staffs=staff.objects.get(admin=customuser)
             staffs.address=address

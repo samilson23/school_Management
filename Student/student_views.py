@@ -164,6 +164,7 @@ def student_profile_save(request):
     else:
         address = request.POST.get("address")
         password = request.POST.get("password")
+        email = request.POST.get("email")
         if request.FILES.get('profile_pic', False):
             profile_pic = request.FILES['profile_pic']
             fs = FileSystemStorage()
@@ -177,7 +178,10 @@ def student_profile_save(request):
             customuser = CustomUser.objects.get(id=request.user.id)
             if password != None and password != "":
                 customuser.set_password(password)
-            customuser.save()
+                customuser.save()
+            if email !="":
+                customuser.email = email
+                customuser.save()
             student = students.objects.get(admin=customuser)
             student.address = address
             if profile_pic_url != None:

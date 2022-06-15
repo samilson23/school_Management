@@ -107,11 +107,18 @@ def add_hod_save(request):
         address = request.POST.get("address")
 
         try:
-            user = CustomUser.objects.create_user(username=user_name, email=email,
-                                                  first_name=first_name, last_name=last_name, user_type=2)
-            user.hod.address = address
-            user.set_password("changeme")
-            user.save()
+            if email=="":
+                user = CustomUser.objects.create_user(username=user_name, email=email,
+                                                      first_name=first_name, last_name=last_name, user_type=2)
+                user.hod.address = address
+                user.set_password("changeme")
+                user.save()
+            else:
+                user = CustomUser.objects.create_user(username=user_name, email=email,
+                                                      first_name=first_name, last_name=last_name, user_type=2)
+                user.hod.address = address
+                user.set_password("changeme")
+                user.save()
             messages.success(request, "Successfully Added HOD")
             return HttpResponseRedirect(reverse("add_hod"))
         except:

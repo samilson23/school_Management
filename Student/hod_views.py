@@ -115,18 +115,27 @@ def add_staff_save(request):
         email = request.POST.get("email")
         subject_id = request.POST.get("subject")
         address = request.POST.get("address")
-        # try:
-        user = CustomUser.objects.create_user(username=user_name,email=email,first_name=first_name, last_name=last_name,user_type=3)
-        user.set_password('changeme')
-        user.staff.address = address
-        # subjectss = subject.objects.get(id=subject_id)
-        # user.staff.subject_id=subjectss
-        user.save()
-        messages.success(request,"Successfully Added Staff")
-        return HttpResponseRedirect(reverse("add_staff"))
-    # except:
-        messages.error(request, "Failed to add Staff")
-        return HttpResponseRedirect(reverse("add_staff"))
+        try:
+            if email=="":
+                user = CustomUser.objects.create_user(username=user_name,email=email,first_name=first_name, last_name=last_name,user_type=3)
+                user.set_password('changeme')
+                user.staff.address = address
+                # subjectss = subject.objects.get(id=subject_id)
+                # user.staff.subject_id=subjectss
+                user.save()
+            else:
+                user = CustomUser.objects.create_user(username=user_name, email=email, first_name=first_name,
+                                                      last_name=last_name, user_type=3)
+                user.set_password('changeme')
+                user.staff.address = address
+                # subjectss = subject.objects.get(id=subject_id)
+                # user.staff.subject_id=subjectss
+                user.save()
+            messages.success(request,"Successfully Added Staff")
+            return HttpResponseRedirect(reverse("add_staff"))
+        except:
+            messages.error(request, "Failed to add Staff")
+            return HttpResponseRedirect(reverse("add_staff"))
 
 def add_course(request):
     return render(request, "Hod_template/add_course_template.html")
@@ -164,16 +173,28 @@ def add_student_save(request):
         sex = request.POST.get("sex")
 
         try:
-            user = CustomUser.objects.create_user(username=username, email=email,
-                                                  first_name=first_name, last_name=last_name, user_type=4)
-            user.students.address = address
-            course_obj = courses.objects.get(id=course_id)
-            user.students.course_id = course_obj
-            session = sessionmodel.objects.get(id=session_year_id)
-            user.students.session_year_id = session
-            user.students.gender = sex
-            user.set_password("changeme")
-            user.save()
+            if email=="":
+                user = CustomUser.objects.create_user(username=username, email=email,
+                                                      first_name=first_name, last_name=last_name, user_type=4)
+                user.students.address = address
+                course_obj = courses.objects.get(id=course_id)
+                user.students.course_id = course_obj
+                session = sessionmodel.objects.get(id=session_year_id)
+                user.students.session_year_id = session
+                user.students.gender = sex
+                user.set_password("changeme")
+                user.save()
+            else:
+                user = CustomUser.objects.create_user(username=username, email=email,
+                                                      first_name=first_name, last_name=last_name, user_type=4)
+                user.students.address = address
+                course_obj = courses.objects.get(id=course_id)
+                user.students.course_id = course_obj
+                session = sessionmodel.objects.get(id=session_year_id)
+                user.students.session_year_id = session
+                user.students.gender = sex
+                user.set_password("changeme")
+                user.save()
             messages.success(request, "Successfully Added Student")
             return HttpResponseRedirect(reverse("add_student"))
 
@@ -666,12 +687,15 @@ def admin_profile_save(request):
         first_name=request.POST.get("first_name")
         last_name=request.POST.get("last_name")
         password=request.POST.get("password")
+        email=request.POST.get("email")
         try:
             customuser=CustomUser.objects.get(id=request.user.id)
             customuser.first_name=first_name
             customuser.last_name=last_name
             if password!=None and password!="":
                  customuser.set_password(password)
+            if email != None and email != "":
+                customuser.email = email
             customuser.save()
             messages.success(request, "Profile Changed")
             return HttpResponseRedirect(reverse("admin_profile"))

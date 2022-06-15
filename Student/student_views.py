@@ -209,12 +209,12 @@ def student_all_notification(request):
     notification=notificationstudent.objects.filter(student_id=student.id)
     return render(request,"student_template/Notifications.html",{"notification":notification}) 
 
-
+@csrf_exempt
 def student_view_result(request):
     student_obj = students.objects.get(admin=request.user.id)
     subject_data = subject.objects.filter(course_id=student_obj.course_id)
-    Stage = semester.objects.all()
     reg = StudentResult.objects.filter(student_id=request.user.id).count()
+    Stage = unitregistration.objects.filter(student_id=request.user.id).order_by('semester_id')
     context = {
         "Stage": Stage,
         "student_obj": student_obj,
@@ -313,7 +313,7 @@ def deregister(request,id):
     return render(request, "student_template/deregister.html")
 
 def resit(request):
-    reg = unitregistration.objects.filter(student_id=request.user.id)
+    reg = unitregistration.objects.filter(student_id=request.user.id).order_by('semester_id')
     return render(request,"student_template/update_registration.html",{"reg":reg})
 
 @csrf_exempt
@@ -373,13 +373,11 @@ def Result_List_View(request, **kwargs):
 
 def CustomerListView(request):
     student=CustomUser.objects.get(id=request.user.id)
-    reg = registrationreport.objects.filter(status=1,student_id=student).count()
-    return render(request,"student_template/units.html",{"reg":reg,"student":student})
+    return render(request,"student_template/units.html",{"student":student})
 
 def student_render_pdf_view(request,*args,**kwargs):
     id = CustomUser.objects.get(id=request.user.id)
     student_obj = students.objects.get(admin=request.user.id)
-    subjects = subject.objects.filter(course_id=student_obj.course_id)
     student = registrationreport.objects.filter(student_id=id,status=1)
     template_path = 'student_template/Exam_card.html'
     context = {'student': student,
@@ -397,8 +395,7 @@ def student_render_pdf_view(request,*args,**kwargs):
 
 def ResultListView(request):
     student=CustomUser.objects.get(id=request.user.id)
-    std = StudentResult.objects.filter(student_id=student).count()
-    return render(request,"student_template/results.html",{"student":student,"std":std})
+    return render(request,"student_template/results.html",{"student":student})
 
 def link_callback(uri, rel):
     """
@@ -434,13 +431,13 @@ def link_callback(uri, rel):
 def student_render_result_view(request,*args,**kwargs):
     id = CustomUser.objects.get(id=request.user.id)
     student_obj = students.objects.get(admin=request.user.id)
-    student = StudentResult.objects.filter(student_id=id)
+    student = StudentResult.objects.filter(student_id=id).order_by("-id")
     template_path = 'student_template/transcript.html'
     context = {'student': student,
-               'student_obj':student_obj
+               'student_obj':student_obj,
                }
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename=''Transcript-'+id.username+'.pdf'
+    response['Content-Disposition'] = 'filename=''Transcript-'+student_obj.admin.username+'.pdf'
     template = get_template(template_path)
     html = template.render(context)
     pisa_status = pisa.CreatePDF(

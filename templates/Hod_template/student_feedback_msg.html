@@ -7,45 +7,95 @@
         <div class="row">
           <div class="col-md-12">
             <!-- general form elements -->
-            <div class="card card-primary">
+            <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Student Feedback</h3>
+                <h3 class="card-title">Complaints</h3>
+                <div class="card-tools">
+                    <form method="get" class="form-inline ml-3">
+                        <div class="input-group input-group-sm border" style="width: 150px;">
+                            {{filters.student_id__admin__username}}
+                            <div class="input-group-append">
+                              <button class="btn" type="submit">
+                                <i class="fas fa-search"></i>
+                              </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
               </div>
               <div class="table">
-               <table class="table">
-                <tr>
-                  <th>ID</th>
-                  <th>Student Reg.No</td>
-                  <th>Session</th>
-                  <th>Message</th>
-                  <th> Sent On</th>
-                  <th>Reply</th>
-                </tr>
-                {% for feedback in feedbacks %}
-                 <tr>
-                   <td> {{ feedback.id }} </td>
-                   <td> {{ feedback.student_id.admin.username }}</td>
-                   <td> {{ feedback.student_id.session_year_id.session_start_year }} TO {{ feedback.student_id.session_year_id.session_end_year }} </td>
-                   <td> {{ feedback.feedback }} </td>
-                   <td> {{ feedback.created_at }} </td>
-                   <td>
-                      {% if feedback.feedback_reply == "" %}
-                        <button class="btn btn-success reply_open_modal" data-toggle="modal" data-target="#reply_modal">Reply</button>
-                      {% else %}
-                        {{ feedback.feedback_reply }}  
-                      {% endif %}
-                   </td>
-                   {% comment %} <td> <a href="{% url 'replystudent' %} {{ student.admin.id }}" class="btn btn-success">Edit</a></td> {% endcomment %}
-                 </tr>
-
-                {% endfor%}
-               </table>
+                   <table class="table">
+                        <tr>
+                          <th>ID</th>
+                          <th>Student Reg.No</td>
+                          <th>Session</th>
+                          <th>Message</th>
+                          <th> Sent On</th>
+                          <th>Reply</th>
+                        </tr>
+                        {% for feedback in feedbacks %}
+                         <tr>
+                           <td> {{ feedback.id }} </td>
+                           <td> {{ feedback.student_id.admin.username }}</td>
+                           <td> {{ feedback.student_id.session_year_id.session_start_year }} TO {{ feedback.student_id.session_year_id.session_end_year }} </td>
+                           <td> {{ feedback.feedback }} </td>
+                           <td> {{ feedback.created_at }} </td>
+                           <td>
+                              {% if feedback.feedback_reply == "" %}
+                                <button class="btn btn-success reply_open_modal" data-toggle="modal" data-target="#reply_modal">Reply</button>
+                              {% else %}
+                                {{ feedback.feedback_reply }}
+                              {% endif %}
+                           </td>
+                           {% comment %} <td> <a href="{% url 'replystudent' %} {{ student.admin.id }}" class="btn btn-success">Edit</a></td> {% endcomment %}
+                         </tr>
+                        {% endfor%}
+                   </table>
+              </div>
             </div>
-            <!-- /.card -->
-    </div>
-    
-  </div>
-  </div><!-- /.container-fluid -->
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="row">
+              <div class="col-lg-6">
+                  <div class="pagination">
+                      <span class="step-links">
+                          <span class="current">
+                               Page  {{ page_obj.number }}  of  {{ page_obj.paginator.num_pages }}.
+                          </span>
+                      </span>
+                  </div>
+              </div>
+              <div class="col-lg-6">
+                  {% if feedbacks.has_other_pages %}
+                    <ul class="pagination float-right">
+                        {% if feedbacks.has_previous %}
+                            <li class="paginate_button page-item"><a class="page-link" href="?page={{ feedbacks.previous_page_number }}" data-dt-idx="0" tabindex="0">Previous</a></li>
+                        {% else %}
+                            <li class="paginate_button page-item disabled"><a class="page-link" href="#" >Previous</a></li>
+                        {% endif %}
+                        {% for i in page_range|default_if_none:feedbacks.paginator.get_elided_page_range %}
+                            {% if page_obj.number == i %}
+                                <li class="paginate_button page-item active"><a class="page-link">{{ i }}<span class="sr-only">(current)</span></a></li>
+                            {% else %}
+                                {% if i == page_obj.paginator.ELLIPSIS %}
+                                    <li class="paginate_button page-item"><a class="page-link" href="#">{{ i }}</a></li>
+                                {% else %}
+                                    <li class="paginate_button page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if feedbacks.has_next %}
+                          <li class="page-item"><a class="page-link" href="?page={{ feedbacks.next_page_number }}" >Next</a></li>
+                        {% else %}
+                          <li class="page-item disabled"><a class="page-link" href="#" >Next</a></li>
+                        {% endif %}
+                    </ul>
+                  {% endif %}
+              </div>
+          </div>
+        </div>
+     </div>
 </section>
 <div class="modal fade" id="reply_modal" role="dialog">
   <div class="modal-dialog">

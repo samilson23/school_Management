@@ -7,5 +7,5 @@ urlpatterns = [
     path('pdf2/',CustomerListView,name="exam_list_view"),
     path('pdf2/pdf/<id>',student_render_pdf_view,name="exam_card_view"),
     path('transcript/',ResultListView,name="transcript_view"),
-    path('transcript/result/<id>',student_render_result_view,name="Trans"),
+    path('transcript/result/<id>/<stage_id>',student_render_result_view,name="Trans"),
 ]

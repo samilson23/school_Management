@@ -14,7 +14,8 @@ from Student.models import CustomUser, attendance, attendancereport, courses, fe
     sessionmodel, semester
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from .filters import CourseFilter,SubjectFilter,StudentFilter,StaffFilter
+from .filters import CourseFilter, SubjectFilter, StudentFilter, StaffFilter, StudentFeedbackFilter, \
+    StaffFeedbackFilter, StaffNotificationFilter
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 
 def admin_home(request):
@@ -516,13 +517,51 @@ def check_subject_code(request):
         return HttpResponse(False)
 
 def student_feedback_msg(request):
-    feedbacks=feedbackstudent.objects.all()
-    return render(request,"Hod_template/student_feedback_msg.html",{"feedbacks":feedbacks})
+    feedbacks = feedbackstudent.objects.all().order_by("-created_at")
+    filters = StudentFeedbackFilter(request.GET, queryset=feedbacks)
+    feedbacks = filters.qs
+    paginator = Paginator(feedbacks, 10)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
+    try:
+        feedbacks = paginator.page(page)
+    except PageNotAnInteger:
+        feedbacks = paginator.page(1)
+    except EmptyPage:
+        feedbacks = paginator.page(paginator.num_pages)
+
+    context = {
+        "feedbacks":feedbacks,
+        "filters":filters.form,
+        "page_range":page_range,
+        "page_obj":page_obj
+    }
+    return render(request,"Hod_template/student_feedback_msg.html",context)
 
 
 def staff_feedback_msg(request):
-    feedback=feedbackstaff.objects.all()
-    return render(request,"Hod_template/staff_feedback_msg.html",{"feedback":feedback})
+    feedback = feedbackstaff.objects.all().order_by("-created_at")
+    filters = StaffFeedbackFilter(request.GET, queryset=feedback)
+    feedback = filters.qs
+    paginator = Paginator(feedback, 10)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
+    try:
+        feedback = paginator.page(page)
+    except PageNotAnInteger:
+        feedback = paginator.page(1)
+    except EmptyPage:
+        feedback = paginator.page(paginator.num_pages)
+
+    context = {
+        "feedback":feedback,
+        "filters":filters.form,
+        "page_range":page_range,
+        "page_obj":page_obj
+    }
+    return render(request,"Hod_template/staff_feedback_msg.html",context)
 
 @csrf_exempt
 def student_feedback_msg_replied(request):
@@ -642,13 +681,50 @@ def admin_profile_save(request):
             
 
 def admin_send_notification_student(request):
-    student=students.objects.all()
-    return render(request,"Hod_template/student_notification.html",{"student":student})
+    student = students.objects.all()
+    filters = StudentFilter(request.GET, queryset=student)
+    student = filters.qs
+    paginator = Paginator(student, 10)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
+    try:
+        student = paginator.page(page)
+    except PageNotAnInteger:
+        student = paginator.page(1)
+    except EmptyPage:
+        student = paginator.page(paginator.num_pages)
+    context = {
+        "student": student,
+        "page_obj": page_obj,
+        "page_range": page_range,
+        "filters": filters.form
+    }
+    return render(request,"Hod_template/student_notification.html",context)
 
 
 def admin_send_notification_staff(request):
-    staffs=staff.objects.all()
-    return render(request,"Hod_template/staff_notification.html",{"staffs":staffs}) 
+    staffs = staff.objects.all()
+    filters = StaffFilter(request.GET, queryset=staffs)
+    staffs = filters.qs
+    paginator = Paginator(staffs, 10)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
+    try:
+        staffs = paginator.page(page)
+    except PageNotAnInteger:
+        staffs = paginator.page(1)
+    except EmptyPage:
+        staffs = paginator.page(paginator.num_pages)
+
+    context = {
+        "staffs":staffs,
+        "page_obj":page_obj,
+        "filters": filters.form,
+        "page_range":page_range,
+    }
+    return render(request,"Hod_template/staff_notification.html",context)
 
 @csrf_exempt
 def send_student_notification(request):

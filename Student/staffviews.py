@@ -66,8 +66,6 @@ def get_students(request):
     student = students.objects.filter(course_id=Subject.course_id,session_year_id=session_model)
     list_data = []
     for student in student:
-        reg = registrationreport.objects.filter(student_id=student.admin.id,subject_id=Subject,status=1).exists()
-        if reg:
             data_small = {"id":student.admin.id,"name":student.admin.username+""}
             list_data.append(data_small)
     return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
@@ -300,7 +298,7 @@ def result_save(request):
             messages.success(request, "Results Saved")
             return HttpResponseRedirect(reverse("result_save"))
     except:
-        messages.error(request, " Failed To upload Results")
+        messages.error(request, "Failed To upload Results")
         return HttpResponseRedirect(reverse("result_save")) 
 
 @csrf_exempt

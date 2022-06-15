@@ -3,7 +3,7 @@ from django_filters import CharFilter
 from django import forms
 # from django.utils.translation import ugettext as_
 from django.forms.utils import flatatt
-from .models import courses, subject, students, hod, staff
+from .models import courses, subject, students, hod, staff, feedbackstudent, feedbackstaff, notificationstaff
 
 
 class StudentFilter(django_filters.FilterSet):
@@ -37,3 +37,22 @@ class StaffFilter(django_filters.FilterSet):
     class Meta:
         model = staff
         fields = ['admin__username']
+
+
+class StudentFeedbackFilter(django_filters.FilterSet):
+    student_id__admin__username = django_filters.CharFilter(field_name='student_id__admin__username', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Search", "aria-label":"Search"}))
+    class Meta:
+        model = feedbackstudent
+        fields = ['student_id__admin__username']
+
+class StaffFeedbackFilter(django_filters.FilterSet):
+    staff_id__admin__username = django_filters.CharFilter(field_name='staff_id__admin__username', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Search", "aria-label":"Search"}))
+    class Meta:
+        model = feedbackstaff
+        fields = ['staff_id__admin__username']
+
+class StaffNotificationFilter(django_filters.FilterSet):
+    staff_id__admin__username = django_filters.CharFilter(field_name='staff_id__admin__username', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Search", "aria-label":"Search"}))
+    class Meta:
+        model = notificationstaff
+        fields = ['staff_id__admin__username']

@@ -11,17 +11,40 @@
               <div class="card-header">
                 <h3 class="card-title">Transcript</h3>
               </div>
-              {% if reg > 0 %}
                 <div class="card-body">
-                    <label>Transcript({{ student_obj.admin.username }})</label><br/>
-                    <a href="/render_pdf_view/transcript/result/student.id"><button class="btn btn-primary">Open</button></a>
+                    <select class="form-control" name="stage"  id="stage">
+                        {% for Stage in Stage %}
+                            <option value="{{ Stage.semester_id.id }}">{{ Stage.semester_id.stage }}</option>
+                        {% endfor %}
+                    </select><br/>
                 </div>
-              {% else %}
-                <label>Results not posted</label>
-              {% endif %}
+              <div class="card-footer">
+                    {% if reg > 0 %}
+                        <label>Transcript({{ student_obj.admin.username }})</label><br/>
+                        <a href="/render_pdf_view/transcript/result/student.student_id.id/student.semester_id.id"><button class="btn btn-primary">Open</button></a>
+                    {% else %}
+                        <label>Results not posted</label>
+                    {% endif %}
+              </div>
           </div>
         </div>
       </div><!-- /.container-fluid -->
 </section>
     <!-- /.content -->
 {% endblock main_content %}
+{% block custom_js %}
+<script>
+  $(document).ready(function(){
+      $("#id_subject_id").change(function(){
+        fetchstudents();
+    });
+    function fetchstudents(){
+      var stage=$("#stage").val();
+        $.ajax({
+          type:'POST',
+          data:{stage:stage},
+        })
+      }
+  })
+</script>
+{% endblock custom_js %}

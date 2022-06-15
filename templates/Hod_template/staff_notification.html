@@ -1,16 +1,24 @@
 {% extends 'Hod_template/base_template.html' %}
-{% block page_title %} Manage Staff {% endblock page_title %}
 {% load static %}
 {% block main_content %}
 <section class="content">
       <div class="container-fluid">
-       <div class="row">
+        <div class="row">
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title"> Staff Details</h3>
-
+                <h3 class="card-title">Send Notification</h3>
                 <div class="card-tools">
+                    <form method="get" class="form-inline ml-3">
+                        <div class="input-group input-group-sm border" style="width: 150px;">
+                            {{filters.admin__username}}
+                            <div class="input-group-append">
+                              <button class="btn" type="submit">
+                                <i class="fas fa-search"></i>
+                              </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
               </div>
               <!-- /.card-header -->
@@ -29,24 +37,65 @@
                   <tbody>
                   {% for staff in staffs %}
                     <tr>
-                      <td>{{ staff.admin.id }}</td>
-                      <td>{{ staff.admin.first_name }}</td>
-                      <td>{{ staff.admin.last_name }}</td>
-                      <td>{{ staff.admin.username }}</td>
-                      <td>{{ staff.admin.email }}</td>
-                      <td><a href="#" class="btn btn-sm btn-success show_notitification" data-toggle="modal" data-target="#myModal">Send Notification</a></td>
+                      {% if staff.admin.id == 3 %}
+                      {% else %}
+                        <td>{{ staff.admin.id }}</td>
+                        <td>{{ staff.admin.first_name }}</td>
+                        <td>{{ staff.admin.last_name }}</td>
+                        <td>{{ staff.admin.username }}</td>
+                        <td>{{ staff.admin.email }}</td>
+                        <td><a href="#" class="btn btn-sm btn-success show_notitification" data-toggle="modal" data-target="#myModal">Send Notification</a></td>
+                      {% endif %}
                     </tr>
                   {% endfor %}
                   </tbody>
                 </table>
               </div>
-              <!-- /.card-body -->
             </div>
-            <!-- /.card -->
           </div>
         </div>
-      </div><!-- /.container-fluid -->
-    </section>
+        <div class="card-footer">
+          <div class="row">
+              <div class="col-lg-6">
+                  <div class="pagination">
+                      <span class="step-links">
+                          <span class="current">
+                               Page  {{ page_obj.number }}  of  {{ page_obj.paginator.num_pages }}.
+                          </span>
+                      </span>
+                  </div>
+              </div>
+              <div class="col-lg-6">
+                  {% if staffs.has_other_pages %}
+                    <ul class="pagination float-right">
+                        {% if staffs.has_previous %}
+                            <li class="paginate_button page-item"><a class="page-link" href="?page={{ staffs.previous_page_number }}" data-dt-idx="0" tabindex="0">Previous</a></li>
+                        {% else %}
+                            <li class="paginate_button page-item disabled"><a class="page-link" href="#" >Previous</a></li>
+                        {% endif %}
+                        {% for i in page_range|default_if_none:staffs.paginator.get_elided_page_range %}
+                            {% if page_obj.number == i %}
+                                <li class="paginate_button page-item active"><a class="page-link">{{ i }}<span class="sr-only">(current)</span></a></li>
+                            {% else %}
+                                {% if i == page_obj.paginator.ELLIPSIS %}
+                                    <li class="paginate_button page-item"><a class="page-link" href="#">{{ i }}</a></li>
+                                {% else %}
+                                    <li class="paginate_button page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if staffs.has_next %}
+                          <li class="page-item"><a class="page-link" href="?page={{ staffs.next_page_number }}" >Next</a></li>
+                        {% else %}
+                          <li class="page-item disabled"><a class="page-link" href="#" >Next</a></li>
+                        {% endif %}
+                    </ul>
+                  {% endif %}
+              </div>
+          </div>
+        </div>
+      </div>
+</section>
     <!-- /.content -->
     <div class="modal fade" id="myModal" role="dialog">
       <div class="modal-dialog">
@@ -58,7 +107,7 @@
           </div>
           <div class="modal-body">
             <div class="form-group">
-              <input type="text" name="message" class="form-control" id="message_not" placeholder="under construction">
+              <input type="text" name="message" class="form-control" id="message_not" placeholder="...">
                <input type="hidden" name="staff_id" class="form-control" id="staff_id">
             </div>
             <div class="form-group">

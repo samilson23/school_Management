@@ -57,21 +57,21 @@
               <li class="nav-item">
                 <a href="{% url 'add_staff' %}" class="nav-link {% if request.path == add_staff %} active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Add Staff</p>
+                  <p>Add</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="{% url 'manage_staff' %}" class="nav-link {% if request.path == manage_staff %} active {% endif %}
                  {% if request.path == edit_staff %} active {% endif %} ">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Manage Staff</p>
+                  <p>Manage</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="{{ staff_feedback_msg }}" class="nav-link {% if request.path == staff_feedback_msg %} active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
-                    Staff Complaints
+                    Complaints
                   </p>
                 </a>
               </li>
@@ -79,7 +79,7 @@
                 <a href="{{ staff_leave_reply }}" class="nav-link {% if request.path == staff_leave_reply %} active {% endif %}" >
                   <i class="far fa-circle nav-icon"></i>
                   <p>
-                    Staff Leave
+                    Leave
                   </p>
                 </a>
               </li>
@@ -112,7 +112,7 @@
                 <a href="{{ add_student }}" class="nav-link {% if request.path == add_student %} active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
-                    Add Student
+                    Add
                   </p>
                 </a>
               </li>
@@ -120,7 +120,7 @@
                 <a href="{{ manage_student }}" class="nav-link {% if request.path == manage_student %} active {% endif %} {% if request.path == edit_student %} active {% endif %} ">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
-                    Manage Student
+                    Manage
                   </p>
                 </a>
               </li>
@@ -129,7 +129,7 @@
                 <a href="{{ student_feedback_msg }}" class="nav-link {% if request.path == student_feedback_msg %} active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
-                    Student Complaints
+                    Complaints
                   </p>
                 </a>
               </li>
@@ -137,7 +137,7 @@
                 <a href="{{ student_leave_reply }}" class="nav-link {% if request.path == student_leave_reply %} active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
-                    Student Leave
+                    Leave
                   </p>
                 </a>
               </li>
@@ -186,7 +186,7 @@
                 <a href="{{ add_course }}" class="nav-link {% if request.path == add_course %} active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
-                    Add Course
+                    Add Courses
                   </p>
                 </a>
               </li>
@@ -194,7 +194,7 @@
                 <a href="{{ manage_course }}" class="nav-link {% if request.path == manage_course %} active {% endif %} {% if request.path == edit_course %} active {% endif %} ">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
-                    Manage Course
+                    Manage Courses
                   </p>
                 </a>
               </li>

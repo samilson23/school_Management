@@ -3,18 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="c7799b95-03bd-4513-8c8c-f8cc93ad9a76" name="Changes" comment="Made changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Student/EmailBackend.py" beforeDir="false" afterPath="$PROJECT_DIR$/Student/EmailBackend.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Student/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Student/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/add_staff_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/add_staff_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/add_student_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/add_student_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/admin_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/admin_profile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/manage_staff_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/manage_staff_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/manage_student_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/manage_student_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin_template/add_hod.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/add_hod.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin_template/admin_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/admin_profile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin_template/manage_hod.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/manage_hod.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin_template/manage_staff.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/manage_staff.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/staff_template/staff_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/staff_profile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/student_template/student_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/student_profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Hod_template/sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/sidebar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin_template/sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_template/sidebar.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -273,7 +266,14 @@
       <option name="project" value="LOCAL" />
       <updated>1655274554466</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Made changes">
+      <created>1655296370362</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1655296370362</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

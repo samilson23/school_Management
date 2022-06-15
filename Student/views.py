@@ -34,7 +34,7 @@ def doLogin(request):
 
 def GetUserDetails(request):
     if request.user!= None:
-        return HttpResponse("user :" + request.user.email + " usertype :" + request.user.user_type)
+        return HttpResponse("user :" + request.user.username + " usertype :" + request.user.user_type)
     return HttpResponse("please login first")
 
 def logout_user(request):

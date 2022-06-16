@@ -13,8 +13,8 @@
               </div>
                {% if reg > 0 %}
                   <div class="card-body">
-                      <label>Exam Card({{ student_obj.admin.username }})</label><br/>
-                      <a href="/render_pdf_view/pdf2/pdf/student.id"><button class="btn btn-primary">Open</button></a>
+                      <label>Exam Card({{ student_obj.username }})</label><br/>
+                      <a href="/student_render_pdf_view/{{ student_obj.id }}"><button class="btn btn-primary">Open</button></a>
                   </div>
                {% else %}
                     <label>You have not registered for any units</label>

@@ -213,56 +213,13 @@ def student_all_notification(request):
     notification=notificationstudent.objects.filter(student_id=student.id)
     return render(request,"student_template/Notifications.html",{"notification":notification}) 
 
-@csrf_exempt
-def student_view_result(request):
-    student_obj = students.objects.get(admin=request.user.id)
-    subject_data = subject.objects.filter(course_id=student_obj.course_id)
-    reg = StudentResult.objects.filter(student_id=request.user.id).count()
-    Stage = unitregistration.objects.filter(student_id=request.user.id).order_by('semester_id')
-    context = {
-        "Stage": Stage,
-        "student_obj": student_obj,
-        "subject_data": subject_data,
-        "reg": reg
-    }
-    return render(request, "student_template/results.html", context)
 
-@csrf_exempt
-def get_results(request):
-    stage_id = request.POST.get("stage")
-    student_obj = CustomUser.objects.get(id=request.user.id)
-    reg = StudentResult.objects.filter(student_id=student_obj,semester_id=stage_id)
-    list_data = []
-    for Subject in reg:
-        # check_exist = registrationreport.objects.filter(status=1,semester_id=stage_id,student_id=request.user.id,subject_id=Subject.subject_id.id).exists()
-        # if check_exist:
-        Sum = int(Subject.subject_exam_marks) + int(Subject.subject_assignment_marks)
-        data_small = {"id": Subject.id, "code": Subject.subject_id.code, "name": Subject.subject_id.subject_name,"marks":Subject.grade}
-        list_data.append(data_small)
-    return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
-
-
-def Units(request):
-    student_obj = students.objects.get(admin=request.user.id)
-    subject_data = subject.objects.filter(course_id=student_obj.course_id)
-    Stage = semester.objects.all()
-    reg = unitregistration.objects.filter(student_id=request.user.id).count()
-    context = {
-        "Stage":Stage,
-        "student_obj":student_obj,
-        "subject_data":subject_data,
-        "reg":reg
-    }
-    return render(request,"student_template/units.html", context)
-
-
-def units(request):
-    stage_id = request.POST.get("stage")
-    student_obj = students.objects.get(admin=request.user.id)
-    # subjects = subject.objects.filter(course_id=student_obj.course_id, stage_id=stage_id)
-    reg = registrationreport.objects.filter(student_id=request.user.id,status=1).exists()
-    return render(request,"student_template/Exam_card.html", {"reg": reg,"student_obj":student_obj})
-
+# def units(request):
+#     stage_id = request.POST.get("stage")
+#     student_obj = students.objects.get(admin=request.user.id)
+#     # subjects = subject.objects.filter(course_id=student_obj.course_id, stage_id=stage_id)
+#     reg = registrationreport.objects.filter(student_id=request.user.id,status=1).exists()
+#     return render(request,"student_template/Exam_card.html", {"reg": reg,"student_obj":student_obj})
 
 def unit_registration(request):
     student_obj = students.objects.get(admin=request.user.id)
@@ -375,12 +332,21 @@ def Result_List_View(request, **kwargs):
 #         return HttpResponse('we had some errors <pre>' + html + '</pre>')
 #     return response
 
-def CustomerListView(request):
-    student=CustomUser.objects.get(id=request.user.id)
-    return render(request,"student_template/units.html",{"student":student})
+def Units(request):
+    student_obj = CustomUser.objects.get(id=request.user.id)
+    # subject_data = subject.objects.filter(course_id=student_obj.course_id)
+    Stage = semester.objects.all()
+    reg = registrationreport.objects.filter(student_id=request.user.id,status=1).count()
+    context = {
+        "Stage":Stage,
+        "student_obj":student_obj,
+        "reg":reg
+    }
+    return render(request,"student_template/units.html", context)
 
-def student_render_pdf_view(request,*args,**kwargs):
-    id = CustomUser.objects.get(id=request.user.id)
+
+def student_render_pdf_view(request,id):
+    id = CustomUser.objects.get(id=id)
     student_obj = students.objects.get(admin=request.user.id)
     student = registrationreport.objects.filter(student_id=id,status=1)
     template_path = 'student_template/Exam_card.html'
@@ -397,9 +363,6 @@ def student_render_pdf_view(request,*args,**kwargs):
         return HttpResponse('we had some errors <pre>' + html + '</pre>')
     return response
 
-def ResultListView(request):
-    student=CustomUser.objects.get(id=request.user.id)
-    return render(request,"student_template/results.html",{"student":student})
 
 def link_callback(uri, rel):
     """
@@ -432,16 +395,42 @@ def link_callback(uri, rel):
         )
     return path
 
-def student_render_result_view(request,*args,**kwargs):
-    id = CustomUser.objects.get(id=request.user.id)
+
+def ResultListView(request):
+    student = CustomUser.objects.get(id=request.user.id)
+    reg1 = unitregistration.objects.filter(student_id=student)
+    context = {
+        "reg":reg1
+    }
+    return render(request,"student_template/results.html",context)
+
+
+def student_view_result(request):
+    student = CustomUser.objects.get(id=request.user.id)
+    Stage = unitregistration.objects.filter(student_id=request.user.id).order_by('semester_id')
+    reg = StudentResult.objects.filter(student_id=request.user.id,semester_id=1).count()
+    context = {
+        "Stage": Stage,
+        "student": student,
+        "reg": reg,
+    }
+    return render(request, "student_template/results.html", context)
+
+
+def render_pdf_view(request,id,semester_id):
+    Stage = request.POST.get("stage")
+    id = CustomUser.objects.get(id=id)
     student_obj = students.objects.get(admin=request.user.id)
-    student = StudentResult.objects.filter(student_id=id).order_by("-id")
+    student = StudentResult.objects.filter(student_id=id,semester_id=semester_id).order_by("-id")
+    regis = unitregistration.objects.get(semester_id=semester_id)
     template_path = 'student_template/transcript.html'
     context = {'student': student,
                'student_obj':student_obj,
+               'regis':regis,
+               'Stage':Stage
                }
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename=''Transcript-'+student_obj.admin.username+'.pdf'
+    response['Content-Disposition'] = 'attachment; filename=''Transcript-'+student_obj.admin.username+'.pdf'
     template = get_template(template_path)
     html = template.render(context)
     pisa_status = pisa.CreatePDF(
@@ -450,6 +439,22 @@ def student_render_result_view(request,*args,**kwargs):
         return HttpResponse('we had some errors <pre>' + html + '</pre>')
     return response
 
+@csrf_exempt
+def get_results(request):
+    stage_id = request.POST.get("stage")
+    student_obj = CustomUser.objects.get(id=request.user.id)
+    reg = StudentResult.objects.filter(student_id=student_obj,semester_id=stage_id)
+    list_data = []
+    for Subject in reg:
+        reg1 = unitregistration.objects.filter(student_id=student_obj,semester_id=stage_id)
+        data_small = {"id": Subject.id, "code": Subject.subject_id.code, "name": Subject.subject_id.subject_name,"marks":Subject.grade}
+        list_data.append(data_small)
+    return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
 
 
-
+# def units(request):
+#     stage_id = request.POST.get("stage")
+#     student_obj = students.objects.get(admin=request.user.id)
+#     # subjects = subject.objects.filter(course_id=student_obj.course_id, stage_id=stage_id)
+#     reg = registrationreport.objects.filter(student_id=request.user.id,status=1).exists()
+#     return render(request,"student_template/Exam_card.html")

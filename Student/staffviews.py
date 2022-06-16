@@ -66,8 +66,10 @@ def get_students(request):
     student = students.objects.filter(course_id=Subject.course_id,session_year_id=session_model)
     list_data = []
     for student in student:
-            data_small = {"id":student.admin.id,"name":student.admin.username+""}
-            list_data.append(data_small)
+            std = registrationreport.objects.filter(student_id=student.admin.id,status=1,subject_id=Subject).exists()
+            if std:
+                data_small = {"id":student.admin.id,"name":student.admin.username+""}
+                list_data.append(data_small)
     return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
 
 

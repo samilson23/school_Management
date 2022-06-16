@@ -123,7 +123,7 @@ urlpatterns = [
     path('student_view_result',student_views.student_view_result,name="student_view_result"),
     path('unit_registration',student_views.unit_registration,name="unit_registration"),
     path('get_units',student_views.get_units,name="get_units"),
-    path('units',student_views.units,name="units"),
+    # path('units',student_views.units,name="units"),
     path('get_results',student_views.get_results,name="get_results"),
     path('resit',student_views.resit,name="resit"),
     # path('view_result',student_views.view_result,name="view_result"),
@@ -156,6 +156,7 @@ urlpatterns = [
     path('admin_save',admin_views.admin_save,name="admin_save"),
 
     # pdf
-    path('render_pdf_view/',include('Student.urls',namespace='Student'))
+    path('render_pdf_view/<id>/<semester_id>',student_views.render_pdf_view),
+    path('student_render_pdf_view/<id>',student_views.student_render_pdf_view),
 
     ]+static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

@@ -65,7 +65,7 @@
                                 {% for Stage in Stage %}
                                   <option value="{{ Stage.id }}">{{ Stage.stage }}</option>
                                 {% endfor %}
-                                </select>
+                            </select>
                                 {% for Stage in Stage %}
                                     <input type="hidden" name="Students" id="Students" value="{{ student_obj.admin.id }}">
                                 {% endfor %}
@@ -157,7 +157,6 @@
           data:{student_ids:student_data,stage_id:stage_id,student_id:student_id},
          })
          .done(function(response){
-         console.log(response)
          if(response=="OK"){
           alert("Units successfully submitted")
          }

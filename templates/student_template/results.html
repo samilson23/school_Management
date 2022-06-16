@@ -11,21 +11,30 @@
               <div class="card-header">
                 <h3 class="card-title">Transcript</h3>
               </div>
-                <div class="card-body">
-                    <select class="form-control" name="stage"  id="stage">
+              <div class="card-body">
+                    <table>
                         {% for Stage in Stage %}
-                            <option value="{{ Stage.semester_id.id }}">{{ Stage.semester_id.stage }}</option>
+                        <tr>
+                            <td>
+                                {{ Stage.semester_id.stage }}:&nbsp;
+                            </td>
+                            <td>
+                                 <a href="/render_pdf_view/{{ student.id }}/{{ Stage.semester_id.id }}"><button class="btn btn-primary btn-sm">Open</button></a>
+                            </td>
+                        </tr>
                         {% endfor %}
-                    </select><br/>
-                </div>
-              <div class="card-footer">
-                    {% if reg > 0 %}
-                        <label>Transcript({{ student_obj.admin.username }})</label><br/>
-                        <a href="/render_pdf_view/transcript/result/student.student_id.id/student.semester_id.id"><button class="btn btn-primary">Open</button></a>
-                    {% else %}
-                        <label>Results not posted</label>
-                    {% endif %}
-              </div>
+                    </table><br/>
+<!--                    <select class="form-control"  name="stage" id="stage">-->
+<!--                        {% for Stage in Stage %}-->
+<!--                            <option value="{{ Stage.semester_id.id }}">{{ Stage.semester_id.stage }}</option>-->
+<!--                        {% endfor %}-->
+<!--                    </select>-->
+<!--              </div>-->
+<!--              <div class="card-footer">-->
+<!--                    <button type="button" class="btn btn-primary btn-block " id="fetch_results">View</button>-->
+<!--              </div>-->
+                <div id="student_data" class="card-footer" ></div>
+            </div>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -34,17 +43,37 @@
 {% endblock main_content %}
 {% block custom_js %}
 <script>
-  $(document).ready(function(){
-      $("#id_subject_id").change(function(){
-        fetchstudents();
-    });
-    function fetchstudents(){
-      var stage=$("#stage").val();
+$(document).ready(function(){
+    $("#fetch_results").click(function(){
+        var stage = $("#stage").val();
         $.ajax({
-          type:'POST',
-          data:{stage:stage},
+            url:'{% url 'get_results' %}',
+            type:'POST',
+            data:{stage:stage},
         })
-      }
-  })
+        .done(function(response){
+            var json_data = JSON.parse(response);
+            console.log(json_data);
+            if (json_data==""){
+                alert("Results Not Posted")
+            }
+            else{
+                var div_data="<div class='form-group'><div class='row'>";
+                div_data="<label>{{ student.username }}</label>";
+                div_data+="<table border='1'><tr>";
+                for(key in json_data){
+                    div_data+="<td name='student_data[]'></td>";
+                }
+                div_data+="</tr></table>";
+                div_data+="<a href='/render_pdf_view/{{ student.id }}/{{ Stage.semester_id.id }}'><button class='btn btn-primary'>Open</button></a>";
+                div_data+="</div></div>";
+                $("#student_data").html(div_data);
+            }
+        })
+        .fail(function(){
+            alert("Failed")
+        })
+    })
+})
 </script>
 {% endblock custom_js %}

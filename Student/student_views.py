@@ -22,6 +22,8 @@ from Student.models import OnlineClassRoom, StudentResult, feedbackstudent, leav
 
 def student_home(request):
     student_obj=students.objects.get(admin=request.user.id)
+    notification = notificationstudent.objects.filter(student_id=student_obj.id, read=False).order_by("-id")
+    notifications = notificationstudent.objects.filter(student_id=student_obj.id, read=False).count()
     Attendance_total=attendancereport.objects.filter(student_id=student_obj).count()
     Attendance_present=attendancereport.objects.filter(student_id=student_obj,status=True).count()
     Attendance_absent=attendancereport.objects.filter(student_id=student_obj,status=False).count()
@@ -51,6 +53,8 @@ def student_home(request):
         "data_name":subject_name,
         "data1":data_present,
         "data2":data_absent,
+        "notification":notification,
+        "notifications":notifications,
         "class_room":class_room
     }
 
@@ -83,9 +87,12 @@ def join_class_room(request,subject_id,session_year_id):
 
 def student_view_attendance(request):
     student=students.objects.get(admin=request.user.id)
+    notification = notificationstudent.objects.filter(student_id=student.id, read=False).order_by("-id")
+    notifications = notificationstudent.objects.filter(student_id=student.id, read=False).count()
     course=student.course_id
     subjects=subject.objects.filter(course_id=course)
-    return render(request,"student_template/my_attendance.html",{"subjects":subjects})
+    return render(request,"student_template/my_attendance.html",{"subjects":subjects,"notification":notification,
+                                                                 "notifications":notifications})
 
 def student_view_attendance_save(request):
     subject_id=request.POST.get("subjects")
@@ -104,8 +111,12 @@ def student_view_attendance_save(request):
 
 def student_apply_leave(request):
     student_obj = students.objects.get(admin=request.user.id)
+    notification = notificationstudent.objects.filter(student_id=student_obj.id, read=False).order_by("-id")
+    notifications = notificationstudent.objects.filter(student_id=student_obj.id, read=False).count()
     leave_data=leavereportstudent.objects.filter(student_id=student_obj)
-    return render(request,"student_template/student_apply_leave.html",{"leave_data":leave_data})
+    return render(request,"student_template/student_apply_leave.html",{"leave_data":leave_data,
+                                                                       "notification":notification,
+                                                                       "notifications":notifications})
 
 
 def student_apply_leave_save(request):
@@ -126,12 +137,14 @@ def student_apply_leave_save(request):
              return HttpResponseRedirect(reverse("student_apply_leave"))
 
 
-
-
 def student_feedback(request):
     student_obj = students.objects.get(admin=request.user.id)
+    notification = notificationstudent.objects.filter(student_id=student_obj.id, read=False).order_by("-id")
+    notifications = notificationstudent.objects.filter(student_id=student_obj.id, read=False).count()
     feedback_data = feedbackstudent.objects.filter(student_id=student_obj)
-    return render(request,"student_template/student_feedback.html",{"feedback_data":feedback_data})
+    return render(request,"student_template/student_feedback.html",{"feedback_data":feedback_data,
+                                                                    "notification":notification,
+                                                                    "notifications":notifications})
 
 
 def student_feedback_save(request):
@@ -156,7 +169,11 @@ def student_feedback_save(request):
 def student_profile(request):
     user = CustomUser.objects.get(id=request.user.id)
     student = students.objects.get(admin=user)
-    return render(request,"student_template/student_profile.html",{"student":student})
+    notification = notificationstudent.objects.filter(student_id=student.id, read=False).order_by("-id")
+    notifications = notificationstudent.objects.filter(student_id=student.id, read=False).count()
+    return render(request,"student_template/student_profile.html",{"student":student,
+                                                                   "notification":notification,
+                                                                   "notifications":notifications})
 
 def student_profile_save(request):
     if request.method != "POST":
@@ -210,25 +227,24 @@ def student_fcmtoken_save(request):
 
 def student_all_notification(request):
     student=students.objects.get(admin=request.user.id)
-    notification=notificationstudent.objects.filter(student_id=student.id)
-    return render(request,"student_template/Notifications.html",{"notification":notification}) 
+    notify=notificationstudent.objects.filter(student_id=student.id,read=True).order_by("-id")
+    notification=notificationstudent.objects.filter(student_id=student.id,read=False).order_by("-id")
+    notifications=notificationstudent.objects.filter(student_id=student.id,read=False).count()
+    return render(request,"student_template/Notifications.html",{"notify":notify,"notification":notification,"notifications":notifications})
 
-
-# def units(request):
-#     stage_id = request.POST.get("stage")
-#     student_obj = students.objects.get(admin=request.user.id)
-#     # subjects = subject.objects.filter(course_id=student_obj.course_id, stage_id=stage_id)
-#     reg = registrationreport.objects.filter(student_id=request.user.id,status=1).exists()
-#     return render(request,"student_template/Exam_card.html", {"reg": reg,"student_obj":student_obj})
 
 def unit_registration(request):
     student_obj = students.objects.get(admin=request.user.id)
+    notification = notificationstudent.objects.filter(student_id=student_obj.id, read=False).order_by("-id")
+    notifications = notificationstudent.objects.filter(student_id=student_obj.id, read=False).count()
     subject_data = subject.objects.filter(course_id=student_obj.course_id)
     Stage = semester.objects.all()
     context = {
         "Stage":Stage,
         "student_obj":student_obj,
         "subject_data":subject_data,
+        "notification":notification,
+        "notifications":notifications
     }
     return render(request,"student_template/unit_registration.html", context)
 
@@ -274,8 +290,12 @@ def deregister(request,id):
     return render(request, "student_template/deregister.html")
 
 def resit(request):
+    student_obj = students.objects.get(admin=request.user.id)
+    notification = notificationstudent.objects.filter(student_id=student_obj.id, read=False).order_by("-id")
+    notifications = notificationstudent.objects.filter(student_id=student_obj.id, read=False).count()
     reg = unitregistration.objects.filter(student_id=request.user.id).order_by('semester_id')
-    return render(request,"student_template/update_registration.html",{"reg":reg})
+    return render(request,"student_template/update_registration.html",{"reg":reg,"notification":notification,
+                                                                      "notifications":notifications })
 
 @csrf_exempt
 def get_unregistered_units(request):
@@ -319,28 +339,19 @@ def Result_List_View(request, **kwargs):
     return render(request,'student_template/main.html',{"Obj":Obj})
 
 
-# def render_pdf(request):
-#     template_path = 'student_template/Exam_card.html'
-#     context = {'result':"result"}
-#     response = HttpResponse(content_type='application/pdf')
-#     response['Content-Disposition'] = 'filename="report.pdf"'
-#     template = get_template(template_path)
-#     html = template.render(context)
-#     pisa_status = pisa.CreatePDF(
-#         html, dest=response)
-#     if pisa_status.err:
-#         return HttpResponse('we had some errors <pre>' + html + '</pre>')
-#     return response
-
 def Units(request):
     student_obj = CustomUser.objects.get(id=request.user.id)
-    # subject_data = subject.objects.filter(course_id=student_obj.course_id)
+    student = students.objects.get(admin=request.user.id)
+    notification = notificationstudent.objects.filter(student_id=student.id, read=False).order_by("-id")
+    notifications = notificationstudent.objects.filter(student_id=student.id, read=False).count()
     Stage = semester.objects.all()
     reg = registrationreport.objects.filter(student_id=request.user.id,status=1).count()
     context = {
         "Stage":Stage,
         "student_obj":student_obj,
-        "reg":reg
+        "reg":reg,
+        "notification":notification,
+        "notifications":notifications
     }
     return render(request,"student_template/units.html", context)
 
@@ -398,31 +409,48 @@ def link_callback(uri, rel):
 
 def ResultListView(request):
     student = CustomUser.objects.get(id=request.user.id)
+    student_obj = students.objects.get(admin=request.user.id)
+    notification = notificationstudent.objects.filter(student_id=student_obj.id, read=False).order_by("-id")
+    notifications = notificationstudent.objects.filter(student_id=student_obj.id, read=False).count()
     reg1 = unitregistration.objects.filter(student_id=student)
     context = {
-        "reg":reg1
+        "reg":reg1,
+        "notification":notification,
+        "notifications":notifications
     }
     return render(request,"student_template/results.html",context)
 
 
 def student_view_result(request):
     student = CustomUser.objects.get(id=request.user.id)
+    Stage_id = request.POST.get("stage")
+    student_obj = students.objects.get(admin=request.user.id)
+    notification = notificationstudent.objects.filter(student_id=student_obj.id, read=False).order_by("-id")
+    notifications = notificationstudent.objects.filter(student_id=student_obj.id, read=False).count()
     Stage = unitregistration.objects.filter(student_id=request.user.id).order_by('semester_id')
-    reg = StudentResult.objects.filter(student_id=request.user.id,semester_id=1).count()
+    reg = StudentResult.objects.filter(student_id=request.user.id,semester_id=Stage_id).count()
     context = {
         "Stage": Stage,
         "student": student,
         "reg": reg,
+        "notification":notification,
+        "notifications":notifications
     }
     return render(request, "student_template/results.html", context)
 
+def get_transcript(request,*args,**kwargs):
+    student = CustomUser.objects.get(id=request.user.id)
+    Stage_id = request.POST.get("stage")
+    print(Stage_id)
+    # Stage_id=semester.objects.get(id=Stage)
+    return HttpResponseRedirect(reverse("render_pdf_view",kwargs={"Stage_id":Stage_id,"student":student}))
 
-def render_pdf_view(request,id,semester_id):
+def render_pdf_view(request,id):
     Stage = request.POST.get("stage")
     id = CustomUser.objects.get(id=id)
     student_obj = students.objects.get(admin=request.user.id)
-    student = StudentResult.objects.filter(student_id=id,semester_id=semester_id).order_by("-id")
-    regis = unitregistration.objects.get(semester_id=semester_id)
+    student = StudentResult.objects.filter(student_id=id,semester_id=Stage).order_by("-id")
+    regis = unitregistration.objects.get(semester_id=Stage,student_id=id)
     template_path = 'student_template/transcript.html'
     context = {'student': student,
                'student_obj':student_obj,
@@ -430,7 +458,7 @@ def render_pdf_view(request,id,semester_id):
                'Stage':Stage
                }
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename=''Transcript-'+student_obj.admin.username+'.pdf'
+    response['Content-Disposition'] = 'filename=''Transcript-'+student_obj.admin.username+'.pdf'
     template = get_template(template_path)
     html = template.render(context)
     pisa_status = pisa.CreatePDF(
@@ -451,10 +479,17 @@ def get_results(request):
         list_data.append(data_small)
     return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
 
-
-# def units(request):
-#     stage_id = request.POST.get("stage")
-#     student_obj = students.objects.get(admin=request.user.id)
-#     # subjects = subject.objects.filter(course_id=student_obj.course_id, stage_id=stage_id)
-#     reg = registrationreport.objects.filter(student_id=request.user.id,status=1).exists()
-#     return render(request,"student_template/Exam_card.html")
+def read_save_student(request):
+    staffs = students.objects.get(admin=request.user.id)
+    reg = request.POST.get("read")
+    reg1 = request.POST.get("read1")
+    read2 = True
+    notification = notificationstudent.objects.filter(student_id=staffs.id,read=False).exists()
+    try:
+        if notification:
+            notification1 = notificationstudent.objects.get(student_id=staffs.id,id=reg1)
+            notification1.read=reg
+            notification1.save()
+        return HttpResponseRedirect(reverse("student_all_notification"))
+    except:
+        return HttpResponseRedirect(reverse("student_all_notification"))

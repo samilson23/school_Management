@@ -12,27 +12,15 @@
                 <h3 class="card-title">Transcript</h3>
               </div>
               <div class="card-body">
-                    <table>
+                  <form role="form" action="/render_pdf_view/{{ student.id }}/" method="POST">
+                    {% csrf_token %}
+                    <select class="form-control"  name="stage">
                         {% for Stage in Stage %}
-                        <tr>
-                            <td>
-                                {{ Stage.semester_id.stage }}:&nbsp;
-                            </td>
-                            <td>
-                                 <a href="/render_pdf_view/{{ student.id }}/{{ Stage.semester_id.id }}"><button class="btn btn-primary btn-sm">Open</button></a>
-                            </td>
-                        </tr>
+                            <option value="{{ Stage.semester_id.id }}">{{ Stage.semester_id.stage }}</option>
                         {% endfor %}
-                    </table><br/>
-<!--                    <select class="form-control"  name="stage" id="stage">-->
-<!--                        {% for Stage in Stage %}-->
-<!--                            <option value="{{ Stage.semester_id.id }}">{{ Stage.semester_id.stage }}</option>-->
-<!--                        {% endfor %}-->
-<!--                    </select>-->
-<!--              </div>-->
-<!--              <div class="card-footer">-->
-<!--                    <button type="button" class="btn btn-primary btn-block " id="fetch_results">View</button>-->
-<!--              </div>-->
+                    </select><br/>
+                     <button class="btn btn-primary btn-sm" type="submit">Open</button>
+                  </form>
                 <div id="student_data" class="card-footer" ></div>
             </div>
           </div>

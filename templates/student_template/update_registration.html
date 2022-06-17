@@ -83,7 +83,7 @@
           .done(function(response){
               var json_data=JSON.parse(response);
               if(json_data==""){
-                alert("No units match your criteria")
+                swal("No units match your criteria")
               }else{
                   var div_data="<div class='form-group'><label></label></div><div class='form-group'><div class='row'>";
                   for(key in json_data)
@@ -109,7 +109,7 @@
 
           })
           .fail(function(){
-              alert("Error in Fetching Units")
+              swal("Error in Fetching Units")
           })
 
        })
@@ -137,15 +137,15 @@
                   .done(function(response){
 
                       if(response=="OK"){
-                          alert("Units saved")
+                          swal("Units saved")
                       }
                       else{
-                          alert("Error in Submitting Units")
+                          swal("Error in Submitting Units")
                       }
                       location.reload()
                   })
                   .fail(function(){
-                      alert("Error in Saving Units")
+                      swal("Error in Saving Units")
                   })
 
       })

@@ -113,7 +113,10 @@
       })
       .done(function(response){
         if(response=="Exists"){
-            alert("Semester Already Registered")
+            swal({
+                text:"Semester Already Registered",
+                icon:"success",
+            })
         }
         var json_data=JSON.parse(response);
         console.log(json_data)
@@ -124,7 +127,10 @@
         div_data+="</div></div>";
         div_data+="<div class='form-group'>";
         if(json_data==""){
-            alert("No match found!")
+            swal({
+                text:"No match found!",
+                icon:"warning",
+            })
         }else{
             div_data+="<button id='submit_units' class='btn btn-success btn-block' type='button'>Submit</button>";
         }
@@ -132,7 +138,10 @@
         $("#student_data").html(div_data);
       })
       .fail(function(){
-      alert("error in fetching Units")
+      swal({
+        text:"error in fetching Units",
+        icon:"danger",
+      })
       })
 
       $(document).on("click","#submit_units",function(){
@@ -158,15 +167,24 @@
          })
          .done(function(response){
          if(response=="OK"){
-          alert("Units successfully submitted")
+          swal({
+             text:"Units successfully submitted",
+             icon:"success",
+          })
          }
          else{
-          alert("Error in submitting units")
+          swal({
+            text:"Error in submitting units",
+            icon:"warning",
+          })
          }
          location.reload()
         })
       .fail(function(){
-      alert("error in Saving Units")
+      swal({
+        text:"error in Saving Units",
+        icon:"danger",
+      })
       })
     })
   })

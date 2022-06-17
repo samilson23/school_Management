@@ -754,7 +754,8 @@ def admin_send_notification_staff(request):
 def send_student_notification(request):
     id = request.POST.get("id")
     message = request.POST.get("message")
-    student=students.objects.get(admin=id)  
+    student=students.objects.get(admin=id)
+    Hod = CustomUser.objects.get(id=request.user.id)
     token = student.fcm_token  
     url="https://fcm.googleapis.com/fcm/send"  
     body={
@@ -768,7 +769,7 @@ def send_student_notification(request):
     }
     headers={"Content-Type":"application/json","Authorization":"key=SERVER_KEY_HERE"}
     data=requests.post(url,data=json.dumps(body),headers=headers)
-    notification=notificationstudent(student_id=student,message=message)
+    notification=notificationstudent(student_id=student,message=message,Hod_id=Hod)
     notification.save()
     print(data.text)
     return HttpResponse("True")   
@@ -777,7 +778,8 @@ def send_student_notification(request):
 def send_staff_notification(request):
     id = request.POST.get("id")
     message = request.POST.get("message")
-    staffs=staff.objects.get(admin=id)  
+    staffs=staff.objects.get(admin=id)
+    Hod = CustomUser.objects.get(id=request.user.id)
     token = staffs.fcm_token  
     url="https://fcm.googleapis.com/fcm/send"  
     body={
@@ -791,7 +793,7 @@ def send_staff_notification(request):
     }
     headers={"Content-Type":"application/json","Authorization":"key=AAAAA2RG7L4:APA91bGHQ0Q8L5rOI2uQbZDJgHOkpx2nkf4_IIcEcZhBWd-AXqYHBCCUHSibJYYu6MemU2aMza9ERk0t2HFG56hhQ8195OBjyq9JBHWnajPCKHkoFTWZl7Mq0sG_LmA6x3c44_TWkMSM"}
     data=requests.post(url,data=json.dumps(body),headers=headers)
-    notification=notificationstaff(staff_id=staffs,message=message)
+    notification=notificationstaff(staff_id=staffs, message=message, read=False,Hod_id=Hod)
     notification.save()
     print(data.text)
     return HttpResponse("True")

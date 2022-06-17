@@ -100,6 +100,7 @@ urlpatterns = [
     # path('staff_notifications',staffviews.staff_notifications,name="staff_notifications"),
     path('staff_add_result',staffviews.staff_add_result,name="staff_add_result"),
     path('result_save',staffviews.result_save,name="result_save"),
+    path('read_save',staffviews.read_save,name="read_save"),
     path('edit_student_result',EditResultViewClass.as_view(),name="edit_student_result"),
     path('fetch_student_result',staffviews.fetch_student_result,name="fetch_student_result"),
     # path('delete_not/<int:id>',staffviews.delete_not,name="delete_not"),
@@ -126,10 +127,12 @@ urlpatterns = [
     # path('units',student_views.units,name="units"),
     path('get_results',student_views.get_results,name="get_results"),
     path('resit',student_views.resit,name="resit"),
+    path('read_save_student',student_views.read_save_student,name="read_save_student"),
     # path('view_result',student_views.view_result,name="view_result"),
     path('save_update_units',student_views.save_update_units,name="save_update_units"),
     path('get_unregistered_units',student_views.get_unregistered_units,name="get_unregistered_units"),
     path('save_units_data',student_views.save_units_data,name="save_units_data"),
+    path('get_transcript',student_views.get_transcript,name="get_transcript"),
     path('deregister/<int:id>',student_views.deregister,name="deregister"),
     # path('staff_update_attendance', staffviews.staff_update_attendance, name="staff_update_attendance"),
     path('join_class_room/<int:subject_id>/<int:session_year_id>',student_views.join_class_room,name="join_class_room"),
@@ -156,7 +159,7 @@ urlpatterns = [
     path('admin_save',admin_views.admin_save,name="admin_save"),
 
     # pdf
-    path('render_pdf_view/<id>/<semester_id>',student_views.render_pdf_view),
+    path('render_pdf_view/<id>/',student_views.render_pdf_view),
     path('student_render_pdf_view/<id>',student_views.student_render_pdf_view),
 
     ]+static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

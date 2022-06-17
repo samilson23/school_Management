@@ -5,14 +5,17 @@ from django.shortcuts import render
 from django.views import View
 
 from Student.forms import EditResultForm
-from Student.models import StudentResult, students, subject, CustomUser
+from Student.models import StudentResult, students, subject, CustomUser, staff, notificationstaff
 from django.contrib import messages
 
 class EditResultViewClass(View):
     def get(self,request,*args,**kwargs):
         staff_id=request.user.id
         Edit_result_form=EditResultForm(staff_id=staff_id)
-        return render(request,"staff_template/edit_student_result.html",{"form":Edit_result_form})
+        staff_obj = staff.objects.get(admin=request.user.id)
+        notifications = notificationstaff.objects.filter(staff_id=staff_obj.id,read=False).count()
+        notification = notificationstaff.objects.filter(staff_id=staff_obj.id,read=False)
+        return render(request,"staff_template/edit_student_result.html",{"notification":notification,"form":Edit_result_form,"notifications":notifications})
 
     def post(self,request,*args,**kwargs):
         form=EditResultForm(request.POST,staff_id=request.user.id)

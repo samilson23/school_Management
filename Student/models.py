@@ -162,7 +162,9 @@ class feedbackstaff(models.Model):
 class notificationstudent(models.Model):
     id = models.AutoField(primary_key=True)
     student_id=models.ForeignKey(students, on_delete=models.CASCADE)
+    Hod_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE,default=3)
     message = models.TextField()
+    read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True) 
     objects=models.Manager()  
@@ -171,6 +173,8 @@ class notificationstaff(models.Model):
     id = models.AutoField(primary_key=True)
     staff_id=models.ForeignKey(staff, on_delete=models.CASCADE)
     message = models.TextField()
+    Hod_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE,default=3)
+    read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True) 
     objects=models.Manager()    

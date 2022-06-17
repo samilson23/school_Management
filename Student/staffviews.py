@@ -15,6 +15,9 @@ from Student.models import Adminhod, CustomUser, OnlineClassRoom, StudentResult,
 from django.contrib import messages
 
 def staff_home(request):
+    staff_obj = staff.objects.get(admin=request.user.id)
+    notifications = notificationstaff.objects.filter(staff_id=staff_obj.id,read=False).count()
+    notification = notificationstaff.objects.filter(staff_id=staff_obj.id,read=False)
     Subjects=subject.objects.filter(staff_id=request.user.id)
     course_id_list=[]
     for Subject in Subjects:
@@ -49,12 +52,15 @@ def staff_home(request):
         student_list.append(student.admin.username)
         student_list_attendance_present.append(Attendance_present_count)
         student_list_attendance_absent.append(Attendance_absent_count)
-    return render(request,"staff_template/staff_home_template.html",{"student_count":student_count,"Attendance_count":Attendance_count,"leave_count":leave_count,"subject_count":subject_count,"subject_list":subject_list,"attendance_list":attendance_list,"student_list":student_list,"present_list":student_list_attendance_present,"absent_list":student_list_attendance_absent})
+    return render(request,"staff_template/staff_home_template.html",{"notification":notification,"notifications":notifications,"student_count":student_count,"Attendance_count":Attendance_count,"leave_count":leave_count,"subject_count":subject_count,"subject_list":subject_list,"attendance_list":attendance_list,"student_list":student_list,"present_list":student_list_attendance_present,"absent_list":student_list_attendance_absent})
 
 def staff_take_attendance(request):
     subjects = subject.objects.filter(staff_id=request.user.id)
     session_years = sessionmodel.objects.all()
-    return render(request,"staff_template/staff_take_attendance.html",{"subjects":subjects,"session_years":session_years})
+    staff_obj = staff.objects.get(admin=request.user.id)
+    notifications = notificationstaff.objects.filter(staff_id=staff_obj.id,read=False).count()
+    notification = notificationstaff.objects.filter(staff_id=staff_obj.id, read=False)
+    return render(request,"staff_template/staff_take_attendance.html",{"notification":notification,"notifications":notifications,"subjects":subjects,"session_years":session_years})
 
 @csrf_exempt
 def get_students(request):
@@ -97,7 +103,10 @@ def save_attendance_data(request):
 def staff_update_attendance(request):
     subjects = subject.objects.filter(staff_id=request.user.id)
     session_year_id = sessionmodel.objects.all()
-    return render(request,"staff_template/update_attendance.html",{"subjects":subjects,"session_year_id":session_year_id})         
+    staff_obj = staff.objects.get(admin=request.user.id)
+    notifications = notificationstaff.objects.filter(staff_id=staff_obj.id,read=False).count()
+    notification = notificationstaff.objects.filter(staff_id=staff_obj.id,read=False)
+    return render(request,"staff_template/update_attendance.html",{"notification":notification,"subjects":subjects,"session_year_id":session_year_id,"notifications":notifications})
 
 @csrf_exempt
 def get_attendance_date(request):
@@ -143,7 +152,9 @@ def save_updateattendance_student(request):
 def staff_apply_leave(request):
     staff_obj = staff.objects.get(admin=request.user.id)
     leave_data=leavereportstaff.objects.filter(staff_id=staff_obj)
-    return render(request,"staff_template/staff_apply_leave.html",{"leave_data":leave_data})
+    notifications = notificationstaff.objects.filter(staff_id=staff_obj.id,read=False).count()
+    notification = notificationstaff.objects.filter(staff_id=staff_obj.id,read=False)
+    return render(request,"staff_template/staff_apply_leave.html",{"notification":notification,"leave_data":leave_data,"notifications":notifications})
 
 
 def staff_apply_leave_save(request):
@@ -168,7 +179,10 @@ def staff_apply_leave_save(request):
 def staff_feedback(request):
     staff_obj = staff.objects.get(admin=request.user.id)
     feedback_data = feedbackstaff.objects.filter(staff_id=staff_obj)
-    return render(request,"staff_template/staff_feedback.html",{"feedback_data":feedback_data})
+    # staffs = staff.objects.get(admin=user)
+    notifications = notificationstaff.objects.filter(staff_id=staff_obj.id,read=False).count()
+    notification = notificationstaff.objects.filter(staff_id=staff_obj.id,read=False)
+    return render(request,"staff_template/staff_feedback.html",{"notification":notification,"feedback_data":feedback_data,"notifications":notifications})
 
 
 def staff_feedback_save(request):
@@ -191,8 +205,10 @@ def staff_feedback_save(request):
 
 def staff_profile(request):
     user=CustomUser.objects.get(id=request.user.id)
-    staffs=staff.objects.get(admin = user)
-    return render(request,"staff_template/staff_profile.html",{"user":user,"staffs":staffs})  
+    staffs=staff.objects.get(admin=user)
+    notifications = notificationstaff.objects.filter(staff_id=staffs.id,read=False).count()
+    notification = notificationstaff.objects.filter(staff_id=staffs.id,read=False)
+    return render(request,"staff_template/staff_profile.html",{"notification":notification,"user":user,"staffs":staffs,"notifications":notifications})
 
 
 def staff_profile_save(request):
@@ -237,16 +253,22 @@ def staff_fcmtoken_save(request):
 
 
 def staff_all_notification(request):
+    read = request.POST.get("notify")
     staffs=staff.objects.get(admin=request.user.id)
-    notification=notificationstaff.objects.filter(staff_id=staffs.id)
-    notifications=notificationstaff.objects.all().count()
-    return render(request,"staff_template/Notifications.html",{"notification":notification,'notifications':notifications})
+    notify = notificationstaff.objects.filter(staff_id=staffs.id,read=True).order_by("-id")
+    notification = notificationstaff.objects.filter(staff_id=staffs.id,read=False).order_by("-id")
+    notifications = notificationstaff.objects.filter(staff_id=staffs.id,read=False).count()
+    return render(request,"staff_template/Notifications.html",{"notification":notification,"notify":notify,"notifications":notifications})
 
 
 def staff_add_result(request):
     subjects=subject.objects.filter(staff_id=request.user.id)
     session_years=sessionmodel.objects.all()
-    return render(request,"staff_template/add_result.html",{"subjects":subjects,"session_years":session_years})
+    staffs = staff.objects.get(admin=request.user.id)
+    notifications = notificationstaff.objects.filter(staff_id=staffs.id,read=False).count()
+    notification = notificationstaff.objects.filter(staff_id=staffs.id,read=False)
+
+    return render(request,"staff_template/add_result.html",{"notification":notification,"subjects":subjects,"session_years":session_years,"notifications": notifications})
 
 def result_save(request):
     if request.method!='POST':
@@ -354,3 +376,21 @@ def start_live_classroom_process(request):
 
 def returnHtmlWidget(request):
     return render(request,"widget.html")
+
+
+def read_save(request):
+    staffs = staff.objects.get(admin=request.user.id)
+    reg = request.POST.get("read")
+    reg1 = request.POST.get("read1")
+    read2 = True
+    notification = notificationstaff.objects.filter(staff_id=staffs.id,read=False).exists()
+    try:
+        if notification:
+            notification1 = notificationstaff.objects.get(staff_id=staffs.id,id=reg1)
+            notification1.read=reg
+            notification1.save()
+        return HttpResponseRedirect(reverse("staff_all_notification"))
+    except:
+        return HttpResponseRedirect(reverse("staff_all_notification"))
+
+

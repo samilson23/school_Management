@@ -11,7 +11,7 @@ from Student import admin
 from Student.forms import EditStudentForm
 from Student.models import CustomUser, attendance, attendancereport, courses, feedbackstaff, feedbackstudent, \
     leavereportstaff, leavereportstudent, notificationstaff, notificationstudent, staff, subject, students, \
-    sessionmodel, semester
+    sessionmodel, semester, unitregistration, registrationreport, StudentResult
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from .filters import CourseFilter, SubjectFilter, StudentFilter, StaffFilter, StudentFeedbackFilter, \
@@ -802,3 +802,48 @@ def send_staff_notification(request):
 def datatable(request):
     return render(request,"Hod_template/datatable.html")
 
+def update_student_units(request,id):
+    student = students.objects.get(admin=id)
+    student_obj = CustomUser.objects.get(id=id)
+    Stage = unitregistration.objects.filter(student_id=student_obj)
+    context={
+        "student":student,
+        "student_obj":student_obj,
+        "Stage":Stage
+    }
+    return render(request,"Hod_template/update_registration.html",context)
+
+
+@csrf_exempt
+def get_unregistered_student_units(request):
+    stage=request.POST.get("stage")
+    student = request.POST.get("student_id")
+    stage_id = unitregistration.objects.get(id=stage)
+    student_id = CustomUser.objects.get(id=student)
+    attendance_data = registrationreport.objects.filter(student_id=student_id,unit_id=stage_id)
+    list_data = []
+    for student in attendance_data:
+            data_small = {"id": student.subject_id.id,
+                          "name": student.subject_id.subject_name,
+                          "code":student.subject_id.code,
+                          "status": student.status}
+            list_data.append(data_small)
+    return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
+
+@csrf_exempt
+def save_update_student_units(request):
+    student_ids = request.POST.get("student_ids")
+    stage = request.POST.get("stage")
+    student = request.POST.get("student_id")
+    stage_id = unitregistration.objects.get(id=stage)
+    json_student = json.loads(student_ids)
+    try:
+        for stud in json_student:
+            Subject = subject.objects.get(id=stud['id'])
+            student_id = CustomUser.objects.get(id=student)
+            attendance_report = registrationreport.objects.get(student_id=student_id,unit_id=stage_id,subject_id=Subject)
+            attendance_report.status = stud['status']
+            attendance_report.save()
+        return HttpResponse("saved")
+    except:
+        return HttpResponse("not saved")

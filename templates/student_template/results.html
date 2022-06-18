@@ -1,5 +1,36 @@
-{% extends 'student_template/base_template.html' %}
-{% block page_title %} Transcript {% endblock page_title %}
+{% extends "student_template/base_template.html" %}
+{% block custom_css %}
+<style>
+.col-lg-4.attendance_div_green {
+    padding: 2px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    background: #399e3c;
+    border: 10px solid blue;
+    text-align: left;
+    color: #fff;
+    border-radius: 30px;
+    box-shadow: 1px 1px 1px grey;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.col-lg-4.attendance_div_red {
+    padding: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background: #f44336;
+    border: 10px solid white;
+    align:center;
+    text-align: center;
+    color: #fff;
+    border-radius: 30px;
+    box-shadow: 1px 1px 1px grey;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+</style>
+{% endblock custom_css %}
+{% block page_title %}  {% endblock page_title %}
 {% load static %}
 {% block main_content %}
 <section class="content">
@@ -8,60 +39,76 @@
           <div class="col-md-6">
             <!-- general form elements -->
             <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title">Transcript</h3>
-              </div>
-              <div class="card-body">
-                  <form role="form" action="/render_pdf_view/{{ student.id }}/" method="POST">
+                <div class="card-header">
+                        <h3 class="card-title">Transcript</h3>
+                </div>
+                <form method="POST" action="/render_pdf_view/{{ student.id }}/" role="form">
                     {% csrf_token %}
-                    <select class="form-control"  name="stage">
-                        {% for Stage in Stage %}
-                            <option value="{{ Stage.semester_id.id }}">{{ Stage.semester_id.stage }}</option>
-                        {% endfor %}
-                    </select><br/>
-                     <button class="btn btn-primary btn-sm" type="submit">Open</button>
-                  </form>
-                <div id="student_data" class="card-footer" ></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-5">
+                              <div class="form-group">
+                                <label>Stage</label>
+
+                                <select class="form-control"  name="stage" id="stage">
+                                    {% for Stage in Stage %}
+                                      <option value="{{ Stage.semester_id.id }}">{{ Stage.semester_id.stage }}</option>
+                                    {% endfor %}
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success text-sm btn-sm" id="fetch_units">View</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="card" id="student_data">
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
           </div>
         </div>
+            <!-- /.card -->
       </div><!-- /.container-fluid -->
-</section>
+    </section>
     <!-- /.content -->
 {% endblock main_content %}
 {% block custom_js %}
 <script>
-$(document).ready(function(){
-    $("#fetch_results").click(function(){
-        var stage = $("#stage").val();
-        $.ajax({
-            url:'{% url 'get_results' %}',
-            type:'POST',
-            data:{stage:stage},
-        })
-        .done(function(response){
-            var json_data = JSON.parse(response);
-            console.log(json_data);
-            if (json_data==""){
-                alert("Results Not Posted")
-            }
-            else{
-                var div_data="<div class='form-group'><div class='row'>";
-                div_data="<label>{{ student.username }}</label>";
-                div_data+="<table border='1'><tr>";
-                for(key in json_data){
-                    div_data+="<td name='student_data[]'></td>";
-                }
-                div_data+="</tr></table>";
-                div_data+="<a href='/render_pdf_view/{{ student.id }}/{{ Stage.semester_id.id }}'><button class='btn btn-primary'>Open</button></a>";
-                div_data+="</div></div>";
-                $("#student_data").html(div_data);
-            }
-        })
-        .fail(function(){
-            alert("Failed")
-        })
+  $(document).ready(function(){
+    $("#fetch_units").click(function(){
+      var stage=$("#stage").val();
+
+
+      $.ajax({
+        url:'{% url 'get_results' %}',
+        type:'POST',
+        data:{stage:stage},
+      })
+      .done(function(response){
+        var json_data=JSON.parse(response);
+        console.log(json_data)
+          if(json_data==""){
+                swal({
+                    text:"Results not yet posted",
+                    icon:"info",
+                })
+          }else{
+            var div_data="<div class='card-body'><div class='form-group'>";
+            div_data+="<label class='text-sm'>{{ student.username }}</label><br/>";
+            div_data+="</div>";
+            div_data+="<div class='form-group'>";
+            div_data+="<button class='btn btn-primary btn-sm text-sm' type='submit'>Open</button>";
+            div_data+="</div></div>";
+            $("#student_data").html(div_data);
+          }
+      })
     })
-})
+  })
+
 </script>
 {% endblock custom_js %}

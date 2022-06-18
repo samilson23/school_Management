@@ -1,5 +1,5 @@
 {% extends 'staff_template/base_template.html' %}
-{% block page_title %}  Leave Report And applictaion {% endblock page_title %}
+{% block page_title %}  Leave Application {% endblock page_title %}
 {% load static %}
 {% block main_content %}
 <section class="content">
@@ -7,10 +7,7 @@
         <div class="row">
           <div class="col-md-12">
             <!-- general form elements -->
-            <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title">Apply For Leave</h3>
-              </div>
+            <div class="card card">
               <form action="{% url 'staff_apply_leave_save' %}" method="POST"
                 <div class="card-body">
                     {% csrf_token %}
@@ -41,7 +38,7 @@
             </div>
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title"> Leave Apply History </h3>
+                <h3 class="card-title"> REPLIES </h3>
               </div>
             <div class="table">
               <table class="table">

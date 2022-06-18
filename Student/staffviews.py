@@ -393,4 +393,14 @@ def read_save(request):
     except:
         return HttpResponseRedirect(reverse("staff_all_notification"))
 
+def clear_all_staff(request):
+    staffs = staff.objects.get(admin=request.user.id)
+    notify1 = notificationstaff.objects.filter(staff_id=staffs.id,read=1)
+    notify1.delete()
+    return HttpResponseRedirect(reverse("staff_all_notification"))
 
+def clear_one_staff(request):
+    staff_id = request.POST.get("notification")
+    notify1 = notificationstaff.objects.filter(id=staff_id,read=1)
+    notify1.delete()
+    return HttpResponseRedirect(reverse("staff_all_notification"))

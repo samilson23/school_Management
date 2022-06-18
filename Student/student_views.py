@@ -474,7 +474,6 @@ def get_results(request):
     reg = StudentResult.objects.filter(student_id=student_obj,semester_id=stage_id)
     list_data = []
     for Subject in reg:
-        reg1 = unitregistration.objects.filter(student_id=student_obj,semester_id=stage_id)
         data_small = {"id": Subject.id, "code": Subject.subject_id.code, "name": Subject.subject_id.subject_name,"marks":Subject.grade}
         list_data.append(data_small)
     return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
@@ -493,3 +492,15 @@ def read_save_student(request):
         return HttpResponseRedirect(reverse("student_all_notification"))
     except:
         return HttpResponseRedirect(reverse("student_all_notification"))
+
+def clear_all(request):
+    student_id = students.objects.get(admin=request.user.id)
+    notify1 = notificationstudent.objects.filter(student_id=student_id.id,read=1)
+    notify1.delete()
+    return HttpResponseRedirect(reverse("student_all_notification"))
+
+def clear_one(request):
+    student_id = request.POST.get("notification")
+    notify1 = notificationstudent.objects.filter(id=student_id,read=1)
+    notify1.delete()
+    return HttpResponseRedirect(reverse("student_all_notification"))

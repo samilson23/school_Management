@@ -96,11 +96,12 @@
           {% url 'manage_student' as manage_student %}
           {% url 'add_student' as add_student %}
           {% url 'edit_student' student_id=id as edit_student %}
+          {% url 'update_student_units' id=student as update_student_units %}
           {% url 'student_feedback_msg' as student_feedback_msg %}
           {% url 'student_leave_reply' as student_leave_reply %}
           {% url 'admin_send_notification_student' as admin_send_notification_student %}
-          <li class="nav-item has-treeview {% if request.path == add_student %} menu-open {% endif %}{% if request.path == manage_student %} menu-open {% endif %}{% if request.path == edit_student %} menu-open {% endif %}{% if request.path == student_feedback_msg %} menu-open {% endif %}{% if request.path == student_leave_reply %} menu-open {% endif %} {% if request.path == admin_send_notification_student %} menu-open {% endif %} ">
-            <a href="#" class="nav-link {% if request.path == add_student %} active {% endif %}{% if request.path == manage_student %} active {% endif %}{% if request.path == edit_student %} active {% endif %}{% if request.path == student_feedback_msg %} active {% endif %}{% if request.path == student_leave_reply %} active {% endif %}{% if request.path == admin_send_notification_student %} active {% endif %}">
+          <li class="nav-item has-treeview {% if request.path == add_student %} menu-open {% endif %}{% if request.path == manage_student %} menu-open {% endif %} {% if request.path == update_student_units %} menu-open {% endif %} {% if request.path == edit_student %} menu-open {% endif %}{% if request.path == student_feedback_msg %} menu-open {% endif %}{% if request.path == student_leave_reply %} menu-open {% endif %} {% if request.path == admin_send_notification_student %} menu-open {% endif %} ">
+            <a href="#" class="nav-link {% if request.path == add_student %} active {% endif %}{% if request.path == manage_student %} active {% endif %} {% if request.path == update_student_units %} active {% endif %} {% if request.path == edit_student %} active {% endif %}{% if request.path == student_feedback_msg %} active {% endif %}{% if request.path == student_leave_reply %} active {% endif %}{% if request.path == admin_send_notification_student %} active {% endif %}">
               <i class="nav-icon fas fa-copy"></i>
               <p>
                 Student
@@ -117,7 +118,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ manage_student }}" class="nav-link {% if request.path == manage_student %} active {% endif %} {% if request.path == edit_student %} active {% endif %} ">
+                <a href="{{ manage_student }}" class="nav-link {% if request.path == manage_student %} active {% endif %} {% if request.path == update_student_units %} active {% endif %} {% if request.path == edit_student %} active {% endif %} ">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
                     Manage

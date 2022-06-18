@@ -9,10 +9,7 @@
             <!-- general form elements -->
            <form action="{% url 'result_save' %}" method="post">
               {% csrf_token %}
-              <div class="card card-primary">
-                <div class="card-header">
-                  <h3 class="card-title">Add Results</h3>
-                </div>
+              <div class="card card">
                   <div class="card-body">
                     <div class="form-group">
                       <label>Subject</label>

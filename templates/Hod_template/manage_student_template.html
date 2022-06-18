@@ -40,7 +40,8 @@
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Last Login</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Date Joined</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Session Year</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Action</th></tr>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Action</th>
+                </tr>
                 </thead>
                 <tbody>
                 {% for student in student %}
@@ -57,7 +58,10 @@
                       <td>{{ student.admin.last_login }}</td>
                       <td>{{ student.admin.date_joined }}</td>
                       <td>{{ student.session_year_id.session_start_year }} TO {{ student.session_year_id.session_end_year }}</td>
-                      <td><a href="/edit_student/{{ student.admin.id }}" class="btn btn-sm btn-success">Edit</a></td>
+                      <td>
+                          <a href="/edit_student/{{ student.admin.id }}" class="btn btn-sm btn-success">Edit</a>
+                          <a href="/update_student_units/{{ student.admin.id }}" class="btn btn-sm btn-success">Update/view Unit Registration</a>
+                      </td>
                     </tr>
                 {% endfor %}
                 </tbody>

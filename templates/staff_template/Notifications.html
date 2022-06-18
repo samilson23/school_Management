@@ -5,23 +5,35 @@
 <section class="content">
       <div class="container-fluid">
        <div class="row">
-          <div class="col-12">
+          <div class="col-6">
             <div class="card">
-              <div class="card-header">
-              <!-- /.card-header -->
+              <div class="header">
+                    <div class="card-tools float-right">
+                        <form method="POST" action="/clear_all_staff" role="form">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger">Clear All</button>
+                        </form>
+                    </div>
+              </div>
               <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
                   <thead>
                     <tr>
                       <th>Message</th>
-                      <th>Time Received</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
                   {% for notification in notify %}
                     <tr>
                       <td>{{ notification.message }}</td>
-                      <td>{{ notification.created_at }}</td>
+                      <td>
+                          <form method="POST" action="/clear_one_staff" role="form">
+                            {% csrf_token %}
+                              <input type="hidden" value="{{ notification.id }}" name="notification">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                          </form>
+                      </td>
                     </tr>
                   {% endfor %}
                   </tbody>

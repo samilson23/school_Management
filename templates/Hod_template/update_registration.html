@@ -1,4 +1,4 @@
-{% extends 'student_template/base_template.html' %}
+{% extends 'Hod_template/base_template.html' %}
 {% block custom_css %}
 <style>
 .col-lg-4.attendance_div_green {
@@ -38,19 +38,22 @@
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Resit Registration</h3>
+                <h3 class="card-title">Update/View Students Unit registration</h3>
               </div>
                 <div class="card-body">
                   <div class="form-group">
                     <label>Stage</label>
                     <select class="form-control"  name="stage" id="stage">
-                        {% for subject in reg %}
+                        {% for subject in Stage %}
                           <option value="{{ subject.id }}">{{ subject.semester_id.stage }}</option>
                         {% endfor %}
                     </select>
+                    {% for Stage in Stage %}
+                        <input type="hidden" name="student_id" id="student_id" value="{{ student_obj.id }}">
+                    {% endfor %}
                   </div>
                   <div class="form-group">
-                    <button type="button" class="btn btn-primary btn-block " id="fetch_units">Fetch Units</button>
+                    <button type="button" class="btn btn-success btn-sm " id="fetch_units">Fetch Units</button>
                   </div>
                   <div class="form-group">
                       <div class="alert alert-danger" id="error_attendance" style="display:none">
@@ -73,11 +76,12 @@
       $("#fetch_units").click(function(){
 
           var stage=$("#stage").val()
+          var student_id=$("#student_id").val()
 
           $.ajax({
-              url:'{% url 'get_unregistered_units' %}',
+              url:'{% url 'get_unregistered_student_units' %}',
               type:'POST',
-              data:{stage:stage},
+              data:{stage:stage,student_id:student_id},
           })
           .done(function(response){
               var json_data=JSON.parse(response);
@@ -114,39 +118,37 @@
        })
 
        $(document).on("click","#save_units",function(){
-
               $(this).attr("disabled","disabled")
               $(this).text("Submitting Units...")
               var student_data=$("input[name='student_data[]']").map(function(){
-                      if($(this).is(":checked")){
-                          return {"id":$(this).val(),"status":1};
-                      }
-                      else{
-                          return {"id":$(this).val(),"status":0};
-                      }
-               }).get()
+                  if($(this).is(":checked")){
+                      return {"id":$(this).val(),"status":1};
+                  }
+                  else{
+                      return {"id":$(this).val(),"status":0};
+                  }
+              }).get()
               var stage=$("#stage").val()
+              var student_id=$("#student_id").val()
               student_data=JSON.stringify(student_data)
 
               $.ajax({
-                      url:'{% url 'save_update_units' %}',
+                      url:'{% url 'save_update_student_units' %}',
                       type:'POST',
-                      data:{student_ids:student_data,stage:stage},
-                  })
-                  .done(function(response){
-
-                      if(response=="OK"){
-                          swal("Units saved")
-                      }
-                      else{
-                          swal("Error in Submitting Units")
-                      }
-                      location.reload()
-                  })
-                  .fail(function(){
-                      swal("Error in Saving Units")
-                  })
-
+                      data:{student_ids:student_data,stage:stage,student_id:student_id},
+              })
+              .done(function(response){
+                if(response=="saved"){
+                      swal("Units saved")
+                  }
+                  else{
+                      swal("Error in Submitting Units")
+                  }
+                  location.reload()
+              })
+              .fail(function(){
+                  swal("Error in Saving Units")
+              })
       })
 
   })

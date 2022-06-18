@@ -11,7 +11,7 @@ from Student import admin
 from Student.forms import EditStudentForm
 from Student.models import CustomUser, attendance, attendancereport, courses, feedbackstaff, feedbackstudent, \
     leavereportstaff, leavereportstudent, notificationstaff, notificationstudent, staff, subject, students, \
-    sessionmodel, semester, unitregistration, registrationreport, StudentResult
+    sessionmodel, semester, unitregistration, registrationreport, StudentResult, hod, department
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from .filters import CourseFilter, SubjectFilter, StudentFilter, StaffFilter, StudentFeedbackFilter, \
@@ -19,19 +19,20 @@ from .filters import CourseFilter, SubjectFilter, StudentFilter, StaffFilter, St
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 
 def admin_home(request):
-    student_count=students.objects.all().count()
-    staff_count1 = staff.objects.all().count()
-    staff_count = int(staff_count1) - 1
-    course_count=courses.objects.all().count()
-    subject_count=subject.objects.all().count()
+    Hod=hod.objects.get(admin=request.user.id)
+    student_count=students.objects.filter(dept_id=Hod.dept_id.id).count()
+    staff_count = staff.objects.filter(dept_id=Hod.dept_id.id).count()
+    # staff_count = int(staff_count1) - 1
+    course_count=courses.objects.filter(dept_id=Hod.dept_id.id).count()
+    subject_count=subject.objects.filter(dept_id=Hod.dept_id.id).count()
 
-    course_all=courses.objects.all()
+    course_all=courses.objects.filter(dept_id=Hod.dept_id.id)
     course_name_list=[]
     subject_count_list=[]
     student_count_in_course_list=[]
     for course in course_all:
-        Subjects=subject.objects.filter(course_id=course.id).count()
-        Students=students.objects.filter(course_id=course.id).count()
+        Subjects=subject.objects.filter(course_id=course.id,dept_id=Hod.dept_id.id).count()
+        Students=students.objects.filter(course_id=course.id,dept_id=Hod.dept_id.id).count()
         course_name_list.append(course.course_name)
         subject_count_list.append(Subjects)
         student_count_in_course_list.append(Students)
@@ -40,10 +41,10 @@ def admin_home(request):
 
     subject_list=[]
     student_count_in_subject_list=[]
-    subjects_all = subject.objects.all()
+    subjects_all = subject.objects.filter(dept_id=Hod.dept_id.id)
     for Subject in subjects_all:
        course=courses.objects.get(id=Subject.course_id.id)
-       students_count=subject.objects.filter(course_id=course.id).count()
+       students_count=subject.objects.filter(course_id=course.id,dept_id=Hod.dept_id.id).count()
        subject_list.append(Subject.subject_name)
        student_count_in_subject_list.append(students_count)
 
@@ -51,11 +52,15 @@ def admin_home(request):
     attendance_absent_list_staff=[]
     attendance_present_list_staff=[]
     staff_name_list=[]
-    staffs = staff.objects.all()
+    staffs = staff.objects.filter(dept_id=Hod.dept_id.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0,dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0,dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0,dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0,dept_id=Hod.dept_id.id).count()
     for Staff in staffs:
-        subject_ids=subject.objects.filter(staff_id=Staff.admin.id)
+        subject_ids=subject.objects.filter(staff_id=Staff.admin.id,dept_id=Hod.dept_id.id)
         Attendance=attendance.objects.filter(subject_id__in=subject_ids).count()
-        leaves=leavereportstaff.objects.filter(staff_id=Staff.id,leave_status=1).count()
+        leaves=leavereportstaff.objects.filter(staff_id=Staff.id,leave_status=1,dept_id=Hod.dept_id.id).count()
         attendance_present_list_staff.append(Attendance)
         attendance_absent_list_staff.append(leaves)
         if Staff.admin.id == 3:
@@ -68,7 +73,7 @@ def admin_home(request):
     attendance_present_list_student=[]
     attendance_leave_list_student=[]
     student_name_list=[]
-    Student_all = students.objects.all()
+    Student_all = students.objects.filter(dept_id=Hod.dept_id.id)
     for student in Student_all:
         present=attendancereport.objects.filter(student_id=student.id,status=True).count()
         Absent=attendancereport.objects.filter(student_id=student.id,status=False).count()
@@ -78,7 +83,9 @@ def admin_home(request):
         attendance_leave_list_student.append(leaves)
         student_name_list.append(student.admin.username)
 
-    subjects=subject.objects.all()
+    subjects=subject.objects.filter(dept_id=Hod.dept_id.id)
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_student_count) + int(feedback_staff_count)
+    # Total = int(Total1)
     context={
         "student_count":student_count,
          "staff_count":staff_count,
@@ -96,15 +103,32 @@ def admin_home(request):
          "student_name_list":student_name_list,
          "attendance_leave_list_student":attendance_leave_list_student,
          "attendance_absent_list_staff":attendance_absent_list_staff,
-         "subjects":subjects
+         "subjects":subjects,
+         "Hod":Hod,
+        "Total":Total,
+         "leave_student_count":leave_student_count,
+         "leave_staff_count":leave_staff_count,
+        "feedback_staff_count":feedback_staff_count,
+        "feedback_student_count":feedback_student_count
     }
     return render(request,
                   "Hod_template/home_content.html",context)
 
 
 def add_staff(request):
+    Hod = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
     subjects = subject.objects.all()
-    return render(request,"Hod_template/add_staff_template.html",{"subjects":subjects})
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_student_count) + int(feedback_staff_count)
+    return render(request,"Hod_template/add_staff_template.html",{"subjects":subjects,
+                                                                  "leave_staff_count":leave_staff_count,
+                                                                  "leave_student_count":leave_student_count,
+                                                                  "Total":Total,
+                                                                  "feedback_student_count":feedback_student_count,
+                                                                  "feedback_staff_count":feedback_staff_count})
 def add_staff_save(request):
     if request.method!="POST":
         return HttpResponse("Method Not Allowed")
@@ -113,13 +137,15 @@ def add_staff_save(request):
         last_name = request.POST.get("last_name")
         user_name = request.POST.get("user_name")
         email = request.POST.get("email")
-        subject_id = request.POST.get("subject")
         address = request.POST.get("address")
         try:
+            Hod = hod.objects.get(admin=request.user.id)
+            dept_id=department.objects.get(id=Hod.dept_id.id)
             if email=="":
                 user = CustomUser.objects.create_user(username=user_name,email=email,first_name=first_name, last_name=last_name,user_type=3)
                 user.set_password('changeme')
                 user.staff.address = address
+                user.staff.dept_id = dept_id
                 # subjectss = subject.objects.get(id=subject_id)
                 # user.staff.subject_id=subjectss
                 user.save()
@@ -128,6 +154,7 @@ def add_staff_save(request):
                                                       last_name=last_name, user_type=3)
                 user.set_password('changeme')
                 user.staff.address = address
+                user.staff.dept_id = dept_id
                 # subjectss = subject.objects.get(id=subject_id)
                 # user.staff.subject_id=subjectss
                 user.save()
@@ -138,15 +165,29 @@ def add_staff_save(request):
             return HttpResponseRedirect(reverse("add_staff"))
 
 def add_course(request):
-    return render(request, "Hod_template/add_course_template.html")
+    Hod = hod.objects.get(admin=request.user.id)
+    # Hod = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    Sch = department.objects.filter(id=Hod.dept_id.id)
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_student_count) + int(feedback_staff_count)
+    return render(request, "Hod_template/add_course_template.html",{"Sch":Sch,"leave_staff_count":leave_staff_count,
+                                                                    "leave_student_count":leave_student_count,
+                                                                    "Total":Total,
+                                                                    "feedback_staff_count":feedback_staff_count,
+                                                                    "feedback_student_count":feedback_student_count})
 
 def add_course_save(request):
     if request.method!="POST":
         return HttpResponseRedirect("Method Not Allowed")
     else:
         course = request.POST.get("course_name")
+        dept = request.POST.get("dept")
         try:
-            course_model = courses(course_name=course)
+            dept_id = department.objects.get(id=dept)
+            course_model = courses(course_name=course,dept_id=dept_id)
             course_model.save()
             messages.success(request, "Successfully Added Course")
             return HttpResponseRedirect(reverse("add_course"))
@@ -154,14 +195,27 @@ def add_course_save(request):
             messages.error(request, "Failed To Add Course")
             return HttpResponseRedirect(reverse("add_course"))
 def add_student(request):
-    course=courses.objects.all()
+    Hod=hod.objects.get(admin=request.user.id)
+    # Hod = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    course=courses.objects.filter(dept_id=Hod.dept_id.id)
     sessions=sessionmodel.objects.all()
-    return render(request, "Hod_template/add_student_template.html",{"course":course,"sessions":sessions})
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
+    return render(request, "Hod_template/add_student_template.html",{"course":course,"sessions":sessions,
+                                                                    "leave_staff_count":leave_staff_count,
+                                                                     "leave_student_count":leave_student_count,
+                                                                     "Total":Total,
+                                                                     "feedback_student_count":feedback_student_count,
+                                                                     "feedback_staff_count":feedback_staff_count})
 
 def add_student_save(request):
     if request.method!="POST":
         return HttpResponseRedirect("Method Not Allowed")
     else:
+        Hod = hod.objects.get(admin=request.user.id)
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
         username = request.POST.get("username")
@@ -172,41 +226,57 @@ def add_student_save(request):
         course_id = request.POST.get("course")
         sex = request.POST.get("sex")
 
-        try:
-            if email=="":
-                user = CustomUser.objects.create_user(username=username, email=email,
-                                                      first_name=first_name, last_name=last_name, user_type=4)
-                user.students.address = address
-                course_obj = courses.objects.get(id=course_id)
-                user.students.course_id = course_obj
-                session = sessionmodel.objects.get(id=session_year_id)
-                user.students.session_year_id = session
-                user.students.gender = sex
-                user.set_password("changeme")
-                user.save()
-            else:
-                user = CustomUser.objects.create_user(username=username, email=email,
-                                                      first_name=first_name, last_name=last_name, user_type=4)
-                user.students.address = address
-                course_obj = courses.objects.get(id=course_id)
-                user.students.course_id = course_obj
-                session = sessionmodel.objects.get(id=session_year_id)
-                user.students.session_year_id = session
-                user.students.gender = sex
-                user.set_password("changeme")
-                user.save()
-            messages.success(request, "Successfully Added Student")
-            return HttpResponseRedirect(reverse("add_student"))
+        # try:
+        dept_id=department.objects.get(id=Hod.dept_id.id)
+        if email=="":
+            user = CustomUser.objects.create_user(username=username, email=email,
+                                                  first_name=first_name, last_name=last_name, user_type=4)
+            user.students.address = address
+            course_obj = courses.objects.get(id=course_id)
+            user.students.course_id = course_obj
+            user.students.dept_id=dept_id
+            session = sessionmodel.objects.get(id=session_year_id)
+            user.students.session_year_id = session
+            user.students.gender = sex
+            user.set_password("changeme")
+            user.save()
+        else:
+            user = CustomUser.objects.create_user(username=username, email=email,
+                                                  first_name=first_name, last_name=last_name, user_type=4)
+            user.students.address = address
+            course_obj = courses.objects.get(id=course_id)
+            user.students.course_id = course_obj
+            session = sessionmodel.objects.get(id=session_year_id)
+            user.students.session_year_id = session
+            user.students.gender = sex
+            user.set_password("changeme")
+            user.save()
+        messages.success(request, "Successfully Added Student")
+        return HttpResponseRedirect(reverse("add_student"))
 
-        except:
-            messages.error(request, "Failed to add Student")
-            return HttpResponseRedirect(reverse("add_student"))
+        # except:
+        #     messages.error(request, "Failed to add Student")
+        #     return HttpResponseRedirect(reverse("add_student"))
 
 def add_subject(request):
-    course = courses.objects.all()
+    Hod = hod.objects.get(admin=request.user.id)
+    # Hod = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    dept_id = department.objects.get(id=Hod.dept_id.id)
+    course = courses.objects.filter(dept_id=dept_id)
     Stage = semester.objects.all()
-    Staff = CustomUser.objects.filter(user_type=3)
-    return render(request, "Hod_template/add_subject_template.html", {"Staff": Staff,"course": course,"Stage":Stage})
+    Staff = staff.objects.filter(dept_id=dept_id)
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
+    return render(request, "Hod_template/add_subject_template.html", {"Staff": Staff,"course": course,
+                                                                      "Stage":Stage,
+                                                                      "leave_student_count":leave_student_count,
+                                                                      "leave_staff_count":leave_staff_count,
+                                                                      "Total":Total,
+                                                                      "feedback_staff_count":feedback_staff_count,
+                                                                      "feedback_student_count":feedback_student_count})
 
 def add_subject_save(request):
     if request.method!="POST":
@@ -219,10 +289,12 @@ def add_subject_save(request):
         code = request.POST.get("code")
         stage_id = request.POST.get("stage")
         stage = semester.objects.get(id=stage_id)
-        staff = CustomUser.objects.get(id=staff_id)
+        staffs = staff.objects.get(admin=staff_id)
 
         # try:
-        subjects = subject(subject_name=subject_name,course_id=course,stage_id=stage,staff_id=staff,code=code)
+        Hod = hod.objects.get(admin=request.user.id)
+        dept_id=department.objects.get(id=Hod.dept_id.id)
+        subjects = subject(subject_name=subject_name,course_id=course,dept_id=dept_id,stage_id=stage,staff_id=staffs,code=code)
         subjects.save()
         messages.success(request, "Successfully Added Subject")
         return HttpResponseRedirect(reverse("add_subject"))
@@ -231,27 +303,14 @@ def add_subject_save(request):
         return HttpResponseRedirect(reverse("add_subject"))
 
 
-# def add_subject_save(request):
-#     if request.method!="POST":
-#         return HttpResponse("<h2>Method Not Allowed</h2>")
-#     else:
-#         subject_name=request.POST.get("subject_name")
-#         course_id=request.POST.get("course")
-#         course=courses.objects.get(id=course_id)
-#         staff_id=request.POST.get("staff")
-#         staff=CustomUser.objects.get(id=staff_id)
-#
-#         try:
-#             subjects=subject(subject_name=subject_name,course_id=course,staff_id=staff)
-#             subjects.save()
-#             messages.success(request,"Successfully Added Subject")
-#             return HttpResponseRedirect(reverse("add_subject"))
-#         except:
-#             messages.error(request,"Failed to Add Subject")
-#             return HttpResponseRedirect(reverse("add_subject"))
-
 def manage_staff(request):
     staf = staff.objects.all()
+    Hod = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
     filterstaf = StaffFilter(request.GET, queryset=staf)
     staf = filterstaf.qs
     paginator = Paginator(staf,10)
@@ -268,12 +327,24 @@ def manage_staff(request):
         'staf':staf,
         'page_obj':page_obj,
         'page_range':page_range,
+        "leave_student_count":leave_student_count,
+        "leave_staff_count":leave_staff_count,
+        "Total":Total,
+        "feedback_student_count":feedback_student_count,
+        "feedback_staff_count":feedback_staff_count,
         "filterstaf":filterstaf.form
     }
     return render(request, "Hod_template/manage_staff_template.html",context)
 
 def manage_student(request):
-    student = students.objects.all()
+    # Hod = hod.objects.get(admin=request.user.id)
+    Hod = hod.objects.get(admin=request.user.id)
+    student = students.objects.filter(dept_id=Hod.dept_id.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_student_count) + int(feedback_staff_count)
     filters = StudentFilter(request.GET, queryset=student)
     student = filters.qs
     paginator = Paginator(student,10)
@@ -290,13 +361,24 @@ def manage_student(request):
     context = {
         "student": student,
         "page_obj": page_obj,
+        "Total":Total,
         "page_range": page_range,
+        "leave_student_count":leave_student_count,
+        "feedback_student_count":feedback_student_count,
+        "leave_staff_count":leave_staff_count,
+        "feedback_staff_count":feedback_staff_count,
         "filters":filters.form
     }
     return render(request, "Hod_template/manage_student_template.html",context)
 
 def manage_course(request):
-    course = courses.objects.all()
+    Sch = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Sch.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Sch.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Sch.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Sch.dept_id.id).count()
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
+    course = courses.objects.filter(dept_id=Sch.dept_id.id)
     Myfilter = CourseFilter(request.GET, queryset=course)
     course=Myfilter.qs
     paginator = Paginator(course,10)
@@ -313,13 +395,24 @@ def manage_course(request):
                 "course": course,
                 "Myfilter":Myfilter.form,
                 'page_obj':page_obj,
+                "Total":Total,
+                "leave_staff_count":leave_staff_count,
+                "feedback_staff_count":feedback_staff_count,
+                "leave_student_count":leave_student_count,
+                "feedback_student_count":feedback_student_count,
                 'page_range':page_range
     }
 
     return render(request, "Hod_template/manage_course_template.html",context)
 
 def manage_subjects(request):
-    subjects = subject.objects.all()
+    Hod=hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
+    subjects = subject.objects.filter(dept_id=Hod.dept_id.id)
     Myfilter = SubjectFilter(request.GET, queryset=subjects)
     subjects = Myfilter.qs
     paginator = Paginator(subjects, 10)
@@ -336,13 +429,29 @@ def manage_subjects(request):
         "subjects": subjects,
         "Myfilter":Myfilter.form,
         "page_obj":page_obj,
-        "page_range":page_range
+        "page_range":page_range,
+        "leave_staff_count":leave_staff_count,
+        "feedback_staff_count":feedback_staff_count,
+        "leave_student_count":leave_student_count,
+        "feedback_student_count":feedback_student_count,
+        "Total":Total
     }
     return render(request, "hod_template/manage_subjects_template.html",context)
 
 def edit_staff(request,staff_id):
     staffss = staff.objects.get(admin=staff_id)
-    return render(request,"Hod_template/edit_staff_template.html",{"staffss": staffss,"id":staff_id})
+    Hod = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
+    return render(request,"Hod_template/edit_staff_template.html",{"staffss": staffss,"id":staff_id,
+                                                                   "leave_staff_count":leave_staff_count,
+                                                                   "feedback_staff_count":feedback_staff_count,
+                                                                   "leave_student_count":leave_student_count,
+                                                                   "feedback_student_count":feedback_student_count,
+                                                                   "Total":Total})
 
 def edit_staff_save(request):
     if request.method!="POST":
@@ -371,6 +480,12 @@ def edit_staff_save(request):
             return HttpResponseRedirect(reverse("edit_staff",kwargs={"staff_id":staff_id}))
 
 def edit_student(request,student_id):
+    Hod = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
     request.session['student_id']=student_id
     student=students.objects.get(admin=student_id)
     form=EditStudentForm()
@@ -383,7 +498,12 @@ def edit_student(request,student_id):
     # form.fields['profile_pic'].initial=student.profile_pic
     # form.fields['sex'].initial=student.gender
     form.fields['session_year_id'].initial=student.session_year_id.id
-    return render(request,"hod_template/edit_student_template.html",{"form":form,"id":student_id,"username":student.admin.username})
+    return render(request,"hod_template/edit_student_template.html",{"form":form,"id":student_id,"username":student.admin.username,
+                                                                     "leave_student_count":leave_student_count,
+                                                                     "feedback_student_count":feedback_student_count,
+                                                                     "leave_staff_count":leave_staff_count,
+                                                                     "feedback_staff_count":feedback_staff_count,
+                                                                     "Total":Total})
 
 def edit_student_save(request):
     if request.method!="POST":
@@ -418,7 +538,10 @@ def edit_student_save(request):
                 user.first_name=first_name
                 user.last_name=last_name
                 user.username=username
-                user.email=email
+                if email!="":
+                    user.email=email
+                else:
+                    user.email = email
                 user.save()
 
                 student=students.objects.get(admin=student_id)
@@ -427,7 +550,9 @@ def edit_student_save(request):
                 student.session_year_id = session_year
                 # student.gender=sex
                 course=courses.objects.get(id=course_id)
+                dept_id = department.objects.get(id=course.dept_id.id)
                 student.course_id=course
+                student.dept_id=dept_id
                 if profile_pic_url!=None:
                     student.profile_pic=profile_pic_url
                 student.save()
@@ -444,9 +569,21 @@ def edit_student_save(request):
 
 def edit_subject(request,subject_id):
     subjects = subject.objects.get(id=subject_id)
+    Hod = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
     course = courses.objects.all()
     staff = CustomUser.objects.filter(user_type=3)
-    return render(request,"Hod_template/edit_subject_template.html",{"subjects":subjects,"course":course,"staff":staff,"id":subject_id})
+    return render(request,"Hod_template/edit_subject_template.html",{"subjects":subjects,"course":course,"staff":staff,
+                                                                     "id":subject_id,
+                                                                     "leave_student_count":leave_student_count,
+                                                                     "feedback_student_count":feedback_student_count,
+                                                                     "leave_staff_count":leave_staff_count,
+                                                                     "feedback_staff_count":feedback_staff_count,
+                                                                     "Total":Total})
 
 def edit_subject_save(request):
     if request.method!="POST":
@@ -473,7 +610,18 @@ def edit_subject_save(request):
 
 def edit_course(request,course_id):
     course = courses.objects.get(id=course_id)
-    return render(request,"Hod_template/edit_course_template.html",{"course":course,"id":course_id})
+    Hod = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
+    return render(request,"Hod_template/edit_course_template.html",{"course":course,"id":course_id,
+                                                                    "leave_student_count":leave_student_count,
+                                                                    "feedback_student_count":feedback_student_count,
+                                                                    "leave_staff_count":leave_staff_count,
+                                                                    "feedback_staff_count":feedback_staff_count,
+                                                                    "Total":Total})
 
 def edit_course_save(request):
     if request.method!="POST":
@@ -492,7 +640,18 @@ def edit_course_save(request):
             return HttpResponseRedirect(reverse("edit_course",kwargs={"course_id":course_id}))
 
 def manage_session(request):
-    return render(request,"Hod_template/manage_session_template.html")
+    Hod = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
+    return render(request,"Hod_template/manage_session_template.html",{
+        "leave_student_count":leave_student_count,
+        "feedback_student_count":feedback_student_count,
+       "leave_staff_count":leave_staff_count,
+       "feedback_staff_count":feedback_staff_count,
+       "Total":Total})
 
 def add_session_save(request):
     if request.method!="POST":
@@ -538,7 +697,14 @@ def check_subject_code(request):
         return HttpResponse(False)
 
 def student_feedback_msg(request):
-    feedbacks = feedbackstudent.objects.all().order_by("-created_at")
+    Hod = hod.objects.get(admin=request.user.id)
+    # Hod = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
+    feedbacks = feedbackstudent.objects.filter(dept_id=Hod.dept_id.id).order_by("-created_at")
     filters = StudentFeedbackFilter(request.GET, queryset=feedbacks)
     feedbacks = filters.qs
     paginator = Paginator(feedbacks, 10)
@@ -556,13 +722,25 @@ def student_feedback_msg(request):
         "feedbacks":feedbacks,
         "filters":filters.form,
         "page_range":page_range,
-        "page_obj":page_obj
+        "page_obj":page_obj,
+        "leave_staff_count":leave_staff_count,
+        "feedback_staff_count":feedback_staff_count,
+        "leave_student_count":leave_student_count,
+        "feedback_student_count":feedback_student_count,
+        "Total":Total
     }
     return render(request,"Hod_template/student_feedback_msg.html",context)
 
 
 def staff_feedback_msg(request):
-    feedback = feedbackstaff.objects.all().order_by("-created_at")
+    # Hod = hod.objects.get(admin=request.user.id)
+    Hod = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
+    feedback = feedbackstaff.objects.filter(dept_id=Hod.dept_id.id).order_by("-created_at")
     filters = StaffFeedbackFilter(request.GET, queryset=feedback)
     feedback = filters.qs
     paginator = Paginator(feedback, 10)
@@ -580,7 +758,12 @@ def staff_feedback_msg(request):
         "feedback":feedback,
         "filters":filters.form,
         "page_range":page_range,
-        "page_obj":page_obj
+        "page_obj":page_obj,
+        "leave_student_count":leave_student_count,
+        "feedback_student_count":feedback_student_count,
+        "leave_staff_count":leave_staff_count,
+        "feedback_staff_count":feedback_staff_count,
+        "Total":Total
     }
     return render(request,"Hod_template/staff_feedback_msg.html",context)
 
@@ -592,6 +775,7 @@ def student_feedback_msg_replied(request):
     try:
         feedback=feedbackstudent.objects.get(id=feedback_id)
         feedback.feedback_reply=feedback_message
+        feedback.status=1
         feedback.save()
         return HttpResponse("True")
     except:
@@ -605,18 +789,43 @@ def staff_feedback_msg_replied(request):
     try:
         feedback=feedbackstaff.objects.get(id=feedback_id)
         feedback.feedback_reply=feedback_message
+        feedback.status=1
         feedback.save()
         return HttpResponse("True")
     except:
         return HttpResponse("False")   
 
 def staff_leave_reply(request):
-    staff_leaves=leavereportstaff.objects.all()
-    return render(request,"Hod_template/staff_leave_reply.html",{"staff_leaves":staff_leaves})
+    # Hod=hod.objects.get(admin=request.user.id)
+    Hod = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
+    staff_leaves=leavereportstaff.objects.filter(dept_id=Hod.dept_id.id)
+    return render(request,"Hod_template/staff_leave_reply.html",{"staff_leaves":staff_leaves,
+                                                                 "leave_student_count":leave_student_count,
+                                                                 "feedback_student_count":feedback_student_count,
+                                                                 "leave_staff_count":leave_staff_count,
+                                                                 "feedback_staff_count":feedback_staff_count,
+                                                                 "Total":Total})
 
 def student_leave_reply(request):
-    leaves=leavereportstudent.objects.all()
-    return render(request,"Hod_template/student_leave_reply.html",{"leaves":leaves})
+    # Hod = hod.objects.get(admin=request.user.id)
+    Hod = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
+    leaves=leavereportstudent.objects.filter(dept_id=Hod.dept_id.id)
+    return render(request,"Hod_template/student_leave_reply.html",{"leaves":leaves,
+                                                                   "leave_staff_count":leave_staff_count,
+                                                                   "feedback_staff_count":feedback_staff_count,
+                                                                   "leave_student_count":leave_student_count,
+                                                                   "feedback_student_count":feedback_student_count,
+                                                                   "Total":Total})
 
 
 def student_approved_leave(request,leave_id):
@@ -676,8 +885,19 @@ def admin_get_attendance_student(request):
 
 
 def admin_profile(request):
+    Hod = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
     user=CustomUser.objects.get(id=request.user.id)
-    return render(request,"Hod_template/admin_profile.html",{"user":user})  
+    return render(request,"Hod_template/admin_profile.html",{"user":user,
+                                                             "leave_student_count":leave_student_count,
+                                                             "feedback_student_count":feedback_student_count,
+                                                             "leave_staff_count":leave_staff_count,
+                                                             "feedback_staff_count":feedback_staff_count,
+                                                             "Total":Total})
 
 
 def admin_profile_save(request):
@@ -705,7 +925,11 @@ def admin_profile_save(request):
             
 
 def admin_send_notification_student(request):
-    student = students.objects.all()
+    # Hod=hod.objects.get(admin=request.user.id)
+    Hod = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    student = students.objects.filter(dept_id=Hod.dept_id.id)
     filters = StudentFilter(request.GET, queryset=student)
     student = filters.qs
     paginator = Paginator(student, 10)
@@ -722,13 +946,19 @@ def admin_send_notification_student(request):
         "student": student,
         "page_obj": page_obj,
         "page_range": page_range,
-        "filters": filters.form
+        "filters": filters.form,
+        "leave_staff_count":leave_staff_count,
+        "leave_student_count":leave_student_count
     }
     return render(request,"Hod_template/student_notification.html",context)
 
 
 def admin_send_notification_staff(request):
-    staffs = staff.objects.all()
+    # Hod = hod.objects.get(admin=request.user.id)
+    Hod = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    staffs = staff.objects.filter(dept_id=Hod.dept_id.id)
     filters = StaffFilter(request.GET, queryset=staffs)
     staffs = filters.qs
     paginator = Paginator(staffs, 10)
@@ -747,6 +977,8 @@ def admin_send_notification_staff(request):
         "page_obj":page_obj,
         "filters": filters.form,
         "page_range":page_range,
+        "leave_student_count":leave_student_count,
+        "leave_staff_count":leave_staff_count
     }
     return render(request,"Hod_template/staff_notification.html",context)
 
@@ -805,11 +1037,17 @@ def datatable(request):
 def update_student_units(request,id):
     student = students.objects.get(admin=id)
     student_obj = CustomUser.objects.get(id=id)
+    Hod = hod.objects.get(admin=request.user.id)
+    leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
     Stage = unitregistration.objects.filter(student_id=student_obj)
     context={
         "student":student,
+        "id":id,
         "student_obj":student_obj,
-        "Stage":Stage
+        "Stage":Stage,
+        "leave_student_count":leave_student_count,
+        "leave_staff_count":leave_staff_count
     }
     return render(request,"Hod_template/update_registration.html",context)
 

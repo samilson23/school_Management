@@ -1,20 +1,20 @@
 {% extends 'staff_template/base_template.html' %}
 {% load static %}
-{% block page_title %} Notifications {% endblock page_title %}
 {% block main_content %}
 <section class="content">
       <div class="container-fluid">
        <div class="row">
           <div class="col-6">
-            <div class="card">
-              <div class="header">
-                    <div class="card-tools float-right">
+            <div class="card card-primary">
+              <div class="card-header">
+                    <h3 class="card-title">Notifications</h3>
+                    <div class="card-tools">
                         <form method="POST" action="/clear_all_staff" role="form">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-sm btn-danger">Clear All</button>
                         </form>
                     </div>
-              </div>
+                </div>
               <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
                   <thead>

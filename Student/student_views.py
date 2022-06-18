@@ -17,7 +17,7 @@ from django.views.generic import ListView
 
 from Student.models import OnlineClassRoom, StudentResult, feedbackstudent, leavereportstudent, notificationstudent, \
     sessionmodel, students, courses, subject, CustomUser, attendance, attendancereport, semester, unitregistration, \
-    registrationreport
+    registrationreport, department
 
 
 def student_home(request):
@@ -128,7 +128,8 @@ def student_apply_leave_save(request):
         leave_msg=request.POST.get("leave_msg")
         student_obj = students.objects.get(admin=request.user.id)
         try:
-            leave_report=leavereportstudent(student_id=student_obj,leave_date=leave_date,leave_message=leave_msg,leave_status=0)
+            dept_id=department.objects.get(id=student_obj.dept_id.id)
+            leave_report=leavereportstudent(student_id=student_obj,dept_id=dept_id,leave_date=leave_date,leave_message=leave_msg,leave_status=0)
             leave_report.save()
             messages.success(request,"Successfully Applied For Leave")
             return HttpResponseRedirect(reverse("student_apply_leave"))
@@ -155,7 +156,8 @@ def student_feedback_save(request):
         student_obj = students.objects.get(admin=request.user.id)
         if feedback_msg!="":
             try:
-                feedback_obj = feedbackstudent(student_id=student_obj,feedback=feedback_msg,feedback_reply="")
+                dept_id = department.objects.get(id=student_obj.dept_id.id)
+                feedback_obj = feedbackstudent(dept_id=dept_id,student_id=student_obj,feedback=feedback_msg,feedback_reply="",status=0)
                 feedback_obj.save()
                 messages.success(request, "Successfully Submitted Feedback")
                 return HttpResponseRedirect(reverse("student_feedback"))
@@ -458,7 +460,7 @@ def render_pdf_view(request,id):
                'Stage':Stage
                }
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename=''Transcript-'+student_obj.admin.username+'.pdf'
+    response['Content-Disposition'] = 'attachment; filename=''Transcript-'+student_obj.admin.username+'.pdf'
     template = get_template(template_path)
     html = template.render(context)
     pisa_status = pisa.CreatePDF(

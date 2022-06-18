@@ -28,7 +28,6 @@
                         <tr>
                           <th>ID</th>
                           <th>Student Reg.No</td>
-                          <th>Session</th>
                           <th>Message</th>
                           <th> Sent On</th>
                           <th>Reply</th>
@@ -37,7 +36,6 @@
                          <tr>
                            <td> {{ feedback.id }} </td>
                            <td> {{ feedback.student_id.admin.username }}</td>
-                           <td> {{ feedback.student_id.session_year_id.session_start_year }} TO {{ feedback.student_id.session_year_id.session_end_year }} </td>
                            <td> {{ feedback.feedback }} </td>
                            <td> {{ feedback.created_at }} </td>
                            <td>
@@ -127,7 +125,7 @@
   $(document).ready(function(){
     $(".reply_open_modal").click(function(){
       var id=$(this).parents("tr").children("td:eq(0)").text();
-      var name=$(this).parents("tr").children("td:eq(2)").text();
+      var name=$(this).parents("tr").children("td:eq(1)").text();
       $("#reply_id").val(id);
       $("#reply_name").text(name);
     });

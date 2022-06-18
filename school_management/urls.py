@@ -149,7 +149,11 @@ urlpatterns = [
     # admin
     path('home',admin_views.home,name="home"),
     path('add_hod',admin_views.add_hod,name="add_hod"),
+    path('add_school',admin_views.add_school,name="add_school"),
+    path('add_department',admin_views.add_department,name="add_department"),
     path('add_hod_save',admin_views.add_hod_save,name="add_hod_save"),
+    path('add_school_save',admin_views.add_school_save,name="add_school_save"),
+    path('add_dept_save',admin_views.add_dept_save,name="add_dept_save"),
     path('manage_hod',admin_views.manage_hod,name="manage_hod"),
     path('delete_hod/<int:id>',admin_views.delete_hod,name="delete_hod"),
     path('delete_staff/<int:id>',admin_views.delete_staff,name="delete_staff"),

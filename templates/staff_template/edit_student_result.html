@@ -1,5 +1,5 @@
 {% extends 'staff_template/base_template.html' %}
-{% block page_title %} Edit Results {% endblock page_title %}
+{% block page_title %}{% endblock page_title %}
 {% load static %}
 {% block main_content %}
 <section class="content">
@@ -9,7 +9,10 @@
             <!-- general form elements -->
            <form action="{% url 'edit_student_result' %}" method="post">
               {% csrf_token %}
-              <div class="card card">
+              <div class="card card-primary">
+                  <div class="card-header">
+                      <h3 class="card-title"> Edit Results </h3>
+                  </div>
                 <div class="card-body">
                     {{ form }}
                     <div class="form-group">

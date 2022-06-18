@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from Student.models import Adminhod, CustomUser, OnlineClassRoom, StudentResult, attendance, attendancereport, courses, \
     leavereportstaff, notificationstaff, staff, subject, sessionmodel, students, \
-    feedbackstaff, registrationreport
+    feedbackstaff, registrationreport, department
 from django.contrib import messages
 
 def staff_home(request):
@@ -165,7 +165,8 @@ def staff_apply_leave_save(request):
         leave_msg=request.POST.get("leave_msg")
         staff_obj = staff.objects.get(admin=request.user.id)
         try:
-            leave_report=leavereportstaff(staff_id=staff_obj,leave_date=leave_date,leave_message=leave_msg,leave_status=0)
+            dept_id = department.objects.get(id=staff_obj.dept_id.id)
+            leave_report=leavereportstaff(staff_id=staff_obj,dept_id=dept_id,leave_date=leave_date,leave_message=leave_msg,leave_status=0)
             leave_report.save()
             messages.success(request,"Successfully Applied For Leave")
             return HttpResponseRedirect(reverse("staff_apply_leave"))
@@ -193,7 +194,8 @@ def staff_feedback_save(request):
         staff_obj = staff.objects.get(admin=request.user.id)
         if feedback_msg!="":
             try:
-                feedback_obj = feedbackstaff(staff_id=staff_obj,feedback=feedback_msg,feedback_reply="")
+                dept_id=department.objects.get(id=staff_obj.dept_id.id)
+                feedback_obj = feedbackstaff(staff_id=staff_obj,dept_id=dept_id,feedback=feedback_msg,feedback_reply="",status=0)
                 feedback_obj.save()
                 messages.success(request, "Successfully Submitted Feedback")
                 return HttpResponseRedirect(reverse("staff_feedback"))

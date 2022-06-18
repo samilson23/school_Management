@@ -7,7 +7,8 @@ from django.urls import reverse
 
 from Student.filters import HodFilter, StaffFilter, StudentFilter
 from Student.models import CustomUser, hod, staff, students, attendancereport, leavereportstudent, \
-    feedbackstudent, notificationstudent, StudentResult, subject, courses, attendance, leavereportstaff
+    feedbackstudent, notificationstudent, StudentResult, subject, courses, attendance, leavereportstaff, school, \
+    department
 
 
 def home(request):
@@ -93,7 +94,8 @@ def home(request):
 
 
 def add_hod(request):
-    return render(request,"admin_template/add_hod.html")
+    Sch = department.objects.all()
+    return render(request,"admin_template/add_hod.html",{"Sch":Sch})
 
 def add_hod_save(request):
     if request.method!='POST':
@@ -103,20 +105,23 @@ def add_hod_save(request):
         last_name = request.POST.get("last_name")
         user_name = request.POST.get("user_name")
         email = request.POST.get("email")
-        password = request.POST.get("password")
+        dept_id = request.POST.get("school")
         address = request.POST.get("address")
 
         try:
+            dept = department.objects.get(id=dept_id)
             if email=="":
                 user = CustomUser.objects.create_user(username=user_name, email=email,
                                                       first_name=first_name, last_name=last_name, user_type=2)
                 user.hod.address = address
+                user.hod.dept_id = dept
                 user.set_password("changeme")
                 user.save()
             else:
                 user = CustomUser.objects.create_user(username=user_name, email=email,
                                                       first_name=first_name, last_name=last_name, user_type=2)
                 user.hod.address = address
+                user.hod.dept_id = dept
                 user.set_password("changeme")
                 user.save()
             messages.success(request, "Successfully Added HOD")
@@ -124,6 +129,43 @@ def add_hod_save(request):
         except:
             messages.error(request, "Failed to add Hod")
             return HttpResponseRedirect(reverse("add_hod"))
+
+def add_school(request):
+    return render(request,"admin_template/add_school.html")
+
+def add_school_save(request):
+    if request.method != "POST":
+        return HttpResponseRedirect("Method Not Allowed")
+    else:
+        course = request.POST.get("school")
+        try:
+            school_model = school(school_name=course)
+            school_model.save()
+            messages.success(request, "Successfully Added School")
+            return HttpResponseRedirect(reverse("add_school"))
+        except:
+            messages.error(request, "Failed To Add School")
+            return HttpResponseRedirect(reverse("add_school"))
+
+def add_department(request):
+    Sch = school.objects.all()
+    return render(request,"admin_template/add_dept.html", {"Sch": Sch})
+
+def add_dept_save(request):
+    if request.method != "POST":
+        return HttpResponseRedirect("Method Not Allowed")
+    else:
+        course = request.POST.get("dept")
+        Schools = request.POST.get("school")
+        try:
+            School_id = school.objects.get(id=Schools)
+            school_model = department(dept_name=course,school_id=School_id)
+            school_model.save()
+            messages.success(request, "Successfully Added Department")
+            return HttpResponseRedirect(reverse("add_department"))
+        except:
+            messages.error(request, "Failed To Add Department")
+            return HttpResponseRedirect(reverse("add_department"))
 
 def manage_hod(request):
     HOD = hod.objects.all()

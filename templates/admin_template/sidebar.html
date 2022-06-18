@@ -37,6 +37,24 @@
             </a>
           </li>
           <li class="nav-item">
+            {% url 'add_school' as add_school %}
+            <a href="{{ add_school }}" class="nav-link {% if request.path == add_school %} active {% endif %} ">
+              <i class="nav-icon fas fa-user"></i>
+              <p>
+               Add School
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            {% url 'add_department' as add_department %}
+            <a href="{{ add_department }}" class="nav-link {% if request.path == add_department %} active {% endif %} ">
+              <i class="nav-icon fas fa-user"></i>
+              <p>
+               Add Department
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
             {% url 'manage_hod' as manage_hod %}
             <a href="{{ manage_hod }}" class="nav-link {% if request.path == manage_hod %} active {% endif %} ">
               <i class="nav-icon fas fa-address-card"></i>

@@ -26,7 +26,9 @@
           </li>
           <li class="nav-item">
             {% url 'add_hod' as add_hod %}
-            <a href="{{ add_hod }}" class="nav-link {% if request.path == add_hod %} active {% endif %} ">
+            {% url 'delete_hod'  id=id as delete_hod %}
+            {% url 'hod_edit'  hod_id=hod_id as hod_edit %}
+            <a href="{{ add_hod }}" class="nav-link {% if request.path == add_hod %} active {% endif %} {% if request.path == hod_edit %} active {% endif %} {% if request.path == delete_hod %} active {% endif %} ">
               <i class="nav-icon fas fa-user"></i>
               <p>
                Add HOD
@@ -35,7 +37,8 @@
           </li>
           <li class="nav-item">
             {% url 'add_school' as add_school %}
-            <a href="{{ add_school }}" class="nav-link {% if request.path == add_school %} active {% endif %} ">
+            {% url 'edit_school' id=id as edit_school %}
+            <a href="{{ add_school }}" class="nav-link {% if request.path == add_school %} active {% endif %} {% if request.path == edit_school %} active {% endif %}">
               <i class="nav-icon fas fa-database"></i>
               <p>
                Add School
@@ -44,7 +47,8 @@
           </li>
           <li class="nav-item">
             {% url 'add_department' as add_department %}
-            <a href="{{ add_department }}" class="nav-link {% if request.path == add_department %} active {% endif %} ">
+            {% url 'edit_dept' id=id as edit_dept %}
+            <a href="{{ add_department }}" class="nav-link {% if request.path == add_department %} active {% endif %} {% if request.path == edit_dept %} active {% endif %} ">
               <i class="nav-icon fas fa-bars"></i>
               <p>
                Add Department
@@ -53,7 +57,9 @@
           </li>
           <li class="nav-item">
             {% url 'Staff' as Staff %}
-            <a href="{{ Staff }}" class="nav-link {% if request.path == Staff %} active {% endif %} ">
+            {% url 'delete_staff' id=id as delete_staff %}
+            {% url 'staff_edit' staff_id=staff_id as staff_edit %}
+            <a href="{{ Staff }}" class="nav-link {% if request.path == Staff %} active {% endif %} {% if request.path == staff_edit %} active {% endif %} {% if request.path == delete_staff %} active {% endif %} ">
               <i class="nav-icon fas fa-universal-access"></i>
               <p>
                 Staff
@@ -62,7 +68,9 @@
           </li>
           <li class="nav-item">
             {% url 'Student' as Student %}
-            <a href="{{ Student }}" class="nav-link {% if request.path == Student %} active {% endif %} ">
+            {% url 'delete_student' id=id as delete_student %}
+            {% url 'student_edit' student_id=student_id as student_edit %}
+            <a href="{{ Student }}" class="nav-link {% if request.path == delete_student %} active {% endif %} {% if request.path == Student %} active {% endif %} {% if request.path == student_edit %} active {% endif %}">
               <i class="nav-icon fas fa-child"></i>
               <p>
                 Student

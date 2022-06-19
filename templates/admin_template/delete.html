@@ -1,19 +1,23 @@
 {% extends 'admin_template/base.html' %}
 {% block main_content %}
 
-<div class="card card-info">
-    <div class="card-header">
-        Confirm to Delete
-    </div>
-    <div class="card-body">
-        Are you sure you want to delete {{ obj.admin.username }}?
-    </div>
-    <div class="card-footer">
-        <form method="post">
-            {% csrf_token %}
-            <button class="btn btn-sm btn-danger" type="submit">Confirm</button>
-            <a href="{% url 'add_hod' %}" class="btn btn-sm btn-primary">Cancel</a>
-        </form>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-danger">
+            <div class="card-header">
+                Confirm to Delete
+            </div>
+            <div class="card-body">
+                Are you sure you want to delete {{ obj.admin.username }}?
+            </div>
+            <div class="card-footer">
+                <form method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-sm btn-danger" type="submit">Confirm</button>
+                    <a href="{% url 'add_hod' %}" class="btn btn-sm btn-primary">Cancel</a>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock main_content %}

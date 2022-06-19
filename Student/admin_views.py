@@ -276,8 +276,8 @@ def delete_hod(request,id):
     if request.method=="POST":
         obj.delete()
         hod_obj.delete()
-        return HttpResponseRedirect(reverse('manage_hod'))
-    return render(request,"admin_template/delete.html",{"obj":obj})
+        return HttpResponseRedirect(reverse('add_hod'))
+    return render(request,"admin_template/delete.html",{"id":obj.admin.id,"hod_obj":hod_obj})
 
 def Staff(request):
     staf = staff.objects.all()
@@ -305,7 +305,8 @@ def delete_staff(request,id):
     student = staff.objects.get(admin=id)
     customuser = CustomUser.objects.get(id=id)
     context = {
-        "student": student
+        "student": student,
+        "id":customuser.id
     }
     if request.method == "POST":
         student.delete()
@@ -340,7 +341,8 @@ def delete_student(request,id):
     student = students.objects.get(admin=id)
     customuser = CustomUser.objects.get(id=id)
     context={
-        "student":student
+        "student":student,
+        "id":customuser.id
     }
     if request.method == "POST":
         student.delete()
@@ -352,7 +354,7 @@ def delete_student(request,id):
 
 def staff_edit(request,staff_id ):
     admin_staff = staff.objects.get(admin=staff_id)
-    return render(request,"admin_template/staff_edit.html",{"admin_staff":admin_staff,"id":staff_id})
+    return render(request,"admin_template/staff_edit.html",{"admin_staff":admin_staff,"staff_id":admin_staff.admin.id})
 
 def staff_edit_save(request):
     if request.method!="POST":
@@ -365,15 +367,15 @@ def staff_edit_save(request):
             user.set_password("changeme")
             user.save()
             messages.success(request, "Successfully Saved Staff")
-            return HttpResponseRedirect(reverse("staff_edit",kwargs={"staff_id":staff_id}))
+            return HttpResponseRedirect(reverse("staff_edit",kwargs={"staff_id":user.id}))
         except :
             messages.error(request, "Failed to Save Staff")
-            return HttpResponseRedirect(reverse("staff_edit",kwargs={"staff_id":staff_id}))
+            return HttpResponseRedirect(reverse("staff_edit",kwargs={"staff_id":user.id}))
 
 
 def student_edit(request,student_id ):
     admin_student = students.objects.get(admin=student_id)
-    return render(request,"admin_template/student_edit.html",{"admin_student":admin_student,"id":student_id})
+    return render(request,"admin_template/student_edit.html",{"admin_student":admin_student,"student_id":admin_student.admin.id})
 
 def student_edit_save(request):
     if request.method!="POST":
@@ -386,14 +388,14 @@ def student_edit_save(request):
             user.set_password("changeme")
             user.save()
             messages.success(request, "Successfully Updated Student")
-            return HttpResponseRedirect(reverse("student_edit",kwargs={"student_id":student_id}))
+            return HttpResponseRedirect(reverse("student_edit",kwargs={"student_id":user.id}))
         except :
             messages.error(request, "Failed to Update Student")
-            return HttpResponseRedirect(reverse("student_edit",kwargs={"student_id":student_id}))
+            return HttpResponseRedirect(reverse("student_edit",kwargs={"student_id":user.id}))
 
 def hod_edit(request,hod_id):
     admin_hod = hod.objects.get(admin=hod_id)
-    return render(request,"admin_template/hod_edit.html",{"admin_hod":admin_hod,"id":hod_id})
+    return render(request,"admin_template/hod_edit.html",{"admin_hod":admin_hod,"hod_id":admin_hod.admin.id})
 
 def hod_edit_save(request):
     if request.method!="POST":
@@ -406,10 +408,10 @@ def hod_edit_save(request):
             user.set_password("changeme")
             user.save()
             messages.success(request, "Successfully Updated Hod")
-            return HttpResponseRedirect(reverse("hod_edit",kwargs={"hod_id":hod_id}))
+            return HttpResponseRedirect(reverse("hod_edit",kwargs={"hod_id":user.id}))
         except :
             messages.error(request, "Failed to Update Hod")
-            return HttpResponseRedirect(reverse("hod_edit",kwargs={"hod_id":hod_id}))
+            return HttpResponseRedirect(reverse("hod_edit",kwargs={"hod_id":user.id}))
 
 
 def Admin(request):
@@ -423,11 +425,16 @@ def admin_save(request):
     else:
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
+        username = request.POST.get("username")
+        email = request.POST.get("email")
         password = request.POST.get("password")
         try:
             customuser = CustomUser.objects.get(id=request.user.id)
             customuser.first_name = first_name
             customuser.last_name = last_name
+            customuser.username = username
+            if username !="":
+                customuser.email = email
             if password != None and password != "":
                 customuser.set_password(password)
             customuser.save()
@@ -439,7 +446,7 @@ def admin_save(request):
 
 def edit_school(request,id):
     schools = school.objects.get(id=id)
-    return render(request,"admin_template/schools.html",{"schools":schools})
+    return render(request,"admin_template/schools.html",{"schools":schools,"id":schools.id})
 
 def edit_school_save(request):
     if request.method != "POST":
@@ -459,7 +466,7 @@ def edit_school_save(request):
 
 def edit_dept(request,id):
     schools = department.objects.get(id=id)
-    return render(request,"admin_template/dept.html",{"schools":schools})
+    return render(request,"admin_template/dept.html",{"schools":schools,"id":schools.id})
 
 def edit_dept_save(request):
     if request.method != "POST":

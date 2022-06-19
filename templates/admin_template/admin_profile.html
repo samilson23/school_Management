@@ -18,11 +18,11 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label>Employee Id</label>
-                    <input type="text" class="form-control" name="username" value="{{ user.username }}" disabled="disabled">
+                    <input type="text" class="form-control" name="username" value="{{ user.username }}">
                   </div>
                   <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" class="form-control" name="email" value="{{ user.email }}" disabled="disabled">
+                    <label>Email/Phone</label>
+                    <input type="text" class="form-control" name="email" value="{{ user.email }}">
                   </div>
                   <div class="form-group">
                     <label>Firstname</label>
@@ -63,3 +63,64 @@
     </section>
     <!-- /.content -->
 {% endblock main_content %}
+{% block custom_js %}
+<script>
+  $(document).ready(function(){
+    $("#id_email").keyup(function(){
+      var email=$(this).val();
+      if(email!=""){
+        $.ajax({
+          url:'{% url 'check_user_email' %}',
+          type:'POST',
+          data:{email:email}
+        })
+        .done(function(response){
+          console.log(response);
+          if(response=="True"){
+            $(".email_error").remove();
+            $("<span class='email_error' style='padding: 5px;color: red;font-weight: bold;'>Email Exists</span>").insertAfter("#id_email");
+          }
+          else{
+            $(".email_error").remove();
+            $("<span class='email_error' style='padding: 5px;color: green;font-weight: bold;'>Email Available</span>").insertAfter("#id_email");
+          }
+          })
+          .fail(function(){
+            console.log("failed");
+          })
+        }
+        else{
+          $(".email_error").remove();
+        }
+  });
+    $("#id_username").keyup(function(){
+      var username=$(this).val();
+
+      if(username!=""){
+          $.ajax({
+              url:'{% url 'check_username' %}',
+              type:'POST',
+              data:{username:username}
+          })
+          .done(function(response){
+              console.log(response);
+              if(response=="True"){
+                  $(".username_error").remove();
+                  $("<span class='username_error' style='padding: 5px;color: red;font-weight: bold;'>Username Exists</span>").insertAfter("#id_username");
+              }
+              else{
+                  $(".username_error").remove();
+                  $("<span class='username_error' style='padding: 5px;color: green;font-weight: bold;'>Username available</span>").insertAfter("#id_username");
+              }
+          })
+          .fail(function(){
+              console.log("failed");
+          })
+      }
+      else{
+          $(".username_error").remove();
+      }
+    });
+  });
+</script>
+{% endblock custom_js %}

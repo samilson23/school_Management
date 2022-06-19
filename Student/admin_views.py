@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
-from Student.filters import HodFilter, StaffFilter, StudentFilter
+from Student.filters import HodFilter, StaffFilter, StudentFilter, SchoolFilter, DeptFilter
 from Student.models import CustomUser, hod, staff, students, attendancereport, leavereportstudent, \
     feedbackstudent, notificationstudent, StudentResult, subject, courses, attendance, leavereportstaff, school, \
     department
@@ -18,6 +18,9 @@ def home(request):
     staff_count = int(staff_count1)-1
     course_count = courses.objects.all().count()
     subject_count = subject.objects.all().count()
+    subjects = subject.objects.all()
+    school_count = school.objects.all().count
+
 
     course_all = courses.objects.all()
     course_name_list = []
@@ -53,6 +56,9 @@ def home(request):
             pass
         else:
             staff_name_list.append(Staff.admin.username)
+    schools = school.objects.all()
+    Myfilter = SchoolFilter(request.GET, queryset=schools)
+    schools = Myfilter.qs
 
     attendance_absent_list_student = []
     attendance_present_list_student = []
@@ -68,17 +74,29 @@ def home(request):
         attendance_leave_list_student.append(leaves)
         student_name_list.append(student.admin.username)
 
-    subjects = subject.objects.all()
+    school_all = school.objects.all()
+    school_name_list = []
+    department_count_list = []
+    for schools in school_all:
+        departments = department.objects.filter(school_id=schools.id).count()
+        school_name_list.append(schools.school_name)
+        department_count_list.append(departments)
+
     context={
+        "school_name_list":school_name_list,
+        "department_count_list":department_count_list,
         "student_count": student_count,
          "hod_count": hod_count,
          "staff_count": staff_count,
          "course_count": course_count,
+         "school_count": school_count,
          "subject_count": subject_count,
          "course_name_list": course_name_list,
          "subject_count_list": subject_count_list,
          "student_count_in_course_list": student_count_in_course_list,
          "subject_list": subject_list,
+        "Myfilter": Myfilter.form,
+        "schools":schools,
          "student_count_in_subject_list": student_count_in_subject_list,
          "attendance_present_list_staff": attendance_present_list_staff,
          "staff_name_list": staff_name_list,
@@ -95,7 +113,27 @@ def home(request):
 
 def add_hod(request):
     Sch = department.objects.all()
-    return render(request,"admin_template/add_hod.html",{"Sch":Sch})
+    HOD = hod.objects.all()
+    Myfilter = HodFilter(request.GET, queryset=HOD)
+    HOD = Myfilter.qs
+    paginator = Paginator(HOD, 10)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
+    try:
+        HOD = paginator.page(page)
+    except PageNotAnInteger:
+        HOD = paginator.page(1)
+    except EmptyPage:
+        HOD = paginator.page(paginator.num_pages)
+    context = {
+        'HOD': HOD,
+        'Myfilter': Myfilter.form,
+        'page_obj': page_obj,
+        'page_range': page_range,
+        'Sch':Sch
+    }
+    return render(request,"admin_template/add_hod.html",context)
 
 def add_hod_save(request):
     if request.method!='POST':
@@ -131,7 +169,26 @@ def add_hod_save(request):
             return HttpResponseRedirect(reverse("add_hod"))
 
 def add_school(request):
-    return render(request,"admin_template/add_school.html")
+    schools = school.objects.all()
+    Myfilter = SchoolFilter(request.GET, queryset=schools)
+    schools = Myfilter.qs
+    paginator = Paginator(schools, 10)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
+    try:
+        schools = paginator.page(page)
+    except PageNotAnInteger:
+        schools = paginator.page(1)
+    except EmptyPage:
+        schools = paginator.page(paginator.num_pages)
+    context={
+        "schools":schools,
+        'Myfilter': Myfilter.form,
+        'page_obj': page_obj,
+        'page_range': page_range,
+    }
+    return render(request,"admin_template/add_school.html",context)
 
 def add_school_save(request):
     if request.method != "POST":
@@ -139,32 +196,55 @@ def add_school_save(request):
     else:
         course = request.POST.get("school")
         try:
-            school_model = school(school_name=course)
-            school_model.save()
-            messages.success(request, "Successfully Added School")
+            if course!="":
+                school_model = school(school_name=course)
+                school_model.save()
+                messages.success(request, "Successfully Added School")
             return HttpResponseRedirect(reverse("add_school"))
         except:
-            messages.error(request, "Failed To Add School")
+            if course!="":
+                messages.error(request, "Failed To Add School")
             return HttpResponseRedirect(reverse("add_school"))
 
 def add_department(request):
     Sch = school.objects.all()
-    return render(request,"admin_template/add_dept.html", {"Sch": Sch})
+    departments = department.objects.all()
+    Myfilter = DeptFilter(request.GET, queryset=departments)
+    departments = Myfilter.qs
+    paginator = Paginator(departments, 10)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
+    try:
+        departments = paginator.page(page)
+    except PageNotAnInteger:
+        departments = paginator.page(1)
+    except EmptyPage:
+        departments = paginator.page(paginator.num_pages)
+    context={"Sch": Sch,
+             "departments":departments,
+             'Myfilter': Myfilter.form,
+             'page_obj': page_obj,
+             'page_range': page_range,
+         }
+    return render(request,"admin_template/add_dept.html", context)
 
 def add_dept_save(request):
     if request.method != "POST":
         return HttpResponseRedirect("Method Not Allowed")
     else:
-        course = request.POST.get("dept")
-        Schools = request.POST.get("school")
+        dept = request.POST.get("dept")
+        Schools = request.POST.get("dept1")
         try:
-            School_id = school.objects.get(id=Schools)
-            school_model = department(dept_name=course,school_id=School_id)
-            school_model.save()
-            messages.success(request, "Successfully Added Department")
+            if dept!="":
+                School_id = school.objects.get(id=Schools)
+                dept_model = department(dept_name=dept,school_id=School_id)
+                dept_model.save()
+                messages.success(request, "Successfully Added Department")
             return HttpResponseRedirect(reverse("add_department"))
         except:
-            messages.error(request, "Failed To Add Department")
+            if dept!="":
+                messages.error(request, "Failed To Add Department")
             return HttpResponseRedirect(reverse("add_department"))
 
 def manage_hod(request):
@@ -357,6 +437,7 @@ def admin_save(request):
             messages.error(request, " Failed To Change Profile ")
             return HttpResponseRedirect(reverse("Admin"))
 
-
+# def schools(request):
+#     return render(request,"admin_template/schools.html",{"schools":schools})
 
 

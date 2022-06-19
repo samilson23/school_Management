@@ -3,6 +3,7 @@ import json
 
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
@@ -14,7 +15,7 @@ from django.contrib.staticfiles import finders
 from django.template.loader import get_template
 from django.views.generic import ListView
 
-
+from Student.filters import SubjectFilter
 from Student.models import OnlineClassRoom, StudentResult, feedbackstudent, leavereportstudent, notificationstudent, \
     sessionmodel, students, courses, subject, CustomUser, attendance, attendancereport, semester, unitregistration, \
     registrationreport, department
@@ -45,6 +46,8 @@ def student_home(request):
             subject_name.append(Subjects.code)
             data_present.append(Attendance_present_count)
             data_absent.append(Attendance_absent_count)
+
+
     context={
         "Attendance_total":Attendance_total,
         "Attendance_present":Attendance_present,
@@ -55,7 +58,8 @@ def student_home(request):
         "data2":data_absent,
         "notification":notification,
         "notifications":notifications,
-        "class_room":class_room
+        "class_room":class_room,
+        "student_obj":student_obj
     }
 
     return render(request,"student_template/student_home_template.html",context)
@@ -86,13 +90,14 @@ def join_class_room(request,subject_id,session_year_id):
 
 
 def student_view_attendance(request):
-    student=students.objects.get(admin=request.user.id)
-    notification = notificationstudent.objects.filter(student_id=student.id, read=False).order_by("-id")
-    notifications = notificationstudent.objects.filter(student_id=student.id, read=False).count()
-    course=student.course_id
+    student_obj=students.objects.get(admin=request.user.id)
+    notification = notificationstudent.objects.filter(student_id=student_obj.id, read=False).order_by("-id")
+    notifications = notificationstudent.objects.filter(student_id=student_obj.id, read=False).count()
+    course=student_obj.course_id
     subjects=subject.objects.filter(course_id=course)
     return render(request,"student_template/my_attendance.html",{"subjects":subjects,"notification":notification,
-                                                                 "notifications":notifications})
+                                                                 "notifications":notifications,
+                                                                 "student_obj":student_obj})
 
 def student_view_attendance_save(request):
     subject_id=request.POST.get("subjects")
@@ -116,7 +121,8 @@ def student_apply_leave(request):
     leave_data=leavereportstudent.objects.filter(student_id=student_obj)
     return render(request,"student_template/student_apply_leave.html",{"leave_data":leave_data,
                                                                        "notification":notification,
-                                                                       "notifications":notifications})
+                                                                       "notifications":notifications,
+                                                                       "student_obj":student_obj})
 
 
 def student_apply_leave_save(request):
@@ -145,7 +151,9 @@ def student_feedback(request):
     feedback_data = feedbackstudent.objects.filter(student_id=student_obj)
     return render(request,"student_template/student_feedback.html",{"feedback_data":feedback_data,
                                                                     "notification":notification,
-                                                                    "notifications":notifications})
+                                                                    "notifications":notifications,
+                                                                    "student_obj":student_obj
+                                                                    })
 
 
 def student_feedback_save(request):
@@ -170,10 +178,10 @@ def student_feedback_save(request):
 
 def student_profile(request):
     user = CustomUser.objects.get(id=request.user.id)
-    student = students.objects.get(admin=user)
-    notification = notificationstudent.objects.filter(student_id=student.id, read=False).order_by("-id")
-    notifications = notificationstudent.objects.filter(student_id=student.id, read=False).count()
-    return render(request,"student_template/student_profile.html",{"student":student,
+    student_obj = students.objects.get(admin=user)
+    notification = notificationstudent.objects.filter(student_id=student_obj.id, read=False).order_by("-id")
+    notifications = notificationstudent.objects.filter(student_id=student_obj.id, read=False).count()
+    return render(request,"student_template/student_profile.html",{"student_obj":student_obj,
                                                                    "notification":notification,
                                                                    "notifications":notifications})
 
@@ -228,11 +236,11 @@ def student_fcmtoken_save(request):
 
 
 def student_all_notification(request):
-    student=students.objects.get(admin=request.user.id)
-    notify=notificationstudent.objects.filter(student_id=student.id,read=True).order_by("-id")
-    notification=notificationstudent.objects.filter(student_id=student.id,read=False).order_by("-id")
-    notifications=notificationstudent.objects.filter(student_id=student.id,read=False).count()
-    return render(request,"student_template/Notifications.html",{"notify":notify,"notification":notification,"notifications":notifications})
+    student_obj=students.objects.get(admin=request.user.id)
+    notify=notificationstudent.objects.filter(student_id=student_obj.id,read=True).order_by("-id")
+    notification=notificationstudent.objects.filter(student_id=student_obj.id,read=False).order_by("-id")
+    notifications=notificationstudent.objects.filter(student_id=student_obj.id,read=False).count()
+    return render(request,"student_template/Notifications.html",{"notify":notify,"notification":notification,"notifications":notifications,"student_obj":student_obj})
 
 
 def unit_registration(request):
@@ -297,7 +305,7 @@ def resit(request):
     notifications = notificationstudent.objects.filter(student_id=student_obj.id, read=False).count()
     reg = unitregistration.objects.filter(student_id=request.user.id).order_by('semester_id')
     return render(request,"student_template/update_registration.html",{"reg":reg,"notification":notification,
-                                                                      "notifications":notifications })
+                                                                      "notifications":notifications,"student_obj":student_obj})
 
 @csrf_exempt
 def get_unregistered_units(request):
@@ -342,18 +350,19 @@ def Result_List_View(request, **kwargs):
 
 
 def Units(request):
-    student_obj = CustomUser.objects.get(id=request.user.id)
-    student = students.objects.get(admin=request.user.id)
-    notification = notificationstudent.objects.filter(student_id=student.id, read=False).order_by("-id")
-    notifications = notificationstudent.objects.filter(student_id=student.id, read=False).count()
+    student = CustomUser.objects.get(id=request.user.id)
+    student_obj = students.objects.get(admin=request.user.id)
+    notification = notificationstudent.objects.filter(student_id=student_obj.id, read=False).order_by("-id")
+    notifications = notificationstudent.objects.filter(student_id=student_obj.id, read=False).count()
     Stage = semester.objects.all()
     reg = registrationreport.objects.filter(student_id=request.user.id,status=1).count()
     context = {
         "Stage":Stage,
         "student_obj":student_obj,
+        "student":student,
         "reg":reg,
         "notification":notification,
-        "notifications":notifications
+        "notifications":notifications,
     }
     return render(request,"student_template/units.html", context)
 
@@ -418,7 +427,8 @@ def ResultListView(request):
     context = {
         "reg":reg1,
         "notification":notification,
-        "notifications":notifications
+        "notifications":notifications,
+        "student_obj":student_obj
     }
     return render(request,"student_template/results.html",context)
 
@@ -436,7 +446,8 @@ def student_view_result(request):
         "student": student,
         "reg": reg,
         "notification":notification,
-        "notifications":notifications
+        "notifications":notifications,
+        "student_obj":student_obj
     }
     return render(request, "student_template/results.html", context)
 

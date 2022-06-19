@@ -6,11 +6,11 @@
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
           <a href="{% url 'student_profile' %}" class="d-block">
-            <img src="{{ students.profile_pic }}" class="img-circle elevation-2">
+            <img src="{{ student_obj.profile_pic }}" class="img-square elevation-2" style="opacity: .8;width:80px;">
           </a>
-        </div>
+        </div><br/>
         <div class="info">
-          <a href="{% url 'student_profile' %}" class="d-block"><i class="nav-icon fas fa-user"></i>&nbsp;&nbsp;&nbsp;{{ user.username }}</a>
+          <a href="{% url 'student_profile' %}" class="d-block">{{ user.username }}</a>
         </div>
       </div>
 

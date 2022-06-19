@@ -4,11 +4,13 @@ import json
 from uuid import uuid4
 
 from django.core import serializers
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
+from Student.filters import StaffLeaveFilter
 from Student.models import Adminhod, CustomUser, OnlineClassRoom, StudentResult, attendance, attendancereport, courses, \
     leavereportstaff, notificationstaff, staff, subject, sessionmodel, students, \
     feedbackstaff, registrationreport, department
@@ -52,7 +54,7 @@ def staff_home(request):
         student_list.append(student.admin.username)
         student_list_attendance_present.append(Attendance_present_count)
         student_list_attendance_absent.append(Attendance_absent_count)
-    return render(request,"staff_template/staff_home_template.html",{"notification":notification,"notifications":notifications,"student_count":student_count,"Attendance_count":Attendance_count,"leave_count":leave_count,"subject_count":subject_count,"subject_list":subject_list,"attendance_list":attendance_list,"student_list":student_list,"present_list":student_list_attendance_present,"absent_list":student_list_attendance_absent})
+    return render(request,"staff_template/staff_home_template.html",{"notification":notification,"notifications":notifications,"student_count":student_count,"Attendance_count":Attendance_count,"leave_count":leave_count,"subject_count":subject_count,"subject_list":subject_list,"attendance_list":attendance_list,"student_list":student_list,"present_list":student_list_attendance_present,"staff_obj":staff_obj,"absent_list":student_list_attendance_absent})
 
 def staff_take_attendance(request):
     subjects = subject.objects.filter(staff_id=request.user.id)
@@ -128,7 +130,7 @@ def get_attendance_student(request):
     attendance_data=attendancereport.objects.filter(attendance_id=Attendance)
     list_data = []
     for student in attendance_data:
-        data_small = {"id":student.student_id.admin.id,"name":student.student_id.admin.first_name+"  "+student.student_id.admin.last_name,"status":student.status}
+        data_small = {"id":student.student_id.admin.id,"name":student.student_id.admin.username,"status":student.status}
         list_data.append(data_small)
     return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
 
@@ -151,10 +153,29 @@ def save_updateattendance_student(request):
 
 def staff_apply_leave(request):
     staff_obj = staff.objects.get(admin=request.user.id)
-    leave_data=leavereportstaff.objects.filter(staff_id=staff_obj)
+    leave_data=leavereportstaff.objects.filter(staff_id=staff_obj).order_by('-id')
     notifications = notificationstaff.objects.filter(staff_id=staff_obj.id,read=False).count()
     notification = notificationstaff.objects.filter(staff_id=staff_obj.id,read=False)
-    return render(request,"staff_template/staff_apply_leave.html",{"notification":notification,"leave_data":leave_data,"notifications":notifications})
+    leave_stats = leavereportstaff.objects.all()
+    Myfilter = StaffLeaveFilter(request.GET, queryset=leave_stats)
+    leave_stats = Myfilter.qs
+    paginator = Paginator(leave_data, 10)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
+    try:
+        leave_data = paginator.page(page)
+    except PageNotAnInteger:
+        leave_data = paginator.page(1)
+    except EmptyPage:
+        leave_data = paginator.page(paginator.num_pages)
+    return render(request,"staff_template/staff_apply_leave.html",{"notification":notification,
+                                                                   "leave_data":leave_data,"notifications":notifications,
+                                                                   "leave_stats":leave_stats,
+                                                                   'Myfilter': Myfilter.form,
+                                                                   "page_range":page_range,
+                                                                   "page_obj":page_obj
+                                                                   })
 
 
 def staff_apply_leave_save(request):
@@ -165,10 +186,11 @@ def staff_apply_leave_save(request):
         leave_msg=request.POST.get("leave_msg")
         staff_obj = staff.objects.get(admin=request.user.id)
         try:
-            dept_id = department.objects.get(id=staff_obj.dept_id.id)
-            leave_report=leavereportstaff(staff_id=staff_obj,dept_id=dept_id,leave_date=leave_date,leave_message=leave_msg,leave_status=0)
-            leave_report.save()
-            messages.success(request,"Successfully Applied For Leave")
+            if leave_msg!="":
+                dept_id = department.objects.get(id=staff_obj.dept_id.id)
+                leave_report=leavereportstaff(staff_id=staff_obj,dept_id=dept_id,leave_date=leave_date,leave_message=leave_msg,leave_status=0)
+                leave_report.save()
+                messages.success(request,"Successfully Applied For Leave")
             return HttpResponseRedirect(reverse("staff_apply_leave"))
         except:
              messages.error(request, "Failed To Apply For Leave")
@@ -179,11 +201,30 @@ def staff_apply_leave_save(request):
 
 def staff_feedback(request):
     staff_obj = staff.objects.get(admin=request.user.id)
-    feedback_data = feedbackstaff.objects.filter(staff_id=staff_obj)
-    # staffs = staff.objects.get(admin=user)
+    feedback_data = feedbackstaff.objects.filter(staff_id=staff_obj).order_by('-id')
+    # Myfilter = (request.GET, queryset=HOD)
+    # HOD = Myfilter.qs
+    paginator = Paginator(feedback_data, 10)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
+    try:
+        feedback_data = paginator.page(page)
+    except PageNotAnInteger:
+        feedback_data = paginator.page(1)
+    except EmptyPage:
+        feedback_data = paginator.page(paginator.num_pages)
     notifications = notificationstaff.objects.filter(staff_id=staff_obj.id,read=False).count()
     notification = notificationstaff.objects.filter(staff_id=staff_obj.id,read=False)
-    return render(request,"staff_template/staff_feedback.html",{"notification":notification,"feedback_data":feedback_data,"notifications":notifications})
+
+    context={
+        "notification":notification,
+        "feedback_data":feedback_data,
+        "notifications":notifications,
+        "page_obj":page_obj,
+        "page_range":page_range
+    }
+    return render(request,"staff_template/staff_feedback.html",context)
 
 
 def staff_feedback_save(request):
@@ -197,7 +238,7 @@ def staff_feedback_save(request):
                 dept_id=department.objects.get(id=staff_obj.dept_id.id)
                 feedback_obj = feedbackstaff(staff_id=staff_obj,dept_id=dept_id,feedback=feedback_msg,feedback_reply="",status=0)
                 feedback_obj.save()
-                messages.success(request, "Successfully Submitted Feedback")
+                messages.success(request, "Complain Submitted")
                 return HttpResponseRedirect(reverse("staff_feedback"))
             except:
                 messages.error(request, "Failed To Submit Feedback")
@@ -260,7 +301,20 @@ def staff_all_notification(request):
     notify = notificationstaff.objects.filter(staff_id=staffs.id,read=True).order_by("-id")
     notification = notificationstaff.objects.filter(staff_id=staffs.id,read=False).order_by("-id")
     notifications = notificationstaff.objects.filter(staff_id=staffs.id,read=False).count()
-    return render(request,"staff_template/Notifications.html",{"notification":notification,"notify":notify,"notifications":notifications})
+    paginator = Paginator(notify, 10)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
+    try:
+        notify = paginator.page(page)
+    except PageNotAnInteger:
+        notify = paginator.page(1)
+    except EmptyPage:
+        notify = paginator.page(paginator.num_pages)
+    return render(request,"staff_template/Notifications.html",{"notification":notification,"notify":notify,"notifications":notifications,
+                                                               "page_range":page_range,
+                                                               "page_obj":page_obj
+                                                               })
 
 
 def staff_add_result(request):

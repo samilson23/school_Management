@@ -15,7 +15,7 @@ from Student.models import CustomUser, attendance, attendancereport, courses, fe
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from .filters import CourseFilter, SubjectFilter, StudentFilter, StaffFilter, StudentFeedbackFilter, \
-    StaffFeedbackFilter, StaffNotificationFilter
+    StaffFeedbackFilter, StaffNotificationFilter, StaffLeaveFilter, StudentLeaveFilter
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 
 def admin_home(request):
@@ -123,10 +123,27 @@ def add_staff(request):
     feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
     subjects = subject.objects.all()
     Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_student_count) + int(feedback_staff_count)
+    staf = staff.objects.filter(dept_id=Hod.dept_id.id)
+    filterstaf = StaffFilter(request.GET, queryset=staf)
+    staf = filterstaf.qs
+    paginator = Paginator(staf, 10)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
+    try:
+        staf = paginator.page(page)
+    except PageNotAnInteger:
+        staf = paginator.page(1)
+    except EmptyPage:
+        staf = paginator.page(paginator.num_pages)
     return render(request,"Hod_template/add_staff_template.html",{"subjects":subjects,
                                                                   "leave_staff_count":leave_staff_count,
                                                                   "leave_student_count":leave_student_count,
                                                                   "Total":Total,
+                                                                  "staf":staf,
+                                                                  "page_range":page_range,
+                                                                  "page_obj":page_obj,
+                                                                  "filterstaf":filterstaf.form,
                                                                   "feedback_student_count":feedback_student_count,
                                                                   "feedback_staff_count":feedback_staff_count})
 def add_staff_save(request):
@@ -291,21 +308,21 @@ def add_subject_save(request):
         stage = semester.objects.get(id=stage_id)
         staffs = staff.objects.get(admin=staff_id)
 
-        # try:
-        Hod = hod.objects.get(admin=request.user.id)
-        dept_id=department.objects.get(id=Hod.dept_id.id)
-        subjects = subject(subject_name=subject_name,course_id=course,dept_id=dept_id,stage_id=stage,staff_id=staffs,code=code)
-        subjects.save()
-        messages.success(request, "Successfully Added Subject")
-        return HttpResponseRedirect(reverse("add_subject"))
-    # except:
-        messages.error(request, "Subject Not Added")
-        return HttpResponseRedirect(reverse("add_subject"))
+        try:
+            Hod = hod.objects.get(admin=request.user.id)
+            dept_id=department.objects.get(id=Hod.dept_id.id)
+            subjects = subject(subject_name=subject_name,course_id=course,dept_id=dept_id,stage_id=stage,staff_id=staffs,code=code)
+            subjects.save()
+            messages.success(request, "Successfully Added Subject")
+            return HttpResponseRedirect(reverse("add_subject"))
+        except:
+            messages.error(request, "Subject Not Added")
+            return HttpResponseRedirect(reverse("add_subject"))
 
 
 def manage_staff(request):
-    staf = staff.objects.all()
     Hod = hod.objects.get(admin=request.user.id)
+    staf = staff.objects.filter(dept_id=Hod.dept_id.id)
     leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
     leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
     feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
@@ -804,12 +821,28 @@ def staff_leave_reply(request):
     feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
     Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
     staff_leaves=leavereportstaff.objects.filter(dept_id=Hod.dept_id.id)
+    filterstaf = StaffLeaveFilter(request.GET, queryset=staff_leaves)
+    staff_leaves = filterstaf.qs
+    paginator = Paginator(staff_leaves, 10)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
+    try:
+        staff_leaves = paginator.page(page)
+    except PageNotAnInteger:
+        staff_leaves = paginator.page(1)
+    except EmptyPage:
+        staff_leaves = paginator.page(paginator.num_pages)
     return render(request,"Hod_template/staff_leave_reply.html",{"staff_leaves":staff_leaves,
                                                                  "leave_student_count":leave_student_count,
                                                                  "feedback_student_count":feedback_student_count,
                                                                  "leave_staff_count":leave_staff_count,
                                                                  "feedback_staff_count":feedback_staff_count,
-                                                                 "Total":Total})
+                                                                 "Total":Total,
+                                                                 "page_obj":page_obj,
+                                                                 "page_range":page_range,
+                                                                 "filterstaf":filterstaf.form
+                                                                 })
 
 def student_leave_reply(request):
     # Hod = hod.objects.get(admin=request.user.id)
@@ -820,12 +853,28 @@ def student_leave_reply(request):
     feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
     Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
     leaves=leavereportstudent.objects.filter(dept_id=Hod.dept_id.id)
+    filterstaf = StudentLeaveFilter(request.GET, queryset=leaves)
+    leaves = filterstaf.qs
+    paginator = Paginator(leaves, 10)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
+    try:
+        leaves = paginator.page(page)
+    except PageNotAnInteger:
+        leaves = paginator.page(1)
+    except EmptyPage:
+        leaves = paginator.page(paginator.num_pages)
     return render(request,"Hod_template/student_leave_reply.html",{"leaves":leaves,
                                                                    "leave_staff_count":leave_staff_count,
                                                                    "feedback_staff_count":feedback_staff_count,
                                                                    "leave_student_count":leave_student_count,
                                                                    "feedback_student_count":feedback_student_count,
-                                                                   "Total":Total})
+                                                                   "Total":Total,
+                                                                   "page_range":page_range,
+                                                                   "page_obj":page_obj,
+                                                                   "filterstaf":filterstaf.form
+                                                                   })
 
 
 def student_approved_leave(request,leave_id):

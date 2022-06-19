@@ -1,15 +1,14 @@
 {% extends 'admin_template/base.html' %}
-{% block page_title %} Add HOD {% endblock page_title %}
 {% load static %}
 {% block main_content %}
 <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-6">
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Add HOD</h3>
+                <h3 class="card-title">Add Department</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
@@ -48,7 +47,83 @@
                 </div>
               </form>
             </div>
-            <!-- /.card -->
+          </div>
+          <div class="col-md-6">
+              <div class="card card-info">
+                      <div class="card-header">
+                          <h3 class="card-title">Departments</h3>
+                          <div class="card-tools">
+                                <form method="get" class="form-inline">
+                                  <div class="input-group input-group-sm border" style="width: 150px;">
+                                    {{Myfilter.dept_name }}
+                                    <div class="input-group-append">
+                                      <button class="btn" type="submit">
+                                        <i class="fas fa-search"></i>
+                                      </button>
+                                    </div>
+                                  </div>
+                                </form>
+                          </div>
+                      </div>
+                      <div class="card-body table-responsive p-0">
+                        <table class="table table-hover text-nowrap">
+                          <thead>
+                            <tr>
+                              <th>ID</th>
+                              <th>Department</th>
+                              <th>School</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                          {% for Hod in departments %}
+                            <tr>
+                              <td>{{ Hod.id }}</td>
+                              <td>{{ Hod.dept_name }}</td>
+                              <td>{{ Hod.school_id.school_name }}</td>
+                              <td>
+                                <a href="{% url 'delete_hod' Hod.id %}"  class="btn btn-sm btn-danger">Delete</a>
+                              </td>
+                            </tr>
+                          {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+              </div>
+              <div class="card-footer">
+                      <div class="pagination">
+                          <span class="step-links">
+                              <span class="current">
+                                   Page  {{ page_obj.number }}  of  {{ page_obj.paginator.num_pages }}.
+                              </span>
+                          </span>
+                      </div>
+                      {% if departments.has_other_pages %}
+                                <ul class="pagination float-right">
+                                    {% if departments.has_previous %}
+                                        <li class="paginate_button page-item"><a class="page-link" href="?page={{ departments.previous_page_number }}" data-dt-idx="0" tabindex="0">Previous</a></li>
+                                    {% else %}
+                                        <li class="paginate_button page-item disabled"><a class="page-link" href="#" >Previous</a></li>
+                                    {% endif %}
+                                    {% for i in page_range|default_if_none:departments.paginator.get_elided_page_range %}
+                                        {% if page_obj.number == i %}
+                                            <li class="paginate_button page-item active"><a class="page-link">{{ i }}<span class="sr-only">(current)</span></a></li>
+                                        {% else %}
+                                            {% if i == page_obj.paginator.ELLIPSIS %}
+                                                <li class="paginate_button page-item"><a class="page-link" href="#">{{ i }}</a></li>
+                                            {% else %}
+                                                <li class="paginate_button page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if departments.has_next %}
+                                      <li class="page-item"><a class="page-link" href="?page={{ departments.next_page_number }}" >Next</a></li>
+                                    {% else %}
+                                      <li class="page-item disabled"><a class="page-link" href="#" >Next</a></li>
+                                    {% endif %}
+                                </ul>
+                      {% endif %}
+            </div>
           </div>
         </div>
       </div><!-- /.container-fluid -->

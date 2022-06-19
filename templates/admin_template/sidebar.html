@@ -4,9 +4,6 @@
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="{% static "dist/img/user2-160x160.jpg" %}" class="img-circle elevation-2" alt="User Image">
-        </div>
         <div class="info">
           {% url 'Admin' as Admin %}
           <a href="{% url 'Admin' %}" class="d-block">{{ user.username }}</a>
@@ -39,7 +36,7 @@
           <li class="nav-item">
             {% url 'add_school' as add_school %}
             <a href="{{ add_school }}" class="nav-link {% if request.path == add_school %} active {% endif %} ">
-              <i class="nav-icon fas fa-user"></i>
+              <i class="nav-icon fas fa-database"></i>
               <p>
                Add School
               </p>
@@ -48,18 +45,9 @@
           <li class="nav-item">
             {% url 'add_department' as add_department %}
             <a href="{{ add_department }}" class="nav-link {% if request.path == add_department %} active {% endif %} ">
-              <i class="nav-icon fas fa-user"></i>
+              <i class="nav-icon fas fa-bars"></i>
               <p>
                Add Department
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            {% url 'manage_hod' as manage_hod %}
-            <a href="{{ manage_hod }}" class="nav-link {% if request.path == manage_hod %} active {% endif %} ">
-              <i class="nav-icon fas fa-address-card"></i>
-              <p>
-                Manage HOD
               </p>
             </a>
           </li>

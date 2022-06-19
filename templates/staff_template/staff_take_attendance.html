@@ -80,7 +80,7 @@
         $("#student_data").html(div_data);
       })
       .fail(function(){
-      alert("error in fetching Student")
+      swal("error in fetching Student")
       })
 
       $(document).on("click","#save_attendance",function(){
@@ -108,7 +108,7 @@
          })
          .done(function(response){
          if(response=="OK"){
-          alert("Attendance Data Saved")
+          swal("Attendance Data Saved")
          }
          else{
           alert("Error In Saving data")
@@ -116,7 +116,7 @@
          location.reload()
         })
       .fail(function(){
-      alert("error in Saving Student")
+      swal("error in Saving Student")
       })
     })
   })

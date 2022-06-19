@@ -4,6 +4,9 @@
 {% block main_content %}
 <section class="content">
       <div class="container-fluid">
+        <div class="col-lg-12">
+            <h4 class="text-bg" style="font-weight:bold">Department of {{ staff_obj.dept_id.dept_name }}</h4>
+          </div>
         <div class="row">
           <div class="col-lg-3 col-6">
             <!-- small box -->
@@ -104,13 +107,15 @@
               </div>
               <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
-                  <tr>
-                    <td>
-                      <div class="chart">
-                        <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                      </div>
-                    </td>
-                  </tr>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="chart">
+                          <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
                 </table>
               </div>
               <!-- /.card-body -->
@@ -132,13 +137,15 @@
               </div>
               <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
-                  <tr>
-                    <td>
-                      <div class="chart">
-                        <canvas id="barChart2" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                      </div>
-                    </td>
-                  </tr>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="chart">
+                          <canvas id="barChart2" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
                 </table>
               </div>
               <!-- /.card-body -->
@@ -154,12 +161,12 @@
   $(document).ready(function(){
       var pieData        = {
         labels: [
-            'Attendance', 
-            'Leave', 
+            'Leave',
+            'Attendance',
         ],
         datasets: [
           {
-            data: [{{ Attendance_count }},{{ leave_count }}],
+            data: [{{ leave_count }},{{ Attendance_count }}],
             backgroundColor : ['#f56954', '#00a65a'],
           }
         ]

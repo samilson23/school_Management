@@ -1,14 +1,13 @@
 {% extends 'staff_template/base_template.html' %}
-{% block page_title %}  Complains {% endblock page_title %}
 {% load static %}
 {% block main_content %}
 <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-6">
             <!-- general form elements -->
-            <div class="card card">
-              <form action="{% url 'staff_feedback_save' %}" method="POST"
+            <div class="card card-success">
+              <form action="{% url 'staff_feedback_save' %}" method="POST">
                 <div class="card-body">
                     {% csrf_token %}
                   <div class="form-group">
@@ -27,40 +26,76 @@
                      {% endfor %}
                    {% endif %}
                   </div>
+                </div>
                 <div class="card-footer">
                   <button type="submit" class="btn btn-primary btn-block " id="fetch_student">Submit</button>
                 </div>
-             </form>
+              </form>
             </div>
-            <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title"> Complaint </h3>
+          </div>
+          <div class="col-md-6">
+              <div class="card card-info">
+                  <div class="card-header">
+                    <h3 class="card-title"> Complaint </h3>
+                  </div>
+                <div class="table">
+                  <table class="table">
+                      <tr>
+                          <th>Complaint</th>
+                          <th>Reply</th>
+                      </tr>
+                      {% for row in feedback_data %}
+                      <tr>
+                          <td>{{ row.feedback }}</td>
+                          <td>
+                              {% if row.feedback_reply == "" %}
+                                <span class="alert alert-info text-sm">Pending...</span>
+                              {% else %}
+                                  {{ row.feedback_reply }}
+                              {% endif %}
+                          </td>
+                      </tr>
+                      {% endfor %}
+                  </table>
+                </div>
               </div>
-            <div class="table">
-              <table class="table">
-                  <tr>
-                      <th>ID</th>
-                      <th>Complaint</th>
-                      <th>Reply</th>
-                  </tr>
-                  {% for row in feedback_data %}
-                  <tr>
-                      <td>{{ row.id }}</td>
-                      <td>{{ row.feedback }}</td>
-                      <td>
-                          {% if row.feedback_reply == "" %}
-                            <span class="alert alert-info">Pending...</span>
-                          {% else %}
-                              {{ row.feedback_reply }}
-                          {% endif %}
-                      </td>
-                  </tr>
-                  {% endfor %}
-              </table>
+              <div class="card-footer">
+                      <div class="pagination">
+                          <span class="step-links">
+                              <span class="current">
+                                   Page  {{ page_obj.number }}  of  {{ page_obj.paginator.num_pages }}.
+                              </span>
+                          </span>
+                      </div>
+                      {% if feedback_data.has_other_pages %}
+                                <ul class="pagination float-right">
+                                    {% if feedback_data.has_previous %}
+                                        <li class="paginate_button page-item"><a class="page-link" href="?page={{ feedback_data.previous_page_number }}" data-dt-idx="0" tabindex="0">Previous</a></li>
+                                    {% else %}
+                                        <li class="paginate_button page-item disabled"><a class="page-link" href="#" >Previous</a></li>
+                                    {% endif %}
+                                    {% for i in page_range|default_if_none:feedback_data.paginator.get_elided_page_range %}
+                                        {% if page_obj.number == i %}
+                                            <li class="paginate_button page-item active"><a class="page-link">{{ i }}<span class="sr-only">(current)</span></a></li>
+                                        {% else %}
+                                            {% if i == page_obj.paginator.ELLIPSIS %}
+                                                <li class="paginate_button page-item"><a class="page-link" href="#">{{ i }}</a></li>
+                                            {% else %}
+                                                <li class="paginate_button page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if feedback_data.has_next %}
+                                      <li class="page-item"><a class="page-link" href="?page={{ feedback_data.next_page_number }}" >Next</a></li>
+                                    {% else %}
+                                      <li class="page-item disabled"><a class="page-link" href="#" >Next</a></li>
+                                    {% endif %}
+                                </ul>
+                      {% endif %}
             </div>
-           </div>
+          </div>
         </div>
-        </div>
+      </div>
  </section>
     <!-- /.content -->
 {% endblock main_content %}

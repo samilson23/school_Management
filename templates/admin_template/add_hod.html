@@ -5,7 +5,7 @@
 <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-6">
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
@@ -17,7 +17,7 @@
                 {% csrf_token %}
                 <div class="card-body">
                   <div class="form-group">
-                    <label>Email</label>
+                    <label>Email/Phone</label>
                     <input type="text" class="form-control" name="email" placeholder="Enter email" id="id_email" autocomplete="off">
                   </div>
                   <div class="form-group">
@@ -64,7 +64,97 @@
                 </div>
               </form>
             </div>
-            <!-- /.card -->
+          </div>
+          <div class="col-md-6">
+            <div class="card card-info">
+              <div class="card-header">
+                <h3 class="card-title">Heads of Departments</h3>
+                <div class="card-tools">
+                    <form method="get" class="form-inline">
+                      <div class="input-group input-group-sm border" style="width: 150px;">
+                        {{Myfilter.admin__username }}
+                        <div class="input-group-append">
+                          <button class="btn" type="submit">
+                            <i class="fas fa-search"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>First Name</th>
+                      <th>Last Name</th>
+                      <th>Employee Id</th>
+                      <th>Email/Phone</th>
+                      <th>Department</th>
+                      <th>Address</th>
+                      <th>Last Login</th>
+                      <th>Date Joined</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for Hod in HOD %}
+                    <tr>
+                      <td>{{ Hod.id }}</td>
+                      <td>{{ Hod.admin.first_name }}</td>
+                      <td>{{ Hod.admin.last_name }}</td>
+                      <td>{{ Hod.admin.username }}</td>
+                      <td>{{ Hod.admin.email }}</td>
+                      <td>{{ Hod.dept_id.dept_name }}</td>
+                      <td>{{ Hod.address }}</td>
+                      <td>{{ Hod.admin.last_login }}</td>
+                      <td>{{ Hod.admin.date_joined }}</td>
+                      <td>
+                        <a href="/hod_edit/{{ Hod.admin.id }}" class="btn btn-sm btn-success">Reset Password</a>
+                        <a href="{% url 'delete_hod' Hod.admin.id %}"  class="btn btn-sm btn-danger">Delete</a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card-footer">
+                      <div class="pagination">
+                          <span class="step-links">
+                              <span class="current">
+                                   Page  {{ page_obj.number }}  of  {{ page_obj.paginator.num_pages }}.
+                              </span>
+                          </span>
+                      </div>
+                      {% if HOD.has_other_pages %}
+                                <ul class="pagination float-right">
+                                    {% if HOD.has_previous %}
+                                        <li class="paginate_button page-item"><a class="page-link" href="?page={{ HOD.previous_page_number }}" data-dt-idx="0" tabindex="0">Previous</a></li>
+                                    {% else %}
+                                        <li class="paginate_button page-item disabled"><a class="page-link" href="#" >Previous</a></li>
+                                    {% endif %}
+                                    {% for i in page_range|default_if_none:HOD.paginator.get_elided_page_range %}
+                                        {% if page_obj.number == i %}
+                                            <li class="paginate_button page-item active"><a class="page-link">{{ i }}<span class="sr-only">(current)</span></a></li>
+                                        {% else %}
+                                            {% if i == page_obj.paginator.ELLIPSIS %}
+                                                <li class="paginate_button page-item"><a class="page-link" href="#">{{ i }}</a></li>
+                                            {% else %}
+                                                <li class="paginate_button page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if HOD.has_next %}
+                                      <li class="page-item"><a class="page-link" href="?page={{ HOD.next_page_number }}" >Next</a></li>
+                                    {% else %}
+                                      <li class="page-item disabled"><a class="page-link" href="#" >Next</a></li>
+                                    {% endif %}
+                                </ul>
+                      {% endif %}
+            </div>
           </div>
         </div>
       </div><!-- /.container-fluid -->

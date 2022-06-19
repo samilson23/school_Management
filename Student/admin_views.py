@@ -437,7 +437,42 @@ def admin_save(request):
             messages.error(request, " Failed To Change Profile ")
             return HttpResponseRedirect(reverse("Admin"))
 
-# def schools(request):
-#     return render(request,"admin_template/schools.html",{"schools":schools})
+def edit_school(request,id):
+    schools = school.objects.get(id=id)
+    return render(request,"admin_template/schools.html",{"schools":schools})
 
+def edit_school_save(request):
+    if request.method != "POST":
+        return HttpResponse("<h2>Method Not Allowed</h2>")
+    else:
+        schools = request.POST.get("school")
+        school_id = request.POST.get("sch1")
+        try:
+            course = school.objects.get(id=school_id)
+            course.school_name = schools
+            course.save()
+            messages.success(request, "School Updated")
+            return HttpResponseRedirect(reverse("edit_school",kwargs={"id":school_id}))
+        except:
+            messages.error(request, "School Not Saved")
+            return HttpResponseRedirect(reverse("edit_school",kwargs={"id":school_id}))
 
+def edit_dept(request,id):
+    schools = department.objects.get(id=id)
+    return render(request,"admin_template/dept.html",{"schools":schools})
+
+def edit_dept_save(request):
+    if request.method != "POST":
+        return HttpResponse("<h2>Method Not Allowed</h2>")
+    else:
+        schools = request.POST.get("school")
+        school_id = request.POST.get("sch1")
+        try:
+            course = department.objects.get(id=school_id)
+            course.dept_name = schools
+            course.save()
+            messages.success(request, "Department Updated")
+            return HttpResponseRedirect(reverse("edit_dept",kwargs={"id":school_id}))
+        except:
+            messages.error(request, "Department Not Saved")
+            return HttpResponseRedirect(reverse("edit_dept",kwargs={"id":school_id}))

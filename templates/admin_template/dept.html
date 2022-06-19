@@ -1,7 +1,7 @@
 {% extends 'admin_template/base.html' %}
 {% block page_title %}
-Edit Hod | EmployeeID : {{ admin_hod.admin.username }}
 {% endblock page_title %}
+{% load static %}
 {% block main_content %}
 <section class="content">
       <div class="container-fluid">
@@ -10,26 +10,27 @@ Edit Hod | EmployeeID : {{ admin_hod.admin.username }}
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">ACCOUNT RECOVERY</h3>
+                <h3 class="card-title">Edit School</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" action="/hod_edit_save" method="POST">
+              <form role="form" action="{% url 'edit_dept_save' %}" method="POST">
                 {% csrf_token %}
                 <div class="card-body">
                   <div class="form-group">
-                    <label>Reset password</label>
-                    <input type="password" class="form-control" disabled="disabled" name="password" value="changeme">
-                    <input type="hidden" name="hod_id" value="{{ admin_hod.admin.id }}">
+                    <label>School Name</label>
+                    <input type="text" class="form-control" name="school" value="{{ schools.dept_name }}">
+                    <input type="hidden" name="sch1"  value="{{ schools.id }}">
                   </div>
+
                   <div class="form-group">
                     {% if messages %}
                       {% for message in messages %}
                       {% if message.tags == 'error' %}
-                     <div class="alert alert-danger" style="margin-top:10px" >{{ message }}</div>
+                     <div class="alert alert-danger text-sm" style="margin-top:10px" >{{ message }}</div>
                      {% endif %}
                      {% if message.tags == 'success' %}
-                     <div class="alert alert-success" style="margin-top:10px" >{{ message }}</div>
+                     <div class="alert alert-success text-sm" style="margin-top:10px" >{{ message }}</div>
                      {% endif %}
                      {% endfor %}
                    {% endif %}
@@ -38,7 +39,7 @@ Edit Hod | EmployeeID : {{ admin_hod.admin.username }}
                 <!-- /.card-body -->
 
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary btn-block ">Update Password</button>
+                  <button type="submit" class="btn btn-primary btn-block ">Update School</button>
                 </div>
               </form>
             </div>

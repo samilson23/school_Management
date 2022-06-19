@@ -26,10 +26,10 @@ Edit Student | UserName : {{ admin_student.admin.username }} | #ID : {{ admin_st
                     {% if messages %}
                       {% for message in messages %}
                       {% if message.tags == 'error' %}
-                     <div class="alert alert-danger" style="margin-top:10px" >{{ message }}</div>
+                     <div class="alert alert-danger text-sm" style="margin-top:10px" >{{ message }}</div>
                      {% endif %}
                      {% if message.tags == 'success' %}
-                     <div class="alert alert-success" style="margin-top:10px" >{{ message }}</div>
+                     <div class="alert alert-success text-sm" style="margin-top:10px" >{{ message }}</div>
                      {% endif %}
                      {% endfor %}
                    {% endif %}

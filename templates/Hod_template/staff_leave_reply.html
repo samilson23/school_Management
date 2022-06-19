@@ -154,15 +154,15 @@
        })
       .done(function(response){
       if(response=="True"){
-        alert("Reply sent")
+        swal("Reply sent")
       }
       else{
-        alert("Reply not sent")
+        swal("Reply not sent")
       }
       location.reload()
      })
     .fail(function(){
-      alert("error in sending Reply")
+      swal("error in sending Reply")
     })
    });
   });

@@ -73,7 +73,7 @@
           $("#id_student_ids").html(div_data);
         })
         .fail(function(){
-        alert("error in fetching student")
+        swal("error in fetching student")
         });
     }
     function result_fetch_student(){
@@ -86,7 +86,7 @@
         })
         .done(function(response){
           if (response=="False"){
-            alert("Result Not Found")
+            swal("Result Not Found")
           }else{
             var json_data=JSON.parse(response);
             $("#id_assignment_marks").val(json_data['assign_marks'])
@@ -94,7 +94,7 @@
           }
         })
         .fail(function(){
-        alert("error in fetching student")
+        swal("error in fetching student")
         });
     }
 })

@@ -148,7 +148,7 @@
 
           })
           .fail(function(){
-              alert("Error in Fetching Student")
+              swal("Error in Fetching Student")
           })
 
        })
@@ -176,15 +176,15 @@
                   .done(function(response){
 
                       if(response=="OK"){
-                          alert("Attendance Save")
+                          swal("Attendance Save")
                       }
                       else{
-                          alert("Error in Saving Data")
+                          swal("Error in Saving Data")
                       }
                       location.reload()
                   })
                   .fail(function(){
-                      alert("Error in Saving Student")
+                      swal("Error in Saving Student")
                   })
 
       })

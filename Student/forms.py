@@ -16,7 +16,7 @@ class ChoiceNoValidation(ChoiceField):
         pass
 
 class EditStudentForm(forms.Form):
-    email = forms.CharField(label="Email/Phone", max_length=50, widget=forms.TextInput(attrs={"class": "form-control","autocomplete":"off"}))
+    email = forms.CharField(label="Email/Phone", max_length=50, widget=forms.TextInput(attrs={"class": "form-control","autocomplete":"off"}),required=False)
     first_name = forms.CharField(label="Firstname", max_length=50,
                                  widget=forms.TextInput(attrs={"class": "form-control"}))
     last_name = forms.CharField(label="Lastname", max_length=50,
@@ -85,7 +85,7 @@ class EditResultForm(forms.Form):
 
 
 class EditProfile(forms.Form):
-    email = forms.EmailField(label="Email", max_length=50, widget=forms.EmailInput(attrs={"class": "form-control","autocomplete":"off","disabled":"disabled"}),required=False)
+    email = forms.CharField(label="Email/Phone", max_length=50, widget=forms.TextInput(attrs={"class": "form-control","autocomplete":"off","disabled":"disabled"}),required=False)
     first_name = forms.CharField(label="Firstname", max_length=50,
                                  widget=forms.TextInput(attrs={"class": "form-control","disabled":"disabled"}),required=False)
     last_name = forms.CharField(label="Lastname", max_length=50,

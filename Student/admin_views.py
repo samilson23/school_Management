@@ -170,23 +170,37 @@ def add_hod_save(request):
 
 def add_school(request):
     schools = school.objects.all()
-    Myfilter = SchoolFilter(request.GET, queryset=schools)
-    schools = Myfilter.qs
-    paginator = Paginator(schools, 10)
+    departments = department.objects.all()
+    # Myfilter = SchoolFilter(request.GET, queryset=schools)
+    Myfilter1 = DeptFilter(request.GET, queryset=departments)
+    # schools = Myfilter.qs
+    departments = Myfilter1.qs
+    # paginator = Paginator(schools, 10)
+    paginator = Paginator(departments, 10)
+    # page = request.GET.get('page', 1)
     page = request.GET.get('page', 1)
+    # page_obj = paginator.get_page(page)
     page_obj = paginator.get_page(page)
+    # page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
     page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)
     try:
-        schools = paginator.page(page)
+        # schools = paginator.page(page)
+        departments = paginator.page(page)
     except PageNotAnInteger:
-        schools = paginator.page(1)
+        # schools = paginator.page(1)
+        departments = paginator.page(1)
     except EmptyPage:
-        schools = paginator.page(paginator.num_pages)
+        # schools = paginator.page(paginator.num_pages)
+        departments = paginator.page(paginator.num_pages)
     context={
         "schools":schools,
-        'Myfilter': Myfilter.form,
+        # 'Myfilter': Myfilter.form,
+        'Myfilter1': Myfilter1.form,
+        # 'page_obj': page_obj,
         'page_obj': page_obj,
+        # 'page_range': page_range,
         'page_range': page_range,
+        'departments':departments
     }
     return render(request,"admin_template/add_school.html",context)
 
@@ -233,7 +247,7 @@ def add_dept_save(request):
     if request.method != "POST":
         return HttpResponseRedirect("Method Not Allowed")
     else:
-        dept = request.POST.get("dept")
+        dept = request.POST.get("dept2")
         Schools = request.POST.get("dept1")
         try:
             if dept!="":
@@ -241,11 +255,10 @@ def add_dept_save(request):
                 dept_model = department(dept_name=dept,school_id=School_id)
                 dept_model.save()
                 messages.success(request, "Successfully Added Department")
-            return HttpResponseRedirect(reverse("add_department"))
+            return HttpResponseRedirect(reverse("add_school"))
         except:
-            if dept!="":
-                messages.error(request, "Failed To Add Department")
-            return HttpResponseRedirect(reverse("add_department"))
+            messages.error(request, "Failed To Add Department")
+            return HttpResponseRedirect(reverse("add_school"))
 
 def manage_hod(request):
     HOD = hod.objects.all()
@@ -407,10 +420,10 @@ def hod_edit_save(request):
             user = CustomUser.objects.get(id=hod_id)
             user.set_password("changeme")
             user.save()
-            messages.success(request, "Successfully Updated Hod")
+            messages.success(request, "Successfully Updated Password")
             return HttpResponseRedirect(reverse("hod_edit",kwargs={"hod_id":user.id}))
         except :
-            messages.error(request, "Failed to Update Hod")
+            messages.error(request, "Failed to Update Password")
             return HttpResponseRedirect(reverse("hod_edit",kwargs={"hod_id":user.id}))
 
 
@@ -466,7 +479,8 @@ def edit_school_save(request):
 
 def edit_dept(request,id):
     schools = department.objects.get(id=id)
-    return render(request,"admin_template/dept.html",{"schools":schools,"id":schools.id})
+    dept = school.objects.all()
+    return render(request,"admin_template/dept.html",{"schools":schools,"dept":dept,"id":schools.id})
 
 def edit_dept_save(request):
     if request.method != "POST":
@@ -474,12 +488,15 @@ def edit_dept_save(request):
     else:
         schools = request.POST.get("school")
         school_id = request.POST.get("sch1")
+        dept_id = request.POST.get("dept3")
         try:
             course = department.objects.get(id=school_id)
+            course1 = school.objects.get(id=dept_id)
             course.dept_name = schools
+            course.school_id = course1
             course.save()
-            messages.success(request, "Department Updated")
+            messages.success(request, "Department/School Updated")
             return HttpResponseRedirect(reverse("edit_dept",kwargs={"id":school_id}))
         except:
-            messages.error(request, "Department Not Saved")
+            messages.error(request, "Department/School Not Saved")
             return HttpResponseRedirect(reverse("edit_dept",kwargs={"id":school_id}))

@@ -1,11 +1,39 @@
 {% extends 'staff_template/base_template.html' %}
-{% block page_title %} Add Results {% endblock page_title %}
+{% block custom_css %}
+<style>
+    .success{
+        list-style:none;
+        background-color:#008000;
+        color:white;
+        box-shadow:12px 12px 12px #0000ff;
+        text-align:center
+}
+.error{
+        list-style:none;
+        background-color:#ff0000;
+        color:white;
+        box-shadow:12px 12px 12px #0000ff;
+        text-align:center
+}
+</style>
+{% endblock custom_css %}
 {% load static %}
 {% block main_content %}
+
 <section class="content">
       <div class="container-fluid">
+          {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                      <li {% if message.tags %} class="{{message.tags}}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+          {% endif %}
         <div class="row">
           <div class="col-md-12">
+              <div class="card-header">
+                  <h3 class="card-title">Add Results</h3>
+              </div>
             <!-- general form elements -->
            <form action="{% url 'result_save' %}" method="post">
               {% csrf_token %}
@@ -27,18 +55,18 @@
                           {% endfor %}
                       </select>
                     </div>
-                    <div class="form-group">
-                      {% if messages %}
-                        {% for message in messages %}
-                        {% if message.tags == 'error' %}
-                      <div class="alert alert-danger" style="margin-top:10px" >{{ message }}</div>
-                      {% endif %}
-                      {% if message.tags == 'success' %}
-                      <div class="alert alert-success" style="margin-top:10px" >{{ message }}</div>
-                      {% endif %}
-                      {% endfor %}
-                    {% endif %}
-                    </div>
+<!--                    <div class="form-group">-->
+<!--                      {% if messages %}-->
+<!--                        {% for message in messages %}-->
+<!--                        {% if message.tags == 'error' %}-->
+<!--                      <div class="alert alert-danger" style="margin-top:10px" >{{ message }}</div>-->
+<!--                      {% endif %}-->
+<!--                      {% if message.tags == 'success' %}-->
+<!--                      <div class="alert alert-success" style="margin-top:10px" >{{ message }}</div>-->
+<!--                      {% endif %}-->
+<!--                      {% endfor %}-->
+<!--                    {% endif %}-->
+<!--                    </div>-->
                   </div>
                   <!-- /.card-body -->
 

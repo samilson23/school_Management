@@ -94,7 +94,7 @@ def student_view_attendance(request):
     notification = notificationstudent.objects.filter(student_id=student_obj.id, read=False).order_by("-id")
     notifications = notificationstudent.objects.filter(student_id=student_obj.id, read=False).count()
     course=student_obj.course_id
-    subjects=subject.objects.filter(course_id=course)
+    subjects=registrationreport.objects.filter(status=1,student_id=request.user.id)
     return render(request,"student_template/my_attendance.html",{"subjects":subjects,"notification":notification,
                                                                  "notifications":notifications,
                                                                  "student_obj":student_obj})
@@ -104,12 +104,13 @@ def student_view_attendance_save(request):
     start_date=request.POST.get("start_date")
     end_date=request.POST.get("end_date")
 
+
     start_data_parse=datetime.datetime.strptime(start_date,"%Y-%m-%d").date()
     end_data_parse=datetime.datetime.strptime(end_date,"%Y-%m-%d").date()
     subject_obj=subject.objects.get(id=subject_id)
     user_object=CustomUser.objects.get(id=request.user.id)
     stud_obj=students.objects.get(admin=user_object)
-
+    # if end_date != "" and start_date != "":
     Attendance=attendance.objects.filter(attendance_date__range=(start_data_parse,end_data_parse),subject_id=subject_obj)
     attendance_reports=attendancereport.objects.filter(attendance_id__in=Attendance,student_id=stud_obj)
     return render(request,"student_template/student_attendance_data.html",{"attendance_reports":attendance_reports})
@@ -507,13 +508,23 @@ def read_save_student(request):
         return HttpResponseRedirect(reverse("student_all_notification"))
 
 def clear_all(request):
-    student_id = students.objects.get(admin=request.user.id)
-    notify1 = notificationstudent.objects.filter(student_id=student_id.id,read=1)
-    notify1.delete()
-    return HttpResponseRedirect(reverse("student_all_notification"))
+    try:
+        student_id = students.objects.get(admin=request.user.id)
+        notify1 = notificationstudent.objects.filter(student_id=student_id.id,read=1)
+        notify1.delete()
+        messages.success(request, "Notifications cleared")
+        return HttpResponseRedirect(reverse("student_all_notification"))
+    except:
+        messages.error(request, "Notifications Not cleared")
+        return HttpResponseRedirect(reverse("student_all_notification"))
 
 def clear_one(request):
-    student_id = request.POST.get("notification")
-    notify1 = notificationstudent.objects.filter(id=student_id,read=1)
-    notify1.delete()
-    return HttpResponseRedirect(reverse("student_all_notification"))
+    try:
+        student_id = request.POST.get("notification")
+        notify1 = notificationstudent.objects.filter(id=student_id,read=1)
+        notify1.delete()
+        messages.error(request, "Notification cleared")
+        return HttpResponseRedirect(reverse("student_all_notification"))
+    except:
+        messages.error(request, "Notification Not cleared")
+        return HttpResponseRedirect(reverse("student_all_notification"))

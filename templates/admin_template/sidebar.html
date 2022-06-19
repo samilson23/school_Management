@@ -38,23 +38,23 @@
           <li class="nav-item">
             {% url 'add_school' as add_school %}
             {% url 'edit_school' id=id as edit_school %}
-            <a href="{{ add_school }}" class="nav-link {% if request.path == add_school %} active {% endif %} {% if request.path == edit_school %} active {% endif %}">
+            {% url 'edit_dept' id=id as edit_dept %}
+            <a href="{{ add_school }}" class="nav-link {% if request.path == add_school %} active {% endif %} {% if request.path == edit_school %} active {% endif %} {% if request.path == edit_dept %} active {% endif %}">
               <i class="nav-icon fas fa-database"></i>
               <p>
-               Add School
+               Add School and Dept
               </p>
             </a>
           </li>
-          <li class="nav-item">
-            {% url 'add_department' as add_department %}
-            {% url 'edit_dept' id=id as edit_dept %}
-            <a href="{{ add_department }}" class="nav-link {% if request.path == add_department %} active {% endif %} {% if request.path == edit_dept %} active {% endif %} ">
-              <i class="nav-icon fas fa-bars"></i>
-              <p>
-               Add Department
-              </p>
-            </a>
-          </li>
+<!--          <li class="nav-item">-->
+<!--            {% url 'add_department' as add_department %}-->
+<!--            <a href="{{ add_department }}" class="nav-link {% if request.path == add_department %} active {% endif %}  ">-->
+<!--              <i class="nav-icon fas fa-bars"></i>-->
+<!--              <p>-->
+<!--               Add Department-->
+<!--              </p>-->
+<!--            </a>-->
+<!--          </li>-->
           <li class="nav-item">
             {% url 'Staff' as Staff %}
             {% url 'delete_staff' id=id as delete_staff %}

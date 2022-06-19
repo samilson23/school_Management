@@ -1,3 +1,21 @@
+{% block custom_css %}
+<style>
+    .success{
+        list-style:none;
+        background-color:#008000;
+        color:white;
+        box-shadow:12px 12px 12px #0000ff;
+        text-align:center
+}
+.error{
+        list-style:none;
+        background-color:#ff0000;
+        color:white;
+        box-shadow:12px 12px 12px #0000ff;
+        text-align:center
+}
+</style>
+{% endblock custom_css %}
 <form role="form" action="{{ action_path }}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="card-body">
@@ -8,17 +26,17 @@
                       {{ field }}
                   </div>
                     {% endfor %}
-                  <div class="form-group">
-                    {% if messages %}
-                      {% for message in messages %}
-                      {% if message.tags == 'error' %}
-                     <div class="alert alert-danger" style="margin-top:10px" >{{ message }}</div>
-                     {% endif %}
-                     {% if message.tags == 'success' %}
-                     <div class="alert alert-success" style="margin-top:10px" >{{ message }}</div>
-                     {% endif %}
-                     {% endfor %}
-                   {% endif %}
+<!--                  <div class="form-group">-->
+<!--                    {% if messages %}-->
+<!--                      {% for message in messages %}-->
+<!--                      {% if message.tags == 'error' %}-->
+<!--                     <div class="alert alert-danger" style="margin-top:10px" >{{ message }}</div>-->
+<!--                     {% endif %}-->
+<!--                     {% if message.tags == 'success' %}-->
+<!--                     <div class="alert alert-success" style="margin-top:10px" >{{ message }}</div>-->
+<!--                     {% endif %}-->
+<!--                     {% endfor %}-->
+<!--                   {% endif %}-->
                   </div>
                 <div class="card-footer">
                   <button type="submit" class="btn btn-primary btn-block ">{{ button_text }}</button>

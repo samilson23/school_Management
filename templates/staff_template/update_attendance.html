@@ -1,13 +1,41 @@
 {% extends 'staff_template/base_template.html' %}
-{% block page_title %} View/Update Student Attendance {% endblock page_title %}
+{% block custom_css %}
+<style>
+    .success{
+        list-style:none;
+        background-color:#008000;
+        color:white;
+        box-shadow:12px 12px 12px #0000ff;
+        text-align:center
+}
+.error{
+        list-style:none;
+        background-color:#ff0000;
+        color:white;
+        box-shadow:12px 12px 12px #0000ff;
+        text-align:center
+}
+</style>
+{% endblock custom_css %}
 {% load static %}
 {% block main_content %}
+
 <section class="content">
       <div class="container-fluid">
+          {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                      <li {% if message.tags %} class="{{message.tags}}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+          {% endif %}
         <div class="row">
           <div class="col-md-12">
             <!-- general form elements -->
-            <div class="card card">
+            <div class="card card-info">
+                <div class="card-header">
+                    <h3 class="card-title">Take/Update Attendance</h3>
+                </div>
                 <div class="card-body">
                   <div class="form-group">
                     <label>Subject</label>
@@ -176,7 +204,7 @@
                   .done(function(response){
 
                       if(response=="OK"){
-                          swal("Attendance Save")
+                          swal("Attendance Saved")
                       }
                       else{
                           swal("Error in Saving Data")

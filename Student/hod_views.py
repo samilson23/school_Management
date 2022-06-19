@@ -535,6 +535,7 @@ def edit_student_save(request):
             first_name = form.cleaned_data["first_name"]
             last_name = form.cleaned_data["last_name"]
             username = form.cleaned_data["username"]
+
             email = form.cleaned_data["email"]
             address = form.cleaned_data["address"]
             session_year_id=form.cleaned_data["session_year_id"]
@@ -557,8 +558,6 @@ def edit_student_save(request):
                 user.username=username
                 if email!="":
                     user.email=email
-                else:
-                    user.email = email
                 user.save()
 
                 student=students.objects.get(admin=student_id)

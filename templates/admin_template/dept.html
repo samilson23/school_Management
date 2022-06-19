@@ -1,16 +1,40 @@
 {% extends 'admin_template/base.html' %}
-{% block page_title %}
-{% endblock page_title %}
+{% block custom_css %}
+<style>
+    .success{
+        list-style:none;
+        background-color:#008000;
+        color:white;
+        box-shadow:12px 12px 12px #0000ff;
+        text-align:center
+}
+.error{
+        list-style:none;
+        background-color:#ff0000;
+        color:white;
+        box-shadow:12px 12px 12px #0000ff;
+        text-align:center
+}
+</style>
+{% endblock custom_css %}
 {% load static %}
 {% block main_content %}
+
 <section class="content">
       <div class="container-fluid">
+          {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                      <li {% if message.tags %} class="{{message.tags}}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+          {% endif %}
         <div class="row">
           <div class="col-md-6">
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Edit School</h3>
+                <h3 class="card-title">Edit School/Department</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
@@ -18,28 +42,36 @@
                 {% csrf_token %}
                 <div class="card-body">
                   <div class="form-group">
-                    <label>School Name</label>
+                    <label>Department Name</label>
                     <input type="text" class="form-control" name="school" value="{{ schools.dept_name }}">
                     <input type="hidden" name="sch1"  value="{{ schools.id }}">
                   </div>
-
                   <div class="form-group">
-                    {% if messages %}
-                      {% for message in messages %}
-                      {% if message.tags == 'error' %}
-                     <div class="alert alert-danger text-sm" style="margin-top:10px" >{{ message }}</div>
-                     {% endif %}
-                     {% if message.tags == 'success' %}
-                     <div class="alert alert-success text-sm" style="margin-top:10px" >{{ message }}</div>
-                     {% endif %}
-                     {% endfor %}
-                   {% endif %}
+                    <label>School Name</label>
+                    <select class="form-control"  name="dept3">
+                        {% for course in dept %}
+                          <option value="{{ course.id }}" {% if course.id == schools.school_id.id %} selected {% endif %}>{{ course.school_name }}</option>
+                        {% endfor %}
+                    </select>
                   </div>
-                </div>
+                  <div class="form-group">
+<!--                  <div class="form-group">-->
+<!--                    {% if messages %}-->
+<!--                      {% for message in messages %}-->
+<!--                      {% if message.tags == 'error' %}-->
+<!--                     <div class="alert alert-danger text-sm" style="margin-top:10px" >{{ message }}</div>-->
+<!--                     {% endif %}-->
+<!--                     {% if message.tags == 'success' %}-->
+<!--                     <div class="alert alert-success text-sm" style="margin-top:10px" >{{ message }}</div>-->
+<!--                     {% endif %}-->
+<!--                     {% endfor %}-->
+<!--                   {% endif %}-->
+<!--                  </div>-->
+<!--                </div>-->
                 <!-- /.card-body -->
 
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary btn-block ">Update School</button>
+                  <button type="submit" class="btn btn-info btn-block ">Update Department/School</button>
                 </div>
               </form>
             </div>

@@ -495,8 +495,8 @@ def edit_dept_save(request):
             course.dept_name = schools
             course.school_id = course1
             course.save()
-            messages.success(request, "Department/School Updated")
+            messages.success(request, "Department Updated")
             return HttpResponseRedirect(reverse("edit_dept",kwargs={"id":school_id}))
         except:
-            messages.error(request, "Department/School Not Saved")
+            messages.error(request, "Department Not Saved")
             return HttpResponseRedirect(reverse("edit_dept",kwargs={"id":school_id}))

@@ -1,16 +1,37 @@
+{% block custom_css %}
+<style>
+.user-panel.mt-3.pb-3.mb-3.d-flex.username {
+    color:#fff;
+    height:100px;
+    font-size:25px;
+    width:auto;
+}
+.col-lg-3.attendance_div_green {
+    padding: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background: #388e3c;
+    border: 10px solid white;
+    text-align: center;
+    color: #fff;
+    border-radius: 30px;
+    box-shadow: 1px 1px 1px grey;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+</style>
+{% endblock custom_css %}
+
 {% load static %}
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <a href="{% url 'student_profile' %}" class="d-block">
-            <img src="{{ student_obj.profile_pic }}" class="img-square elevation-2" style="opacity: .8;width:80px;">
-          </a>
-        </div><br/>
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex username">
         <div class="info">
-          <a href="{% url 'student_profile' %}" class="d-block">{{ user.username }}</a>
+            Adm No:<br/>{{ user.username }}
         </div>
       </div>
 
@@ -25,7 +46,8 @@
           </li>
           <li class="nav-item">
             {% url 'student_home' as student_home %}
-            <a href="{{ student_home }}" class="nav-link {% if request.path == student_home %} active {% endif %} ">
+            {% url 'student_profile' as student_profile %}
+            <a href="{{ student_home }}" class="nav-link {% if request.path == student_profile %} active {% endif %} {% if request.path == student_home %} active {% endif %} ">
               <i class="nav-icon fas fa-home"></i>
               <p>
                 HOME

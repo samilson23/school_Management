@@ -1,5 +1,12 @@
 {% extends 'student_template/base_template.html' %}
 {% block page_title %} Home {% endblock page_title %}
+{% block custom_css %}
+<style>
+  .image.std_details{
+    align-items:center;
+  }
+</style>
+{% endblock custom_css %}
 {% load static %}
 {% block main_content %}
 <section class="content">
@@ -20,9 +27,57 @@
 <!--       </div>-->
 <!--    {% endif %}-->
     <div class="row">
-      <div class="col-lg-3 col-6">
-          <!-- small box -->
-          <div class="small-box bg-info">
+      <div class="col-lg-6">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">
+              Student details
+            </h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+            </div>
+          </div>
+          <div class="card-body">
+              <div class="image std_details">
+                {% if student_obj.profile_pic == null %}
+                  <img src="{% static "media/avatar.png" %}" class="img-circle elevation-3" style="opacity: .8;radius:100px;align:center;"/>
+                {% else %}
+                  <img src="{{ student_obj.profile_pic }}" class="img-circle elevation-3" style="opacity: .8;radius:100px;align:center;">
+                {% endif %}
+              </div><br/><a href="{% url 'student_profile' %}" class="d-block"><button class="btn btn-sm btn-success">Update profile</button></a><br/>
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <tbody>
+                    <tr>
+                      <td>Admission No:</td>
+                      <td>{{ student_obj.admin.username }}</td>
+                    </tr>
+                    <tr>
+                      <td>Admission No:</td>
+                      <td>{{ student_obj.admin.first_name }}&nbsp;{{ student_obj.admin.last_name }}</td>
+                    </tr>
+                    <tr>
+                      <td>Course:</td>
+                      <td>{{ student_obj.course_id.course_name }}</td>
+                    </tr>
+                    <tr>
+                      <td>Address:</td>
+                      <td>{{ student_obj.address }}</td>
+                    </tr>
+                    <tr>
+                      <td>Email/Phone:</td>
+                      <td>{{ student_obj.admin.email }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="small-box bg-info">
             <div class="inner">
               <h3>{{ Attendance_total }}</h3>
 
@@ -32,12 +87,8 @@
               <i class="ion ion-stats-bars"></i>
             </div>
             <a href="{% url 'student_view_attendance' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-          </div>
         </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-6">
-          <!-- small box -->
-          <div class="small-box bg-success">
+        <div class="small-box bg-danger">
             <div class="inner">
               <h3>{{ Attendance_absent }}</h3>
 
@@ -47,12 +98,8 @@
               <i class="ion ion-stats-bars"></i>
             </div>
             <a href="{% url 'student_view_attendance' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-          </div>
         </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-6">
-          <!-- small box -->
-          <div class="small-box bg-warning">
+        <div class="small-box bg-success">
             <div class="inner">
               <h3>{{ Attendance_present }}</h3>
 
@@ -62,23 +109,19 @@
               <i class="ion ion-stats-bars"></i>
             </div>
             <a href="{% url 'student_view_attendance' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-          </div>
         </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-6">
-          <!-- small box -->
-          <div class="small-box bg-danger">
+        <div class="small-box bg-info">
             <div class="inner">
               <h3>{{ subjects }}</h3>
 
-              <p>Units</p>
+              <p>Registered Units</p>
             </div>
             <div class="icon">
               <i class="ion ion-pie-graph"></i>
             </div>
             <a href="{% url 'Units' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
           </div>
-        </div>
+      </div>
     </div>
     <div  class="row">
       <div class="col-lg-12">
@@ -117,40 +160,6 @@
               </div>
             </div>
           </div>
-<!--          <div class="card-footer">-->
-<!--                      <div class="pagination">-->
-<!--                          <span class="step-links">-->
-<!--                              <span class="current">-->
-<!--                                   Page  {{ page_obj.number }}  of  {{ page_obj.paginator.num_pages }}.-->
-<!--                              </span>-->
-<!--                          </span>-->
-<!--                      </div>-->
-<!--                      {% if Sch.has_other_pages %}-->
-<!--                                <ul class="pagination float-right">-->
-<!--                                    {% if Sch.has_previous %}-->
-<!--                                        <li class="paginate_button page-item"><a class="page-link" href="?page={{ Sch.previous_page_number }}" data-dt-idx="0" tabindex="0">Previous</a></li>-->
-<!--                                    {% else %}-->
-<!--                                        <li class="paginate_button page-item disabled"><a class="page-link" href="#" >Previous</a></li>-->
-<!--                                    {% endif %}-->
-<!--                                    {% for i in page_range|default_if_none:Sch.paginator.get_elided_page_range %}-->
-<!--                                        {% if page_obj.number == i %}-->
-<!--                                            <li class="paginate_button page-item active"><a class="page-link">{{ i }}<span class="sr-only">(current)</span></a></li>-->
-<!--                                        {% else %}-->
-<!--                                            {% if i == page_obj.paginator.ELLIPSIS %}-->
-<!--                                                <li class="paginate_button page-item"><a class="page-link" href="#">{{ i }}</a></li>-->
-<!--                                            {% else %}-->
-<!--                                                <li class="paginate_button page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>-->
-<!--                                            {% endif %}-->
-<!--                                        {% endif %}-->
-<!--                                    {% endfor %}-->
-<!--                                    {% if Sch.has_next %}-->
-<!--                                      <li class="page-item"><a class="page-link" href="?page={{ Sch.next_page_number }}" >Next</a></li>-->
-<!--                                    {% else %}-->
-<!--                                      <li class="page-item disabled"><a class="page-link" href="#" >Next</a></li>-->
-<!--                                    {% endif %}-->
-<!--                                </ul>-->
-<!--                      {% endif %}-->
-<!--            </div>-->
       </div>
     </div>
     </div>

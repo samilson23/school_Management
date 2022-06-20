@@ -60,7 +60,7 @@
                       <td>{{ student.session_year_id.session_start_year }} TO {{ student.session_year_id.session_end_year }}</td>
                       <td>
                           <a href="/edit_student/{{ student.admin.id }}" class="btn btn-sm btn-success">Edit</a>
-                          <a href="/update_student_units/{{ student.admin.id }}" class="btn btn-sm btn-success">Update/view Unit Registration</a>
+                          <a href="/update_student_units/{{ student.admin.id }}" class="btn btn-sm btn-info text-sm">Unit reg stats</a>
                       </td>
                     </tr>
                 {% endfor %}

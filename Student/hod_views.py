@@ -1133,3 +1133,24 @@ def save_update_student_units(request):
         return HttpResponse("saved")
     except:
         return HttpResponse("not saved")
+
+
+def delete_stage(request):
+    if request.method != "POST":
+        return HttpResponse("<h3>method not allowed</h3>")
+    else:
+        Stage = request.POST.get("Students")
+        Student = request.POST.get("std")
+        stage_id = semester.objects.get(id=19)
+        stage_ids = semester.objects.get(id=Stage)
+        std1 = CustomUser.objects.get(id=Student)
+        std = students.objects.get(admin=std1)
+        try:
+            std.stage_id = stage_id
+            std.status = False
+            std.save()
+            messages.success(request,"semester reset successful")
+            return HttpResponseRedirect(reverse("update_student_units",kwargs={"id":std1.id}))
+        except:
+            messages.error(request, "semester reset not successful")
+            return HttpResponseRedirect(reverse("update_student_units",kwargs={"id":std1.id}))

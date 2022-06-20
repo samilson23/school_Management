@@ -21,7 +21,7 @@ class EditStudentForm(forms.Form):
                                  widget=forms.TextInput(attrs={"class": "form-control"}))
     last_name = forms.CharField(label="Lastname", max_length=50,
                                 widget=forms.TextInput(attrs={"class": "form-control"}))
-    username = forms.CharField(label="Username", max_length=50,
+    username = forms.CharField(label="Admission No", max_length=50,
                                 widget=forms.TextInput(attrs={"class": "form-control","autocomplete":"off"}))
     address = forms.CharField(label="Address", max_length=50, widget=forms.TextInput(attrs={"class": "form-control"}))
     course_list=[]

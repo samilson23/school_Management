@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from Student.filters import StaffLeaveFilter
 from Student.models import Adminhod, CustomUser, OnlineClassRoom, StudentResult, attendance, attendancereport, courses, \
     leavereportstaff, notificationstaff, staff, subject, sessionmodel, students, \
-    feedbackstaff, registrationreport, department
+    feedbackstaff, registrationreport, department, semester
 from django.contrib import messages
 
 def staff_home(request):
@@ -335,8 +335,10 @@ def result_save(request):
     subject_id=request.POST.get("subjects")
 
     student_obj=CustomUser.objects.get(id=student_admin_id)
+    std=students.objects.get(admin=student_admin_id)
     subject_obj=subject.objects.get(id=subject_id)
     grade = float(assignment_marks) + float(exam_marks)
+    Stage1 = semester.objects.get(id=19)
     print(grade)
     if grade >= 70:
         Grade = "A"
@@ -366,23 +368,36 @@ def result_save(request):
             else:
                 result.grade="E"
             result.save()
-            # if result.grade:
             reg = registrationreport.objects.get(student_id=student_obj,subject_id=subject_obj)
             reg.status=0
             reg.save()
+            reg1 = registrationreport.objects.filter(student_id=student_obj,status=1,semester_id=std.stage_id.id).count()
+            reg2 = int(reg1)
+            std1 = students.objects.get(admin=student_admin_id)
+            if reg2 <= 0:
+                std1.stage_id = Stage1
+                std1.status = False
+            std1.save()
             messages.success(request, "Results Updated")
             return HttpResponseRedirect(reverse("result_save"))
-        else:    
+        else:
             result=StudentResult(grade=Grade, subject_assignment_marks=assignment_marks,subject_exam_marks=exam_marks,student_id=student_obj,subject_id=subject_obj,semester_id=subject_obj.stage_id)
             result.save()
             reg = registrationreport.objects.get(student_id=student_obj, subject_id=subject_obj)
             reg.status = 0
             reg.save()
+            reg1 = registrationreport.objects.filter(student_id=student_obj, status=1, semester_id=std.stage_id.id).count()
+            std1 = students.objects.get(admin=student_admin_id)
+            reg2 = int(reg1)
+            if reg2 <= 0:
+                std1.stage_id = Stage1
+                std1.status = False
+            std1.save()
             messages.success(request, "Results Saved")
             return HttpResponseRedirect(reverse("result_save"))
     except:
         messages.error(request, "Failed To upload Results")
-        return HttpResponseRedirect(reverse("result_save")) 
+        return HttpResponseRedirect(reverse("result_save"))
 
 @csrf_exempt
 def fetch_student_result(request):

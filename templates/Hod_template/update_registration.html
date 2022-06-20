@@ -27,6 +27,21 @@
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+.success{
+        list-style:none;
+        background-color:#008000;
+        color:white;
+        box-shadow:12px 12px 12px #0000ff;
+        text-align:center
+}
+.error{
+        list-style:none;
+        background-color:#ff0000;
+        color:white;
+        box-shadow:12px 12px 12px #0000ff;
+        text-align:center
+}
 </style>
 {% endblock custom_css %}
 {% block page_title %}
@@ -36,6 +51,13 @@ Admission No. :{{ student_obj.username }}
 {% block main_content %}
 <section class="content">
       <div class="container-fluid">
+          {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                      <li {% if message.tags %} class="{{message.tags}}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+          {% endif %}
         <div class="row">
           <div class="col-md-6">
             <!-- general form elements -->
@@ -70,8 +92,46 @@ Admission No. :{{ student_obj.username }}
 
                       </div>    
                   </div>
+              </div>
             </div>
           </div>
+          {% if student.status == 1 %}
+              <div class="col-md-6">
+                  <div class="card card-warning">
+                      <div class="card card-header">
+                          <h3 class="card-title">
+                              Registered Semesters
+                          </h3>
+                      </div>
+                      <div class="card-body">
+                          <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                              <thead>
+                                <tr>
+                                  <th>Semester</th>
+                                  <th>Action</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>{{ student.stage_id.stage }}</td>
+                                  <td>
+                                      <form method="POST" action="/delete_stage" role="form">
+                                        {% csrf_token %}
+                                        <input type="hidden" value="{{student.stage_id.id}}" name="Students"/>
+                                        <input type="hidden" value="{{student.admin.id}}" name="std"/>
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                      </form>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          {% else %}
+          {% endif %}
         </div>
         <div class="row">
             <div class="col-md-12">

@@ -46,8 +46,7 @@ def student_home(request):
             subject_name.append(Subjects.code)
             data_present.append(Attendance_present_count)
             data_absent.append(Attendance_absent_count)
-
-
+    stage=semester.objects.all()
     context={
         "Attendance_total":Attendance_total,
         "Attendance_present":Attendance_present,
@@ -56,6 +55,7 @@ def student_home(request):
         "data_name":subject_name,
         "data1":data_present,
         "data2":data_absent,
+        "stage":stage,
         "notification":notification,
         "notifications":notifications,
         "class_room":class_room,
@@ -249,7 +249,7 @@ def unit_registration(request):
     notification = notificationstudent.objects.filter(student_id=student_obj.id, read=False).order_by("-id")
     notifications = notificationstudent.objects.filter(student_id=student_obj.id, read=False).count()
     subject_data = subject.objects.filter(course_id=student_obj.course_id)
-    Stage = semester.objects.all()
+    Stage = students.objects.get(admin=request.user.id)
     context = {
         "Stage":Stage,
         "student_obj":student_obj,
@@ -528,3 +528,20 @@ def clear_one(request):
     except:
         messages.error(request, "Notification Not cleared")
         return HttpResponseRedirect(reverse("student_all_notification"))
+
+def semester_registration(request):
+    if request.method!="POST":
+        return HttpResponse("<h1>method not allowed</h1>")
+    else:
+        Stage = request.POST.get("stage")
+        try:
+            stage_id = semester.objects.get(id=Stage)
+            std = students.objects.get(admin=request.user.id)
+            std.stage_id = stage_id
+            std.status = True
+            std.save()
+            messages.success(request,"Semester Registered")
+            return HttpResponseRedirect(reverse("student_home"))
+        except:
+            messages.error(request, "Semester Not Registered")
+            return HttpResponseRedirect(reverse("student_home"))

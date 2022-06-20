@@ -2,15 +2,36 @@
 {% block page_title %} Home {% endblock page_title %}
 {% block custom_css %}
 <style>
-  .image.std_details{
+.image.std_details{
     align-items:center;
   }
+.success{
+        list-style:none;
+        background-color:#008000;
+        color:white;
+        box-shadow:12px 12px 12px #0000ff;
+        text-align:center
+}
+.error{
+        list-style:none;
+        background-color:#ff0000;
+        color:white;
+        box-shadow:12px 12px 12px #0000ff;
+        text-align:center
+}
 </style>
 {% endblock custom_css %}
 {% load static %}
 {% block main_content %}
 <section class="content">
   <div class="container-fluid">
+      {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                      <li {% if message.tags %} class="{{message.tags}}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+      {% endif %}
 <!--    {% if class_room.count > 0 %}-->
 <!--        <div class="row">-->
 <!--            <div class="col-lg-12 form-group" >-->
@@ -26,6 +47,38 @@
 <!--            </div>-->
 <!--       </div>-->
 <!--    {% endif %}-->
+    {% if student_obj.stage_id.stage == "" %}
+        <div class="row">
+            <div class="col-lg-8"></div>
+            <div class="col-lg-4">
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            Semester Registration
+                        </h3>
+                    </div>
+                    <form role="form" action="/semester_registration" method="POST">
+                        {% csrf_token %}
+                        <div class="card-body">
+                            <div class="form-group">
+                                <select class="form-control" name="stage">
+                                    {% for stage in stage %}
+                                        <option value="{{ stage.id }}">
+                                            {{stage.stage}}
+                                        </option>
+                                    {% endfor %}
+                                </select><br/>
+                                <button type="submit" class="btn btn-sm text-sm btn-success">
+                                    Register
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% else %}
+    {% endif %}
     <div class="row">
       <div class="col-lg-6">
         <div class="card card-primary">
@@ -41,12 +94,14 @@
           </div>
           <div class="card-body">
               <div class="image std_details">
-                {% if student_obj.profile_pic == null %}
-                  <img src="{% static "media/avatar.png" %}" class="img-circle elevation-3" style="opacity: .8;radius:100px;align:center;"/>
+                {% if student_obj.profile_pic == "" %}
+                  <img src="{% static "dist/img/avatar.png" %}" class="img-circle elevation-3" style="opacity: .8;radius:100px;align:center;"/>
                 {% else %}
                   <img src="{{ student_obj.profile_pic }}" class="img-circle elevation-3" style="opacity: .8;radius:100px;align:center;">
                 {% endif %}
-              </div><br/><a href="{% url 'student_profile' %}" class="d-block"><button class="btn btn-sm btn-success">Update profile</button></a><br/>
+              </div><br/>
+              <a href="{% url 'student_profile' %}" class="d-block"><button class="btn btn-sm btn-success">Update profile</button></a>
+              <br/>
               <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
                   <tbody>
@@ -55,12 +110,16 @@
                       <td>{{ student_obj.admin.username }}</td>
                     </tr>
                     <tr>
-                      <td>Admission No:</td>
+                      <td>Full Name:</td>
                       <td>{{ student_obj.admin.first_name }}&nbsp;{{ student_obj.admin.last_name }}</td>
                     </tr>
                     <tr>
                       <td>Course:</td>
                       <td>{{ student_obj.course_id.course_name }}</td>
+                    </tr>
+                    <tr>
+                      <td>Stage</td>
+                      <td>{{ student_obj.stage_id.stage }}</td>
                     </tr>
                     <tr>
                       <td>Address:</td>

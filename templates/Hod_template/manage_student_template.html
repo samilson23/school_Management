@@ -37,8 +37,7 @@
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Gender</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Profile Pic</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Course</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Last Login</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Date Joined</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Stage</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Session Year</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Action</th>
                 </tr>
@@ -55,12 +54,11 @@
                       <td>{{ student.gender }}</td>
                       <td><img src="{{ student.profile_pic }}" style="width:50px"/></td>
                       <td>{{ student.course_id.course_name }}</td>
-                      <td>{{ student.admin.last_login }}</td>
-                      <td>{{ student.admin.date_joined }}</td>
+                      <td>{{ student.stage_id.stage }}</td>
                       <td>{{ student.session_year_id.session_start_year }} TO {{ student.session_year_id.session_end_year }}</td>
                       <td>
                           <a href="/edit_student/{{ student.admin.id }}" class="btn btn-sm btn-success">Edit</a>
-                          <a href="/update_student_units/{{ student.admin.id }}" class="btn btn-sm btn-info text-sm">Unit reg stats</a>
+                          <a href="/update_student_units/{{ student.admin.id }}" class="btn btn-sm btn-info text-sm">reg stats</a>
                       </td>
                     </tr>
                 {% endfor %}

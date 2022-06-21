@@ -5,7 +5,7 @@
 <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-8">
+          <div class="col-md-10">
             <!-- general form elements -->
             <div class="card">
               <div class="card-header">
@@ -13,7 +13,7 @@
                 <div class="card-tools">
                     <form method="get" class="form-inline ml-3">
                         <div class="input-group input-group-sm border" style="width: 150px;">
-                            {{filters.staff_id__admin__username}}
+                            {{filters.staff_id__admin__first_name}}
                             <div class="input-group-append">
                               <button class="btn" type="submit">
                                 <i class="fas fa-search"></i>
@@ -26,17 +26,13 @@
               <div class="table">
                 <table class="table">
                  <tr>
-                   <th>ID</th>
-                   <th> Staff Id</th>
-                   <th>Staff Name</td>
+                   <th>Name</td>
                    <th>Message</th>
-                   <th> Sent On</th>
+                   <th>Sent On</th>
                    <th>Reply</th>
                  </tr>
                  {% for feedback in feedback %}
                   <tr>
-                    <td> {{ feedback.id }} </td>
-                    <td> {{ feedback.staff_id.admin.id }} </td>
                     <td> {{ feedback.staff_id.admin.first_name }}  {{ feedback.staff_id.admin.last_name }} </td>
                     <td> {{ feedback.feedback }} </td>
                     <td> {{ feedback.created_at }} </td>

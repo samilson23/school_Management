@@ -116,7 +116,7 @@ def add_hod(request):
     HOD = hod.objects.all()
     Myfilter = HodFilter(request.GET, queryset=HOD)
     HOD = Myfilter.qs
-    paginator = Paginator(HOD, 10)
+    paginator = Paginator(HOD,10)
     page = request.GET.get('page', 1)
     page_obj = paginator.get_page(page)
     page_range = paginator.get_elided_page_range(number=page, on_each_side=3, on_ends=2)

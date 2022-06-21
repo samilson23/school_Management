@@ -13,7 +13,7 @@
                   <div class="card-tools">
                     <form method="get" class="form-inline">
                       <div class="input-group input-group-sm border" style="width: 200px;">
-                        {{filterstaf.staff_id__first_name}}
+                        {{filterstaf.staff_id__admin__first_name}}
                         <div class="input-group-append">
                           <button class="btn" type="submit">
                             <i class="fas fa-search"></i>
@@ -26,26 +26,22 @@
               <div class="table">
                 <table class="table">
                  <tr>
-                   <th>ID</th>
-                   <th> Staff Id</th>
-                   <th>Staff Name</td>
-                   <th>Leave Reason</th>
-                   <th> Sent On</th>
+                   <th>Name</td>
+                   <th>Reason</th>
+                   <th>Sent On</th>
                    <th>Leave Date</th>
                    <th>Reply</th>
                  </tr>
                  {% for staff_leave in staff_leaves %}
                   <tr>
-                    <td> {{ staff_leave.id }} </td>
-                    <td> {{ staff_leave.staff_id.admin.id }} </td>
                     <td> {{ staff_leave.staff_id.admin.first_name }}  {{ staff_leave.staff_id.admin.last_name }} </td>
                     <td> {{ staff_leave.leave_message }} </td>
                     <td> {{ staff_leave.created_at }} </td>
                     <td> {{ staff_leave.leave_date }} </td>
                     <td>
                       {% if staff_leave.leave_status == 0 %}
-                        <a href="{% url 'staff_approved_leave' leave_id=staff_leave.id %}" class="btn btn-success">Approved</a>
-                        <a href="{% url 'staff_disapproved_leave' leave_id=staff_leave.id %}" class="btn btn-danger">Disapproved</a>
+                        <a href="{% url 'staff_approved_leave' leave_id=staff_leave.id %}" class="btn btn-success">Approve</a>
+                        <a href="{% url 'staff_disapproved_leave' leave_id=staff_leave.id %}" class="btn btn-danger">Disapprove</a>
                       {% elif staff_leave.leave_status == 1 %}
                         <button class="btn btn-success" data-toggle="modal" disabled="disabled" data-target="#reply_modal">Approved</button> 
                       {% else %}  

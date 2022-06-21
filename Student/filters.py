@@ -8,19 +8,19 @@ from .models import courses, subject, students, hod, staff, feedbackstudent, fee
 
 
 class StudentFilter(django_filters.FilterSet):
-    admin__username=django_filters.CharFilter(field_name='admin__username',lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Search", "aria-label":"Search"}))
+    admin__username=django_filters.CharFilter(field_name='admin__username',lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Admission No", "aria-label":"Search"}))
     class Meta:
         model = students
         fields = ['admin__username']
 
 class CourseFilter(django_filters.FilterSet):
-    course_name=django_filters.CharFilter(field_name='course_name',lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Search", "aria-label":"Search"}))
+    course_name=django_filters.CharFilter(field_name='course_name',lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Course name", "aria-label":"Search"}))
     class Meta:
         model = courses
         fields = ['course_name']
 
 class SubjectFilter(django_filters.FilterSet):
-    code=django_filters.CharFilter(field_name='code',lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Search", "aria-label":"Search"}))
+    code=django_filters.CharFilter(field_name='code',lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"subject code", "aria-label":"Search"}))
     class Meta:
         model = subject
         fields = [
@@ -28,56 +28,57 @@ class SubjectFilter(django_filters.FilterSet):
         ]
 
 class HodFilter(django_filters.FilterSet):
-    admin__username = django_filters.CharFilter(field_name='admin__username', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Search", "aria-label":"Search"}))
+    admin__username = django_filters.CharFilter(field_name='admin__username', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"employee id", "aria-label":"Search"}))
     class Meta:
         model = hod
         fields = ['admin__username']
 
 class StaffFilter(django_filters.FilterSet):
-    admin__username = django_filters.CharFilter(field_name='admin__username', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Search", "aria-label":"Search"}))
+    admin__username = django_filters.CharFilter(field_name='admin__username', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"employee id", "aria-label":"Search"}))
     class Meta:
         model = staff
         fields = ['admin__username']
 
 
 class StudentFeedbackFilter(django_filters.FilterSet):
-    student_id__admin__username = django_filters.CharFilter(field_name='student_id__admin__username', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Search", "aria-label":"Search"}))
+    student_id__admin__username = django_filters.CharFilter(field_name='student_id__admin__username', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"adm No", "aria-label":"Search"}))
     class Meta:
         model = feedbackstudent
         fields = ['student_id__admin__username']
 
 class StaffFeedbackFilter(django_filters.FilterSet):
-    staff_id__admin__username = django_filters.CharFilter(field_name='staff_id__admin__username', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Search", "aria-label":"Search"}))
+    staff_id__admin__first_name = django_filters.CharFilter(field_name='staff_id__admin__first_name', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"firstname", "aria-label":"Search"}))
     class Meta:
         model = feedbackstaff
-        fields = ['staff_id__admin__username']
+        fields = ['staff_id__admin__first_name']
 
 class StaffNotificationFilter(django_filters.FilterSet):
-    staff_id__admin__username = django_filters.CharFilter(field_name='staff_id__admin__username', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Search", "aria-label":"Search"}))
+    staff_id__admin__username = django_filters.CharFilter(field_name='staff_id__admin__username', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"employee id", "aria-label":"Search"}))
     class Meta:
         model = notificationstaff
         fields = ['staff_id__admin__username']
 
 class SchoolFilter(django_filters.FilterSet):
-    school_name = django_filters.CharFilter(field_name='school_name', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Search", "aria-label":"Search"}))
+    school_name = django_filters.CharFilter(field_name='school_name', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"school name", "aria-label":"Search"}))
     class Meta:
         model = school
         fields = ['school_name']
 
 class DeptFilter(django_filters.FilterSet):
-    dept_name = django_filters.CharFilter(field_name='dept_name', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Search", "aria-label":"Search"}))
+    dept_name = django_filters.CharFilter(field_name='dept_name', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"dept name", "aria-label":"Search"}))
     class Meta:
         model = department
         fields = ['dept_name']
 
 class StaffLeaveFilter(django_filters.FilterSet):
-    staff_id__first_name = django_filters.CharFilter(field_name='staff_id__admin__first_name', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Search", "aria-label":"Search"}))
+    staff_id__admin__first_name = django_filters.CharFilter(field_name='staff_id__admin__first_name', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"firstname", "aria-label":"Search"}))
     class Meta:
         model = leavereportstaff
-        fields = ['staff_id__first_name']
+        fields = ['staff_id__admin__first_name']
+
 
 class StudentLeaveFilter(django_filters.FilterSet):
-    student_id__last_name = django_filters.CharFilter(field_name='student_id__last_name', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"Search", "aria-label":"Search"}))
+    student_id__admin__last_name = django_filters.CharFilter(field_name='student_id__admin__last_name', lookup_expr='icontains',widget=forms.TextInput(attrs={"class":"form-control border-0", "type":"search", "placeholder":"lastname", "aria-label":"Search"}))
     class Meta:
         model = leavereportstudent
-        fields = ['student_id__last_name']
+        fields = ['student_id__admin__last_name']

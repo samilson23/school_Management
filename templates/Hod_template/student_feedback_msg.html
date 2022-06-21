@@ -26,15 +26,13 @@
               <div class="table">
                    <table class="table">
                         <tr>
-                          <th>ID</th>
-                          <th>Student Reg.No</td>
+                          <th>Reg.No</td>
                           <th>Message</th>
-                          <th> Sent On</th>
+                          <th>Sent On</th>
                           <th>Reply</th>
                         </tr>
                         {% for feedback in feedbacks %}
                          <tr>
-                           <td> {{ feedback.id }} </td>
                            <td> {{ feedback.student_id.admin.username }}</td>
                            <td> {{ feedback.feedback }} </td>
                            <td> {{ feedback.created_at }} </td>

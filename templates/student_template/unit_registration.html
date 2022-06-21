@@ -86,7 +86,7 @@
                                 <select class="form-control"  name="stage" id="stage">
                                   <option value="{{ Stage.stage_id.id }}">{{ Stage.stage_id.stage }}</option>
                                 </select>
-                                <input type="hidden" id="Students" name="Students" />
+                                <input type="hidden" id="Students"  value="{{Stage.admin.id}}" name="Students" />
                             {% endif %}
                           </div>
                         </div>
@@ -122,7 +122,7 @@
       .done(function(response){
         if(response=="Exists"){
             swal({
-                text:"Semester Already Registered",
+                text:"You have already registered for units under this semester",
                 icon:"success",
             })
         }
@@ -183,7 +183,7 @@
          else{
           swal({
             text:"Error in submitting units",
-            icon:"info",
+            icon:"warning",
           })
          }
          location.reload()
@@ -191,7 +191,7 @@
       .fail(function(){
       swal({
         text:"error in Saving Units",
-        icon:"info",
+        icon:"warning",
       })
       })
     })

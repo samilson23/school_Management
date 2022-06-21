@@ -28,35 +28,28 @@
                 <table id="example2" class="table table-hover text-nowrap" role="grid" aria-describedby="example2_info">
                 <thead>
                 <tr role="row">
-                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">ID</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">First Name</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">Last Name</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">User Name</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">Admission Number</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Email</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Address</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Gender</th>
+<!--                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Gender</th>-->
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Profile Pic</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Course</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Last Login</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Date Joined</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Session Year</th>
+<!--                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Date Joined</th>-->
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">Action</th></tr>
                 </thead>
                 <tbody>
                 {% for student in student %}
                   <tr>
-                      <td>{{ student.admin.id }}</td>
                       <td>{{ student.admin.first_name }}</td>
                       <td>{{ student.admin.last_name }}</td>
                       <td>{{ student.admin.username }}</td>
                       <td>{{ student.admin.email }}</td>
                       <td>{{ student.address }}</td>
-                      <td>{{ student.gender }}</td>
                       <td><img src="{{ student.profile_pic }}" style="width:50px"/></td>
-                      <td>{{ student.course_id.course_name }}</td>
                       <td>{{ student.admin.last_login }}</td>
-                      <td>{{ student.admin.date_joined }}</td>
-                      <td>{{ student.session_year_id.session_start_year }} TO {{ student.session_year_id.session_end_year }}</td>
+<!--                      <td>{{ student.session_year_id.session_start_year }} TO {{ student.session_year_id.session_end_year }}</td>-->
                       <td>
                           <a href="/student_edit/{{ student.admin.id }}" class="btn btn-sm btn-success">Reset Password</a>
                           <a href="{% url 'delete_student' student.admin.id %}" class="btn btn-sm btn-danger">Delete</a>

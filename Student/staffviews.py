@@ -74,12 +74,25 @@ def get_students(request):
     student = students.objects.filter(course_id=Subject.course_id,session_year_id=session_model)
     list_data = []
     for student in student:
-            std = registrationreport.objects.filter(student_id=student.admin.id,status=1,subject_id=Subject).exists()
-            if std:
-                data_small = {"id":student.admin.id,"name":student.admin.username+""}
-                list_data.append(data_small)
+        data_small = {"id":student.admin.id,"name":student.admin.username+""}
+        list_data.append(data_small)
     return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
 
+@csrf_exempt
+def get_student(request):
+    subject_id=request.POST.get("subjects")
+    session_year = request.POST.get("session_year")
+
+    Subject = subject.objects.get(id=subject_id)
+    session_model = sessionmodel.objects.get(id=session_year)
+    student = students.objects.filter(course_id=Subject.course_id,session_year_id=session_model)
+    list_data = []
+    for student in student:
+        std=registrationreport.objects.filter(student_id=student.admin.id,status=1,subject_id=Subject).exists()
+        if std:
+            data_small = {"id":student.admin.id,"name":student.admin.username+""}
+            list_data.append(data_small)
+    return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
 
 @csrf_exempt    
 def save_attendance_data(request):
@@ -337,7 +350,10 @@ def result_save(request):
     student_obj=CustomUser.objects.get(id=student_admin_id)
     std=students.objects.get(admin=student_admin_id)
     subject_obj=subject.objects.get(id=subject_id)
-    grade = float(assignment_marks) + float(exam_marks)
+    if assignment_marks!="" or exam_marks!="":
+        grade = float(assignment_marks) + float(exam_marks)
+    elif assignment_marks == "" or exam_marks == "":
+        grade = 0
     Stage1 = semester.objects.get(id=19)
     print(grade)
     if grade >= 70:
@@ -348,15 +364,20 @@ def result_save(request):
         Grade = "C"
     elif grade >= 40:
         Grade = "D"
-    elif grade < 40:
+    elif grade > 0 and grade < 40:
         Grade = "E"
+    elif grade <= 0:
+        Grade = "X"
     try:
         check_exists=StudentResult.objects.filter(subject_id=subject_obj,student_id=student_obj).exists()
         if check_exists:
             result=StudentResult.objects.get(subject_id=subject_obj,student_id=student_obj)
-
-            result.subject_exam_marks=exam_marks
-            result.subject_assignment_marks=assignment_marks
+            if assignment_marks != "" or exam_marks != "":
+                result.subject_exam_marks=exam_marks
+                result.subject_assignment_marks=assignment_marks
+            elif assignment_marks == "" or exam_marks == "":
+                result.subject_exam_marks = 0
+                result.subject_assignment_marks = 0
             if grade >= 70:
                 result.grade = "A"
             elif grade >= 60:
@@ -365,8 +386,10 @@ def result_save(request):
                 result.grade = "C"
             elif grade >= 40:
                 result.grade = "D"
-            else:
-                result.grade="E"
+            elif  grade > 0 and grade < 40:
+                result.grade = "E"
+            elif grade <= 0:
+                result.grade="X"
             result.save()
             reg = registrationreport.objects.get(student_id=student_obj,subject_id=subject_obj)
             reg.status=0

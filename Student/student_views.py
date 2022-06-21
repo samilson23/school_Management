@@ -168,10 +168,10 @@ def student_feedback_save(request):
                 dept_id = department.objects.get(id=student_obj.dept_id.id)
                 feedback_obj = feedbackstudent(dept_id=dept_id,student_id=student_obj,feedback=feedback_msg,feedback_reply="",status=0)
                 feedback_obj.save()
-                messages.success(request, "Successfully Submitted Feedback")
+                messages.success(request, "Successfully Submitted Complaint")
                 return HttpResponseRedirect(reverse("student_feedback"))
             except:
-                messages.error(request, "Failed To Submit Feedback")
+                messages.error(request, "Failed To Submit Complaint")
                 return HttpResponseRedirect(reverse("student_feedback"))
         else:
             return HttpResponseRedirect(reverse("student_feedback"))

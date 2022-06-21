@@ -30,7 +30,7 @@
             </ul>
           {% endif %}
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-6">
               <div class="card-header">
                   <h3 class="card-title">Add Results</h3>
               </div>
@@ -80,7 +80,7 @@
 
 
       $.ajax({
-        url:'{% url 'get_students' %}',
+        url:'{% url 'get_student' %}',
         type:'POST',
         data:{subjects:subject,session_year:session_year},
       })

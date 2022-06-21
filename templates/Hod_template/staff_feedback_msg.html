@@ -26,6 +26,7 @@
               <div class="table">
                 <table class="table">
                  <tr>
+                   <th>Id</th>
                    <th>Name</td>
                    <th>Message</th>
                    <th>Sent On</th>
@@ -33,6 +34,7 @@
                  </tr>
                  {% for feedback in feedback %}
                   <tr>
+                    <td>{{ feedback.id }}</td>
                     <td> {{ feedback.staff_id.admin.first_name }}  {{ feedback.staff_id.admin.last_name }} </td>
                     <td> {{ feedback.feedback }} </td>
                     <td> {{ feedback.created_at }} </td>

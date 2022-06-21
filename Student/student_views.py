@@ -250,12 +250,14 @@ def unit_registration(request):
     notifications = notificationstudent.objects.filter(student_id=student_obj.id, read=False).count()
     subject_data = subject.objects.filter(course_id=student_obj.course_id)
     Stage = students.objects.get(admin=request.user.id)
+    Unit = registrationreport.objects.filter(student_id=request.user.id,semester_id=student_obj.stage_id.id)
     context = {
         "Stage":Stage,
         "student_obj":student_obj,
         "subject_data":subject_data,
         "notification":notification,
-        "notifications":notifications
+        "notifications":notifications,
+        "Unit":Unit
     }
     return render(request,"student_template/unit_registration.html", context)
 
@@ -269,7 +271,7 @@ def get_units(request):
     if reg.exists():
         return HttpResponse("Exists")
     for Subject in Subject:
-        data_small = {"id": Subject.id,"code": Subject.code, "name": Subject.subject_name + ""}
+        data_small = {"id": Subject.id,"code": Subject.code,"name": Subject.subject_name + ""}
         list_data.append(data_small)
     return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
 
@@ -317,10 +319,17 @@ def get_unregistered_units(request):
     list_data = []
     for student in attendance_data:
         student_result = StudentResult.objects.filter(student_id=student_id,subject_id=student.subject_id,grade="E").exists()
+        student_result1 = StudentResult.objects.filter(student_id=student_id,subject_id=student.subject_id,grade="X").exists()
         if student_result:
             data_small = {"id": student.subject_id.id,
                           "name": student.subject_id.subject_name,
                           "code":student.subject_id.code,
+                          "status": student.status}
+            list_data.append(data_small)
+        elif student_result1:
+            data_small = {"id": student.subject_id.id,
+                          "name": student.subject_id.subject_name,
+                          "code": student.subject_id.code,
                           "status": student.status}
             list_data.append(data_small)
     return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)

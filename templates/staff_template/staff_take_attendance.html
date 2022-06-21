@@ -30,7 +30,7 @@
             </ul>
           {% endif %}
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-8">
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
@@ -109,7 +109,12 @@
         $("#student_data").html(div_data);
       })
       .fail(function(){
-      swal("error in fetching Student")
+      swal.fire({
+      text:"error in fetching Student",
+      icon:"error",
+      }).then(() => {
+            location.reload()
+      })
       })
 
       $(document).on("click","#save_attendance",function(){
@@ -137,15 +142,29 @@
          })
          .done(function(response){
          if(response=="OK"){
-          swal("Attendance Data Saved")
+          swal.fire({
+          text:"Attendance Data Saved",
+          icon:"success"
+          }).then(() => {
+            location.reload()
+          })
          }
          else{
-          swal("Error In Saving data")
+          swal.fire({
+          text:"Error In Saving data",
+          icon:"error",
+          }).then(() => {
+            location.reload()
+          })
          }
-         location.reload()
         })
       .fail(function(){
-      swal("error in Saving Student")
+      swal({
+      text:"error in Saving Student",
+      icon:"error",
+      }).then(() => {
+            location.reload()
+      })
       })
     })
   })

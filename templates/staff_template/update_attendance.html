@@ -30,7 +30,7 @@
             </ul>
           {% endif %}
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-6">
             <!-- general form elements -->
             <div class="card card-info">
                 <div class="card-header">
@@ -176,7 +176,12 @@
 
           })
           .fail(function(){
-              swal("Error in Fetching Student")
+              swal.fire({
+              text:"Error in Fetching Student",
+              icon:"error",
+              }).then(() => {
+                location.reload()
+              })
           })
 
        })
@@ -204,15 +209,29 @@
                   .done(function(response){
 
                       if(response=="OK"){
-                          swal("Attendance Saved")
+                          swal.fire({
+                          text:"Attendance Saved",
+                          icon:"success"
+                          }).then(() => {
+                            location.reload()
+                          })
                       }
                       else{
-                          swal("Error in Saving Data")
+                          swal({
+                          text:"Error in Saving Data",
+                          icon:"error",
+                          }).then(() => {
+                            location.reload()
+                          })
                       }
-                      location.reload()
                   })
                   .fail(function(){
-                      swal("Error in Saving Student")
+                      swal.fire({
+                      text:"Error in Saving Student",
+                      icon:"error",
+                      }).then(() => {
+                        location.reload()
+                      })
                   })
 
       })

@@ -86,7 +86,12 @@
           $("#id_student_ids").html(div_data);
         })
         .fail(function(){
-        swal("error in fetching student")
+        swal.fire({
+        text:"error in fetching student",
+        icon:"error",
+        }).then(() => {
+            location.reload()
+        })
         });
     }
     function result_fetch_student(){
@@ -99,7 +104,10 @@
         })
         .done(function(response){
           if (response=="False"){
-            swal("Result Not Found")
+            swal.fire({
+            text:"Result Not Found",
+            icon:"info",
+            })
           }else{
             var json_data=JSON.parse(response);
             $("#id_assignment_marks").val(json_data['assign_marks'])
@@ -107,7 +115,12 @@
           }
         })
         .fail(function(){
-        swal("error in fetching student")
+        swal.fire({
+        text:"error in fetching student",
+        icon:"error",
+        }).then(() => {
+            location.reload()
+        })
         });
     }
 })

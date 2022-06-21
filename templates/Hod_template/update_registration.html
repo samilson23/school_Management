@@ -187,7 +187,10 @@ Admission No. :{{ student_obj.username }}
 
           })
           .fail(function(){
-              swal("Error in Fetching Units")
+              swal.fire({
+              text:"Error in Fetching Units",
+              icon:"error",
+              })
           })
 
        })
@@ -214,15 +217,29 @@ Admission No. :{{ student_obj.username }}
               })
               .done(function(response){
                 if(response=="saved"){
-                      swal("Units saved")
+                      swal.fire({
+                      text:"Units saved",
+                      icon:"success"
+                      }).then(() => {
+                        location.reload()
+                      })
                   }
                   else{
-                      swal("Error in Submitting Units")
+                      swal.fire({
+                      text:"Error in Submitting Units",
+                      icon:"error",
+                      }).then(() => {
+                        location.reload()
+                      })
                   }
-                  location.reload()
               })
               .fail(function(){
-                  swal("Error in Saving Units")
+                  swal.fire({
+                  text:"Error in Saving Units",
+                  icon:"error",
+                  }).then(() => {
+                    location.reload()
+                  })
               })
       })
 

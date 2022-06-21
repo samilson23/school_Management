@@ -93,11 +93,15 @@
         var json_data=JSON.parse(response);
         console.log(json_data)
           if(json_data==""){
-                swal({
-                    text:"Results not yet posted",
-                    icon:"info",
-                })
-          }else{
+            swal.fire({
+                text:"Results not yet posted",
+                icon:"info",
+                showConfirmButton:true,
+            }).then(() => {
+                location.reload()
+            })
+          }
+          else{
             var div_data="<div class='card-body'><div class='form-group'>";
             div_data+="<label class='text-sm'>{{ student.username }}</label><br/>";
             div_data+="</div>";

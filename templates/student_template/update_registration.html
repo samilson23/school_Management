@@ -90,7 +90,10 @@
           .done(function(response){
               var json_data=JSON.parse(response);
               if(json_data==""){
-                swal("No units found under semester")
+                swal.fire({
+                text:"No units found under this semester",
+                icon:"info"
+                })
               }else{
                   var div_data="<div class='card-body'><div class='form-group'><label></label></div><div class='form-group'><div class='row'>";
                   for(key in json_data)
@@ -116,7 +119,10 @@
 
           })
           .fail(function(){
-              swal("Error in Fetching Units")
+              swal.fire({
+                text:"Error in Fetching Units",
+                icon:"error",
+              })
           })
 
        })
@@ -144,15 +150,29 @@
                   .done(function(response){
 
                       if(response=="OK"){
-                          swal("Units submitted")
+                          swal.fire({
+                            text:"Units submitted",
+                            icon:"success"
+                        }).then(() => {
+                            location.reload()
+                        })
                       }
                       else{
-                          swal("Error in Submitting Units")
+                          swal.fire({
+                            text:"Error in Submitting Units",
+                            icon:"error"
+                          }).then(() => {
+                            location.reload()
+                          })
                       }
-                      location.reload()
                   })
                   .fail(function(){
-                      swal("Error in Saving Units")
+                      swal.fire({
+                      text:"Error in Saving Units",
+                      icon:"error"
+                      }).then(() => {
+                        location.reload()
+                      })
                   })
 
       })

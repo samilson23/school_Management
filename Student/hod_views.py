@@ -977,6 +977,9 @@ def admin_send_notification_student(request):
     Hod = hod.objects.get(admin=request.user.id)
     leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
     leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
     student = students.objects.filter(dept_id=Hod.dept_id.id)
     filters = StudentFilter(request.GET, queryset=student)
     student = filters.qs
@@ -996,6 +999,9 @@ def admin_send_notification_student(request):
         "page_range": page_range,
         "filters": filters.form,
         "leave_staff_count":leave_staff_count,
+        "feedback_staff_count":feedback_staff_count,
+        "feedback_student_count":feedback_student_count,
+        "Total":Total,
         "leave_student_count":leave_student_count
     }
     return render(request,"Hod_template/student_notification.html",context)
@@ -1006,6 +1012,9 @@ def admin_send_notification_staff(request):
     Hod = hod.objects.get(admin=request.user.id)
     leave_staff_count = leavereportstaff.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
     leave_student_count = leavereportstudent.objects.filter(leave_status=0, dept_id=Hod.dept_id.id).count()
+    feedback_student_count = feedbackstudent.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    feedback_staff_count = feedbackstaff.objects.filter(status=0, dept_id=Hod.dept_id.id).count()
+    Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
     staffs = staff.objects.filter(dept_id=Hod.dept_id.id)
     filters = StaffFilter(request.GET, queryset=staffs)
     staffs = filters.qs
@@ -1026,7 +1035,10 @@ def admin_send_notification_staff(request):
         "filters": filters.form,
         "page_range":page_range,
         "leave_student_count":leave_student_count,
-        "leave_staff_count":leave_staff_count
+        "feedback_student_count":feedback_student_count,
+        "Total":Total,
+        "leave_staff_count":leave_staff_count,
+        "feedback_staff_count":feedback_staff_count,
     }
     return render(request,"Hod_template/staff_notification.html",context)
 

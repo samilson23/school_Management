@@ -141,10 +141,20 @@
     })
     .done(function(response){
         if(response=="True"){
-            swal("Notification Sent");
+            swal.fire({
+            text:"Notification Sent",
+            icon:"success",
+            }).then(() => {
+            location.reload()
+          })
         }
         else{
-          swal("Notification Not Sent");
+          swal.fire({
+          text:"Notification Not Sent",
+          icon:"error",
+          }).then(() => {
+            location.reload()
+          })
         }
     });
   }

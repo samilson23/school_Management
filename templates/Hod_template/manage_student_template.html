@@ -83,25 +83,25 @@
                   {% if student.has_other_pages %}
                     <ul class="pagination float-right">
                         {% if student.has_previous %}
-                            <li class="paginate_button page-item"><a class="page-link" href="?page={{ student.previous_page_number }}" data-dt-idx="0" tabindex="0">Previous</a></li>
+                            <li class="paginate_button page-item"><a class="page-link text-sm " href="?page={{ student.previous_page_number }}" data-dt-idx="0" tabindex="0"> << </a></li>
                         {% else %}
-                            <li class="paginate_button page-item disabled"><a class="page-link" href="#" >Previous</a></li>
+                            <li class="paginate_button page-item disabled"><a class="page-link text-sm" href="#" > << </a></li>
                         {% endif %}
                         {% for i in page_range|default_if_none:student.paginator.get_elided_page_range %}
                             {% if page_obj.number == i %}
-                                <li class="paginate_button page-item active"><a class="page-link">{{ i }}<span class="sr-only">(current)</span></a></li>
+                                <li class="paginate_button page-item active"><a class="page-link text-sm">{{ i }}<span class="sr-only">(current)</span></a></li>
                             {% else %}
                                 {% if i == page_obj.paginator.ELLIPSIS %}
-                                    <li class="paginate_button page-item"><a class="page-link" href="#">{{ i }}</a></li>
+                                    <li class="paginate_button page-item"><a class="page-link text-sm" href="#">{{ i }}</a></li>
                                 {% else %}
-                                    <li class="paginate_button page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                    <li class="paginate_button page-item"><a class="page-link text-sm" href="?page={{ i }}">{{ i }}</a></li>
                                 {% endif %}
                             {% endif %}
                         {% endfor %}
                         {% if student.has_next %}
-                          <li class="page-item"><a class="page-link" href="?page={{ student.next_page_number }}" >Next</a></li>
+                          <li class="page-item"><a class="page-link text-sm" href="?page={{ student.next_page_number }}" > >> </a></li>
                         {% else %}
-                          <li class="page-item disabled"><a class="page-link" href="#" >Next</a></li>
+                          <li class="page-item disabled"><a class="page-link text-sm" href="#" >  >> </a></li>
                         {% endif %}
                     </ul>
                   {% endif %}

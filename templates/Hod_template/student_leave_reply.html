@@ -26,6 +26,7 @@
               <div class="table">
                <table class="table">
                 <tr>
+                    <th>ID</th>
                   <th>Name</td>
                   <th>Message</th>
                   <th>Leave Date</th>
@@ -34,6 +35,7 @@
                 </tr>
                 {% for leave in leaves %}
                  <tr>
+                     <td>{{ leave.id }}</td>
                    <td> {{ leave.student_id.admin.first_name }}  {{ leave.student_id.admin.last_name }} </td>
                    <td> {{ leave.leave_message }}
                    <td> {{ leave.leave_date }} </td>

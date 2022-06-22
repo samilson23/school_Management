@@ -126,7 +126,7 @@
   $(document).ready(function(){
     $(".reply_open_modal").click(function(){
       var id=$(this).parents("tr").children("td:eq(0)").text();
-      var name=$(this).parents("tr").children("td:eq(2)").text();
+      var name=$(this).parents("tr").children("td:eq(1)").text();
       $("#reply_id").val(id);
       $("#reply_name").text(name);
     });
@@ -144,15 +144,15 @@
        })
       .done(function(response){
       if(response=="True"){
-        swal("Reply sent")
+        swal.fire("Reply sent")
       }
       else{
-        swal("Reply not sent")
+        swal.fire("Reply not sent")
       }
       location.reload()
      })
     .fail(function(){
-      swal("error in sending Reply")
+      swal.fire("error in sending Reply")
     })
    });
   });

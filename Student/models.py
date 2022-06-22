@@ -132,6 +132,7 @@ class attendancereport(models.Model):
     id = models.AutoField(primary_key=True)
     student_id = models.ForeignKey(students, on_delete=models.CASCADE)
     attendance_id = models.ForeignKey(attendance, on_delete=models.CASCADE)
+    stage_id = models.ForeignKey(semester,on_delete=models.CASCADE,default=19)
     status = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)

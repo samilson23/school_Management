@@ -286,9 +286,11 @@ def add_subject(request):
     course = courses.objects.filter(dept_id=dept_id)
     Stage = semester.objects.all()
     Staff = staff.objects.filter(dept_id=dept_id)
+    staffs = staff.objects.get(admin=3)
     Total = int(leave_staff_count) + int(leave_student_count) + int(feedback_staff_count) + int(feedback_student_count)
     return render(request, "Hod_template/add_subject_template.html", {"Staff": Staff,"course": course,
                                                                       "Stage":Stage,
+                                                                      "staffs":staffs,
                                                                       "leave_student_count":leave_student_count,
                                                                       "leave_staff_count":leave_staff_count,
                                                                       "Total":Total,
@@ -306,7 +308,7 @@ def add_subject_save(request):
         code = request.POST.get("code")
         stage_id = request.POST.get("stage")
         stage = semester.objects.get(id=stage_id)
-        staffs = staff.objects.get(admin=staff_id)
+        staffs = CustomUser.objects.get(id=staff_id)
 
         try:
             Hod = hod.objects.get(admin=request.user.id)
@@ -561,17 +563,28 @@ def edit_student_save(request):
                 user.save()
 
                 student=students.objects.get(admin=student_id)
-                student.address=address
-                session_year = sessionmodel.objects.get(id=session_year_id)
-                student.session_year_id = session_year
-                # student.gender=sex
-                course=courses.objects.get(id=course_id)
-                dept_id = department.objects.get(id=course.dept_id.id)
-                student.course_id=course
-                student.dept_id=dept_id
-                if profile_pic_url!=None:
-                    student.profile_pic=profile_pic_url
-                student.save()
+                if address == "":
+                    student.address = address
+                    session_year = sessionmodel.objects.get(id=session_year_id)
+                    student.session_year_id = session_year
+                    course = courses.objects.get(id=course_id)
+                    dept_id = department.objects.get(id=course.dept_id.id)
+                    student.course_id = course
+                    student.dept_id = dept_id
+                    if profile_pic_url != None:
+                        student.profile_pic = profile_pic_url
+                    student.save()
+                else:
+                    student.address = address
+                    session_year = sessionmodel.objects.get(id=session_year_id)
+                    student.session_year_id = session_year
+                    course=courses.objects.get(id=course_id)
+                    dept_id = department.objects.get(id=course.dept_id.id)
+                    student.course_id=course
+                    student.dept_id=dept_id
+                    if profile_pic_url!=None:
+                        student.profile_pic=profile_pic_url
+                    student.save()
                 del request.session['student_id']
                 messages.success(request,"Successfully Edited Student")
                 return HttpResponseRedirect(reverse("edit_student",kwargs={"student_id":student_id}))

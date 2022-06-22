@@ -95,7 +95,13 @@
           <div class="card-body">
               <div class="image std_details">
                 {% if student_obj.profile_pic == "" %}
-                  <img src="{% static "dist/img/avatar.png" %}" class="img-circle elevation-3" style="opacity: .8;radius:100px;align:center;"/>
+                  {% if student_obj.gender == "Male" %}
+                    <img src="{% static "dist/img/avatar.png" %}" class="img-circle elevation-3" style="opacity: .8;radius:100px;align:center;"/>
+                  {% elif student_obj.gender == "Other" %}
+                    <img src="{% static "dist/img/boxed-bg.png" %}" class="img-circle elevation-3" style="opacity: .8;radius:100px;align:center;"/>
+                  {% else %}
+                    <img src="{% static "dist/img/avatar3.png" %}" class="img-circle elevation-3" style="opacity: .8;radius:100px;align:center;"/>
+                  {% endif %}
                 {% else %}
                   <img src="{{ student_obj.profile_pic }}" class="img-circle elevation-3" style="opacity: .8;radius:100px;align:center;">
                 {% endif %}

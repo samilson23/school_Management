@@ -25,9 +25,9 @@ def student_home(request):
     student_obj=students.objects.get(admin=request.user.id)
     notification = notificationstudent.objects.filter(student_id=student_obj.id, read=False).order_by("-id")
     notifications = notificationstudent.objects.filter(student_id=student_obj.id, read=False).count()
-    Attendance_total=attendancereport.objects.filter(student_id=student_obj).count()
-    Attendance_present=attendancereport.objects.filter(student_id=student_obj,status=True).count()
-    Attendance_absent=attendancereport.objects.filter(student_id=student_obj,status=False).count()
+    Attendance_total=attendancereport.objects.filter(student_id=student_obj,stage_id=student_obj.stage_id.id).count()
+    Attendance_present=attendancereport.objects.filter(student_id=student_obj,status=True,stage_id=student_obj.stage_id.id).count()
+    Attendance_absent=attendancereport.objects.filter(student_id=student_obj,status=False,stage_id=student_obj.stage_id.id).count()
     course=courses.objects.get(id=student_obj.course_id.id)
     subjects=registrationreport.objects.filter(student_id=request.user.id,status=1).count()
     subjects_data=subject.objects.filter(course_id=course)
@@ -94,7 +94,7 @@ def student_view_attendance(request):
     notification = notificationstudent.objects.filter(student_id=student_obj.id, read=False).order_by("-id")
     notifications = notificationstudent.objects.filter(student_id=student_obj.id, read=False).count()
     course=student_obj.course_id
-    subjects=registrationreport.objects.filter(status=1,student_id=request.user.id)
+    subjects=subject.objects.filter(course_id=student_obj.course_id.id,stage_id=student_obj.stage_id.id)
     return render(request,"student_template/my_attendance.html",{"subjects":subjects,"notification":notification,
                                                                  "notifications":notifications,
                                                                  "student_obj":student_obj})

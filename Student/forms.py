@@ -23,7 +23,7 @@ class EditStudentForm(forms.Form):
                                 widget=forms.TextInput(attrs={"class": "form-control"}))
     username = forms.CharField(label="Admission No", max_length=50,
                                 widget=forms.TextInput(attrs={"class": "form-control","autocomplete":"off"}))
-    address = forms.CharField(label="Address", max_length=50, widget=forms.TextInput(attrs={"class": "form-control"}))
+    address = forms.CharField(label="Address", max_length=50, widget=forms.TextInput(attrs={"class": "form-control"}),required=False)
     course_list=[]
     try:
         course = courses.objects.all()

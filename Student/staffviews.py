@@ -108,7 +108,8 @@ def save_attendance_data(request):
         Attendance.save()
         for stud in json_student:
             student = students.objects.get(admin=stud['id'])
-            attendance_report=attendancereport(student_id=student,attendance_id=Attendance,status=stud['status'])
+            semesters = semester.objects.get(id=subject_model.stage_id.id)
+            attendance_report=attendancereport(student_id=student,attendance_id=Attendance,status=stud['status'],stage_id=semesters)
             attendance_report.save()
         return HttpResponse("OK")
     except:

@@ -2,27 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c7799b95-03bd-4513-8c8c-f8cc93ad9a76" name="Changes" comment="Made changes">
-      <change afterPath="$PROJECT_DIR$/ERD" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/media/user7-128x128.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Student/migrations/0030_attendancereport_stage_id.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Student/migrations/0031_alter_attendancereport_stage_id.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Student/migrations/0032_alter_attendancereport_stage_id.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Student/migrations/0033_alter_attendancereport_stage_id.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Student/migrations/0034_alter_attendancereport_stage_id.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/media/avatar04_uFYe320_9CaWJ0o.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/plugins/jquery/sweetalert2.min.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Student/hod_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Student/hod_views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Student/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Student/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Student/staffviews.py" beforeDir="false" afterPath="$PROJECT_DIR$/Student/staffviews.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Student/student_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Student/student_views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/base_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/base_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/staff_feedback_msg.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/staff_feedback_msg.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/staff_notification.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/staff_notification.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/student_feedback_msg.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/student_feedback_msg.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/student_notification.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/student_notification.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/update_registration.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/update_registration.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Hod_template/add_course_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/add_course_template.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Hod_template/add_subject_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/add_subject_template.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/staff_template/add_result.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/add_result.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/staff_template/base_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/base_template.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/staff_template/edit_student_result.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/edit_student_result.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/staff_template/staff_take_attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/staff_take_attendance.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/staff_template/update_attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/update_attendance.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/student_template/base_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/base_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/student_template/results.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/results.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/student_template/unit_registration.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/unit_registration.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/student_template/update_registration.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/update_registration.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/student_template/my_attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/my_attendance.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/student_template/student_home_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student_template/student_home_template.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -393,7 +391,14 @@
       <option name="project" value="LOCAL" />
       <updated>1655800031479</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="Made changes">
+      <created>1655815268280</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1655815268280</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -419,7 +424,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Student/staffviews.py</url>
-          <line>455</line>
+          <line>456</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

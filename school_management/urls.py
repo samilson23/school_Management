@@ -81,6 +81,9 @@ urlpatterns = [
     path('admin_send_notification_staff',hod_views.admin_send_notification_staff,name="admin_send_notification_staff"),
     path('send_student_notification',hod_views.send_student_notification,name="send_student_notification"),
     path('send_staff_notification',hod_views.send_staff_notification,name="send_staff_notification"),
+    path('download_registered_students',hod_views.download_registered_students,name="download_registered_students"),
+    path('get_registered_students',hod_views.get_registered_students,name="get_registered_students"),
+    path('student_pdf_view',hod_views.student_pdf_view,name="student_pdf_view"),
     # path('datatable',hod_views.datatable,name='datatable'),
 
     # staff url
@@ -89,6 +92,9 @@ urlpatterns = [
     path('staff_update_attendance', staffviews.staff_update_attendance, name="staff_update_attendance"),
     path('get_students', staffviews.get_students, name="get_students"),
     path('get_student', staffviews.get_student, name="get_student"),
+    path('registered_units', staffviews.registered_units, name="registered_units"),
+    path('get_registered_units', staffviews.get_registered_units, name="get_registered_units"),
+    path('unit_pdf_view', staffviews.unit_pdf_view, name="unit_pdf_view"),
     path('save_attendance_data', staffviews.save_attendance_data, name="save_attendance_data"),
     path('get_attendance_date', staffviews.get_attendance_date, name="get_attendance_date"),
     path('get_attendance_student', staffviews.get_attendance_student, name="get_attendance_student"),

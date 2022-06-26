@@ -143,15 +143,29 @@
        })
       .done(function(response){
       if(response=="True"){
-        swal("Reply sent")
+        swal.fire({
+        text:"Reply sent",
+        icon:"success"
+        }).then(() => {
+            location.reload()
+        })
       }
       else{
-        swal("Reply not sent")
+        swal.fire({
+        text:"Reply not sent",
+        icon:"error"
+        }).then(() => {
+            location.reload()
+        })
       }
-      location.reload()
      })
     .fail(function(){
-      swal("error in sending Reply")
+      swal.fire({
+      text:"error in sending Reply",
+      icon:"error"
+      }).then(() => {
+            location.reload()
+      })
     })
    });
   });

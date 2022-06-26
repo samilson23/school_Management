@@ -1,0 +1,128 @@
+{% extends "staff_template/base_template.html" %}
+{% block custom_css %}
+<style>
+.col-lg-4.attendance_div_green {
+    padding: 2px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    background: #399e3c;
+    border: 10px solid blue;
+    text-align: left;
+    color: #fff;
+    border-radius: 30px;
+    box-shadow: 1px 1px 1px grey;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.col-lg-4.attendance_div_red {
+    padding: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background: #f44336;
+    border: 10px solid white;
+    align:center;
+    text-align: center;
+    color: #fff;
+    border-radius: 30px;
+    box-shadow: 1px 1px 1px grey;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+</style>
+{% endblock custom_css %}
+{% block page_title %}  {% endblock page_title %}
+{% load static %}
+{% block main_content %}
+<section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-6">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                        <h3 class="card-title">Registered Students</h3>
+                </div>
+                <form method="POST" action="/unit_pdf_view" role="form">
+                    {% csrf_token %}
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-5">
+                              <div class="form-group">
+                                <label>Stage</label>
+                                <select class="form-control"  name="subjects" id="subjects">
+                                    {% for Stage in subjects %}
+                                      <option class="text-sm" value="{{ Stage.id }}">{{ Stage.code }}</option>
+                                    {% endfor %}
+                                </select><br/>
+                                <select class="form-control"  name="stage" id="stage">
+                                    {% for Stage in reg %}
+                                      <option class="text-sm" value="{{ Stage.id }}">{{ Stage.stage }}</option>
+                                    {% endfor %}
+                                </select><br/>
+                                <select class="form-control"  name="session" id="session">
+                                    {% for Stage in session %}
+                                      <option class="text-sm" value="{{ Stage.id }}">{{ Stage.session_start_year }} TO {{ Stage.session_end_year }}</option>
+                                    {% endfor %}
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success text-sm btn-sm" id="fetch_units">View</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="card" id="student_data">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+          </div>
+        </div>
+            <!-- /.card -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
+{% block custom_js %}
+<script>
+  $(document).ready(function(){
+    $("#fetch_units").click(function(){
+      var stage=$("#stage").val();
+      var session=$("#session").val();
+      var subjects=$("#subjects").val();
+
+
+      $.ajax({
+        url:'{% url 'get_registered_units' %}',
+        type:'POST',
+        data:{stage:stage,session:session,subjects:subjects},
+      })
+      .done(function(response){
+        var json_data=JSON.parse(response);
+        console.log(json_data)
+          if(json_data==""){
+            swal.fire({
+                text:"No match found",
+                icon:"info",
+                showConfirmButton:true,
+            }).then(() => {
+                location.reload()
+            })
+          }
+          else{
+            var div_data="<div class='card-body'><div class='form-group'>";
+            div_data+="</div>";
+            div_data+="<div class='form-group'>";
+            div_data+="<button class='btn btn-primary btn-sm text-sm' type='submit'>Open</button>";
+            div_data+="</div></div>";
+            $("#student_data").html(div_data);
+          }
+      })
+    })
+  })
+
+</script>
+{% endblock custom_js %}

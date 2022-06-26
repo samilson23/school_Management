@@ -1,0 +1,74 @@
+{% block page_title %} {% endblock page_title %}
+{% load static %}
+{% load i18n %}
+{% block custom_css %}
+<style>
+    h1
+    {
+        padding-left:15;
+        font-weight: italic;
+        font-family: Georgia;
+    }
+    .school
+    {
+        padding-left:15;
+        font-weight: bold;
+    }
+</style>
+{% endblock custom_css %}
+{% block main_content %}
+<section class="content">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+           <div class="card-body">
+             <table class="table" style="text-bold" width="100%">
+                 <tr>
+                     <td colspan="3"><h1><div class="school">SAMILSON SCHOOL</div></h1></td>
+                 </tr>
+                 <tr>
+                     <td colspan="3" style="padding-left:10.5;font-size:11px">+254-74-0400114</td>
+                 </tr>
+                 <tr>
+                     <td colspan="3" style="padding-left:9.4;font-size:11px;padding-bottom:.4;">samwelmilson@gmail.com</td>
+                 </tr>
+                 <tr>
+                     <td colspan="3"><u><h1>Registered Students</h1></u></td>
+                 </tr>
+                 <tr>
+                     <td style="font-weight:bold;padding-bottom:.2;padding-top:.2;font-size:13px;" width="60px">School:</td>
+                     <td style="font-size:12px;padding-top:.2;padding-bottom:.2;">{{ Hod.dept_id.school_id.school_name }}</td>
+                 </tr>
+                 <tr>
+                     <td style="font-weight:bold;padding-bottom:.2;padding-top:.2;font-size:13px;" width="90px">Department:</td>
+                     <td style="font-size:12px;padding-top:.2;padding-bottom:.2;">{{ Hod.dept_id.dept_name }}</td>
+                 </tr>
+                 <tr>
+                     <td style="font-weight:bold;padding-bottom:.2;padding-top:.2;font-size:13px;" width="90px">Subject Name:</td>
+                     <td style="font-size:12px;padding-top:.2;padding-bottom:.2;">{{ subject_id.subject_name }}</td>
+                 </tr>
+             </table>
+             <table class="table" border="1" width="70%" style="height:auto;">
+                <thead>
+                    <tr>
+                      <th width="100px" align="left" style="padding-top:.2;font-size:12px;padding-left:.2;"><u> Reg NO</u></th>
+                      <th width="100px" align="left" style="padding-top:.2;font-size:12px;padding-left:.2;"><u>Name</u></th>
+                      <th width="100px" align="left" style="padding-top:.2;font-size:12px;padding-left:.2;"><u>Signature</u></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in student %}
+                      <tr>
+                          <td width="100px" style="padding-top:.2;font-size:12px;padding-left:.2;">{{ student.student_id.username }}</td>
+                          <td width="300px" style="padding-top:.2;font-size:12px;padding-left:.2;">{{ student.student_id.first_name }}&nbsp;{{ student.student_id.last_name }}</td>
+                          <td></td>
+                      </tr>
+                    {% endfor %}
+                </tbody>
+             </table>
+           </div>
+          </div>
+        </div>
+      </div>
+</section>
+{% endblock main_content %}

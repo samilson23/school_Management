@@ -2,16 +2,26 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c7799b95-03bd-4513-8c8c-f8cc93ad9a76" name="Changes" comment="Made changes">
-      <change afterPath="$PROJECT_DIR$/static/media/avatar2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Student/migrations/0035_unitregistration_dept_id.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Student/migrations/0036_unitregistration_session_id.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Student/migrations/0037_registrationreport_dept_id_and_more.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/Hod_template/download_students.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/Hod_template/registered_students.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/staff_template/registered_units.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/staff_template/units.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Student/hod_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Student/hod_views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Student/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Student/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Student/staffviews.py" beforeDir="false" afterPath="$PROJECT_DIR$/Student/staffviews.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Student/student_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Student/student_views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/manage_course_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/manage_course_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/manage_staff_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/manage_staff_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/manage_student_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/manage_student_template.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Hod_template/manage_subjects_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/manage_subjects_template.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/school_management/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/school_management/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Hod_template/sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/sidebar.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/Hod_template/staff_feedback_msg.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/staff_feedback_msg.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/Hod_template/staff_leave_reply.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/staff_leave_reply.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Hod_template/student_feedback_msg.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/student_feedback_msg.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/Hod_template/student_leave_reply.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Hod_template/student_leave_reply.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/staff_template/sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/staff_template/sidebar.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,21 +59,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Samilson/Documents/Django_projects/school_Management/static/plugins/images/faces&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "C:/Users/Samilson/Documents/Django_projects/school_Management/templates/staff_template"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Samilson\Documents\Django_projects\school_Management\templates\staff_template" />
+      <recent name="C:\Users\Samilson\Documents\Django_projects\school_Management\templates\Hod_template" />
       <recent name="C:\Users\Samilson\Documents\Django_projects\school_Management\static\plugins\images\faces" />
       <recent name="C:\Users\Samilson\Documents\Django_projects\school_Management\templates\admin_template" />
-      <recent name="C:\Users\Samilson\Documents\Django_projects\school_Management\templates\Hod_template" />
       <recent name="C:\Users\Samilson\Documents\Django_projects\school_Management\templates\student_template" />
-      <recent name="C:\Users\Samilson\Documents\Django_projects\school_Management\templates" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Samilson\Documents\Django_projects\school_Management\Student" />
@@ -396,7 +406,14 @@
       <option name="project" value="LOCAL" />
       <updated>1655886867434</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="Made changes">
+      <created>1655906060616</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1655906060616</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -422,7 +439,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Student/staffviews.py</url>
-          <line>456</line>
+          <line>458</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

@@ -283,13 +283,16 @@ def save_units_data(request):
     student_id=request.POST.get("student_id")
     stage_model = semester.objects.get(id=stage_id)
     Student = CustomUser.objects.get(id=student_id)
+    std = students.objects.get(admin=request.user.id)
+    session_id = sessionmodel.objects.get(id=std.session_year_id.id)
+    dept_id = department.objects.get(id=std.dept_id.id)
     json_student = json.loads(student_ids)
     try:
-        Attendance=unitregistration(semester_id=stage_model,student_id=Student)
+        Attendance=unitregistration(semester_id=stage_model,session_id=session_id,dept_id=dept_id,student_id=Student)
         Attendance.save()
         for stud in json_student:
             subjects = subject.objects.get(id=stud['id'])
-            attendance_report=registrationreport(subject_id=subjects,student_id=Student,unit_id=Attendance,status=stud['status'],semester_id=stage_model)
+            attendance_report=registrationreport(subject_id=subjects,session_id=session_id,dept_id=dept_id,student_id=Student,unit_id=Attendance,status=stud['status'],semester_id=stage_model)
             attendance_report.save()
         return HttpResponse("OK")
     except:

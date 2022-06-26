@@ -7,8 +7,10 @@ from django.core import serializers
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
+from django.template.loader import get_template
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from xhtml2pdf import pisa
 
 from Student.filters import StaffLeaveFilter
 from Student.models import Adminhod, CustomUser, OnlineClassRoom, StudentResult, attendance, attendancereport, courses, \
@@ -499,3 +501,53 @@ def clear_one_staff(request):
     notify1 = notificationstaff.objects.filter(id=staff_id,read=1)
     notify1.delete()
     return HttpResponseRedirect(reverse("staff_all_notification"))
+
+def registered_units(request):
+    session = sessionmodel.objects.all()
+    reg = semester.objects.all()
+    subjects = subject.objects.filter(staff_id=request.user.id)
+    context = {
+        "session":session,
+        "reg":reg,
+        "subjects":subjects
+    }
+    return render(request,"staff_template/units.html",context)
+
+
+@csrf_exempt
+def get_registered_units(request):
+    stage_id = request.POST.get("stage")
+    session_id = request.POST.get("session")
+    subjects = request.POST.get("subjects")
+    Hod = staff.objects.get(admin=request.user.id)
+    reg1 = registrationreport.objects.filter(subject_id=subjects,semester_id=stage_id,dept_id=Hod.dept_id.id,session_id=session_id,status=True)
+    list_data = []
+    for Subject in reg1:
+        data_small = {"id": Subject.id, "code": Subject.student_id.username, "name": Subject.student_id.first_name,"marks":Subject.subject_id.subject_name}
+        list_data.append(data_small)
+    return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
+
+
+def unit_pdf_view(request):
+    Stage = request.POST.get("stage")
+    session = request.POST.get("session")
+    subjects = request.POST.get("subjects")
+    subject_id = subject.objects.get(id=subjects)
+    session_id = sessionmodel.objects.get(id=session)
+    Hod = staff.objects.get(admin=request.user.id)
+    student = registrationreport.objects.filter(subject_id=subjects,dept_id=Hod.dept_id.id,status=1,semester_id=Stage,session_id=session)
+    template_path = 'staff_template/registered_units.html'
+    context = {'student': student,
+               "Hod":Hod,
+               "session":session_id,
+               "subject_id":subject_id
+               }
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=''Registered_students-'+subject_id.code+'.pdf'
+    template = get_template(template_path)
+    html = template.render(context)
+    pisa_status = pisa.CreatePDF(
+        html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('we had some errors <pre>' + html + '</pre>')
+    return response

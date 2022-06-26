@@ -7,6 +7,9 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.core.files.storage import FileSystemStorage
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+
 from Student import admin
 from Student.forms import EditStudentForm
 from Student.models import CustomUser, attendance, attendancereport, courses, feedbackstaff, feedbackstudent, \
@@ -1179,3 +1182,46 @@ def delete_stage(request):
         except:
             messages.error(request, "semester reset not successful")
             return HttpResponseRedirect(reverse("update_student_units",kwargs={"id":std1.id}))
+
+def download_registered_students(request):
+    reg = semester.objects.all()
+    session = sessionmodel.objects.all()
+    context={
+        "reg":reg,
+        "session":session
+    }
+    return render(request,"Hod_template/download_students.html",context)
+
+@csrf_exempt
+def get_registered_students(request):
+    stage_id = request.POST.get("stage")
+    session_id = request.POST.get("session")
+    Hod = hod.objects.get(admin=request.user.id)
+    reg1 = unitregistration.objects.filter(semester_id=stage_id,dept_id=Hod.dept_id.id,session_id=session_id)
+    list_data = []
+    for Subject in reg1:
+        data_small = {"id": Subject.id, "code": Subject.student_id.username, "name": Subject.student_id.first_name,"marks":Subject.student_id.last_name}
+        list_data.append(data_small)
+    return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
+
+
+def student_pdf_view(request):
+    Stage = request.POST.get("stage")
+    session = request.POST.get("session")
+    session_id = sessionmodel.objects.get(id=session)
+    Hod = hod.objects.get(admin=request.user.id)
+    student = unitregistration.objects.filter(dept_id=Hod.dept_id.id,semester_id=Stage,session_id=session)
+    template_path = 'Hod_template/registered_students.html'
+    context = {'student': student,
+               "Hod":Hod,
+               "session":session_id
+               }
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="registered_students.pdf"'
+    template = get_template(template_path)
+    html = template.render(context)
+    pisa_status = pisa.CreatePDF(
+        html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('we had some errors <pre>' + html + '</pre>')
+    return response
